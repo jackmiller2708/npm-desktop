@@ -1,5 +1,6 @@
 const { BrowserWindow, app, protocol, net } = require("electron");
 const { format, pathToFileURL } = require("url");
+const { initIPCListeners } = require("./modules/ipc-listener");
 const { join } = require("path");
 
 /**
@@ -24,6 +25,7 @@ function bootstrap(window) {
     ? format({ pathname: "index.html", protocol: "file", slashes: true })
     : "http://localhost:4200";
 
+  initIPCListeners(window);
   window.loadURL(servePath);
   window.webContents.openDevTools();
 }
