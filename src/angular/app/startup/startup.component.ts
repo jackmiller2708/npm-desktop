@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 
 @Component({
   selector: 'app-startup',
@@ -6,6 +6,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./startup.component.scss'],
 })
 export class StartupComponent {
+  @HostBinding('class')
+  private get _classes(): string[] {
+    return ['max-w-[900px]', 'flex', 'justify-center', 'w-full', 'px-10']
+  }
+
   readonly navItems: any[];
 
   constructor() {
