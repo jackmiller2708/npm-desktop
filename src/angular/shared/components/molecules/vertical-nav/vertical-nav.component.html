@@ -1,0 +1,6 @@
+<ul class="nav-container">
+  <app-nav-item *ngFor="let item of dataSource" [link]="item.routerLink">
+    <app-icon [path]="item.iconPath"></app-icon>
+    <app-text [content]="item.content" type="inline"></app-text>
+  </app-nav-item>
+</ul>

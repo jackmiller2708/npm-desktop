@@ -1,0 +1,10 @@
+<ng-container [ngSwitch]="type">
+  <h1 *ngSwitchCase="'heading-1'">{{ content }}</h1>
+  <h2 *ngSwitchCase="'heading-2'">{{ content }}</h2>
+  <h3 *ngSwitchCase="'heading-3'">{{ content }}</h3>
+  <h4 *ngSwitchCase="'heading-4'">{{ content }}</h4>
+  <h5 *ngSwitchCase="'heading-5'">{{ content }}</h5>
+  <h6 *ngSwitchCase="'heading-6'">{{ content }}</h6>
+  <span *ngSwitchCase="'inline'">{{ content }}</span>
+  <p *ngSwitchDefault>{{ content }}</p>
+</ng-container>
