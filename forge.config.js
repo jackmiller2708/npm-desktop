@@ -1,5 +1,5 @@
 module.exports = {
-  packagerConfig: { asar: true, extraResource: "./dist" },
+  packagerConfig: { asar: true, extraResource: "./dist/ui" },
   rebuildConfig: {},
   makers: [
     {

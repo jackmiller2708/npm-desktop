@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
-            "outputPath": "dist",
+            "outputPath": "dist/ui",
             "index": "src/angular/index.html",
             "main": "src/angular/main.ts",
             "polyfills": ["zone.js"],

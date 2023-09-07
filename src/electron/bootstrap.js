@@ -34,7 +34,7 @@ function bootstrap(window) {
 function initApp() {
   protocol.handle("file", (req) => {
     const filePath = pathToFileURL(
-      join(process.resourcesPath, "dist", req.url.slice("file://".length))
+      join(process.resourcesPath, "ui", req.url.slice("file://".length))
     ).toString();
 
     return net.fetch(filePath, { bypassCustomProtocolHandlers: true });
