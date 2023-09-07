@@ -1,9 +1,9 @@
-const { BrowserWindow, app, protocol, net, dialog } = require("electron");
+const { BrowserWindow, app, protocol, net } = require("electron");
 const { format, pathToFileURL } = require("url");
 const { join } = require("path");
 
 /**
- *
+ * Creates the app window.
  * @returns {BrowserWindow}
  */
 function createWindow() {
@@ -16,7 +16,7 @@ function createWindow() {
 }
 
 /**
- *
+ * Bootstrapping app configs.
  * @param {BrowserWindow} window
  */
 function bootstrap(window) {
@@ -29,7 +29,7 @@ function bootstrap(window) {
 }
 
 /**
- * 
+ * Initializes the app.
  */
 function initApp() {
   protocol.handle("file", (req) => {
