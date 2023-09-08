@@ -3,6 +3,7 @@ import { NavItemComponent } from '../nav-item/nav-item.component';
 import { IconComponent } from '../../atoms/icon/icon.component';
 import { TextComponent } from '../../atoms/text/text.component';
 import { CommonModule } from '@angular/common';
+import { NavItem } from '../nav-item/models/nav-item.model';
 
 @Component({
   selector: 'app-vertical-nav',
@@ -12,7 +13,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./vertical-nav.component.scss'],
 })
 export class VerticalNavComponent {
-  @Input() dataSource: any[];
+  @Input() dataSource: NavItem[];
   @Input() className: string;
 
   @HostBinding('class')

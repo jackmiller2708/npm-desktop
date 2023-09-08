@@ -1,3 +1,4 @@
+import { GitWorkspaceHistoryComponent } from './../../shared/components/organisms/git-workspace-history/git-workspace-history.component';
 import { WorkspaceHistoryComponent } from 'src/angular/shared/components/organisms/workspace-history/workspace-history.component';
 import { VerticalNavComponent } from 'src/angular/shared/components/molecules/vertical-nav/vertical-nav.component';
 import { StartupRoutingModule } from './startup-routing.module';
@@ -12,6 +13,7 @@ import { NgModule } from '@angular/core';
     StartupRoutingModule,
     VerticalNavComponent,
     WorkspaceHistoryComponent,
+    GitWorkspaceHistoryComponent,
   ],
 })
 export class StartupModule {}

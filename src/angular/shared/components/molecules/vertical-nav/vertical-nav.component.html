@@ -1,6 +1,3 @@
 <ul class="flex flex-col gap-3 w-full h-full">
-  <app-nav-item *ngFor="let item of dataSource" [link]="item.routerLink" className="flex items-center gap-2 cursor-pointer">
-    <app-icon [path]="item.iconPath"></app-icon>
-    <app-text [content]="item.content" type="inline"></app-text>
-  </app-nav-item>
+  <app-nav-item *ngFor="let item of dataSource" [item]="item"></app-nav-item>
 </ul>

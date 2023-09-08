@@ -1,3 +1,8 @@
-<li [routerLink]="link" routerLinkActive="active" class="{{ className }}">
-  <ng-content></ng-content>
+<li *ngIf="item" [routerLink]="item.routerLink" routerLinkActive="active" class="{{ className }}">
+  <div *ngIf="!content, else contentRef" class="flex items-center gap-2 cursor-pointer">
+    <app-icon *ngIf="item.iconPath" [path]="item.iconPath"></app-icon>
+    <app-text [content]="item.content" type="inline"></app-text>
+  </div>
+
+  <ng-template #contentRef [ngTemplateOutlet]="$any(content)" [ngTemplateOutletContext]="{ item: item }"></ng-template>
 </li>
