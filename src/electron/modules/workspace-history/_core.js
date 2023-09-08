@@ -1,4 +1,4 @@
-const { writeFileSync, existsSync } = require("fs");
+const { writeFileSync, existsSync, readFileSync } = require("fs");
 const { WorkspaceHistory } = require("../../shared/workspace-history.model");
 const { Workspace } = require("../../shared/workspace.model");
 const { List } = require("immutable");
