@@ -7,19 +7,20 @@ const { IO } = require("../../shared/monads/io.monad");
  * containing an Either monad representing the file's content (Right) or an error (Left).
  *
  * @param {string} filePath - The path to the file to read.
- * @returns {IO} - An IO monad that, when executed with .run(), returns an Either monad representing
+ * @returns - An IO monad that, when executed with .run(), returns an Either monad representing
  * the file content (Right) or an error (Left).
  */
 function readFile(filePath) {
   return IO(() => {
     try {
-      return Either.Right(readFileSync(filePath, { encoding: "utf-8" }));
+      const data = readFileSync(filePath, { encoding: "utf-8" });
+
+      return Either.Right(data);
     } catch (error) {
-      return Either.Left(error);
+      return Either.Left(new Error(error));
     }
   });
 }
-
 
 /**
  * Writes data to a file synchronously at the given file path and returns an IO monad
@@ -27,7 +28,7 @@ function readFile(filePath) {
  *
  * @param {string} filePath - The path to the file to write.
  * @param {any} data - The data to write to the file.
- * @returns {IO} - An IO monad that, when executed with .run(), returns an Either monad representing
+ * @returns - An IO monad that, when executed with .run(), returns an Either monad representing
  * the written data (Right) or an error (Left).
  */
 function writeFile(filePath, data) {
@@ -37,7 +38,7 @@ function writeFile(filePath, data) {
 
       return Either.Right(data);
     } catch (error) {
-      return Either.Left(error);
+      return Either.Left(new Error(error));
     }
   });
 }
