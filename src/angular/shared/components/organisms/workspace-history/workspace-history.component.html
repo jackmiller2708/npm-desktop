@@ -1,1 +1,14 @@
-<p>workspace-history works!</p>
+<div>
+  <div>
+    <app-text content="Workspaces" type="heading-1"></app-text>
+  </div>
+  <div class="flex">
+    <app-button content="Open new workspace..." (onClick)="onOpenWorkspaceBtnClick()"></app-button>
+  </div>
+</div>
+<ul>
+  <li class="border border-black" *ngFor="let workspace of workspaces">
+    <p>{{ workspace.name }}</p>
+    <p>{{ workspace.path }}</p>
+  </li>
+</ul>

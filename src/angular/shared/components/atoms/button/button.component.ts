@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, TemplateRef, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -6,8 +6,15 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './button.component.html',
-  styleUrls: ['./button.component.scss']
+  styleUrls: ['./button.component.scss'],
 })
 export class ButtonComponent {
+  @Input() contentTemplate: TemplateRef<any> | undefined;
+  @Input() content: string | undefined;
 
+  @Output() onClick: EventEmitter<MouseEvent>;
+
+  constructor() {
+    this.onClick = new EventEmitter();
+  }
 }

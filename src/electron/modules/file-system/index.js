@@ -25,20 +25,20 @@ function readFile(filePath) {
 /**
  * Writes data to a file synchronously at the given file path and returns an IO monad
  * containing an Either monad representing the written data (Right) or an error (Left).
- *
+ * @template T
  * @param {string} filePath - The path to the file to write.
- * @param {any} data - The data to write to the file.
+ * @param {T} data - The data to write to the file.
  * @returns - An IO monad that, when executed with .run(), returns an Either monad representing
  * the written data (Right) or an error (Left).
  */
 function writeFile(filePath, data) {
   return IO(() => {
     try {
-      writeFileSync(filePath, JSON.parse(data));
+      writeFileSync(filePath, JSON.stringify(data));
 
       return Either.Right(data);
     } catch (error) {
-      return Either.Left(new Error(error));
+      return Either.Left(error);
     }
   });
 }

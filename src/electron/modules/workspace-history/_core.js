@@ -1,57 +1,47 @@
-const { writeFileSync, existsSync, readFileSync } = require("fs");
-const { WorkspaceHistory } = require("../../shared/workspace-history.model");
-const { Workspace } = require("../../shared/workspace.model");
+const { readFile, writeFile } = require("../file-system");
+const { WorkspaceHistory } = require("../../shared/models/workspace-history.model");
+const { existsSync } = require("fs");
+const { Workspace } = require("../../shared/models/workspace.model");
 const { List } = require("immutable");
 const { join } = require("path");
+const { Either } = require("../../shared/monads/either.monad");
 
 const HISTORY_FILE = "workspace.history.json";
 
-/**
- * 
- * @returns 
- */
 function _getDestinationFilePath() {
   return join(__dirname, HISTORY_FILE);
 }
 
-/**
- * 
- * @param {*} data 
- * @param {*} path 
- * @returns 
- */
-function _saveData(data, path = _getDestinationFilePath()) {
+function _parseData(json) {
   try {
-    writeFileSync(path, JSON.stringify(data));
-  } catch (err) {
-    console.error("Error while saving recent workspaces:", err);
+    return Either.Right(JSON.parse(json));
+  } catch (error) {
+    return Either.Left(error);
   }
-
-  return data;
 }
 
-/**
- * 
- * @returns 
- */
+function _rawToDataMapper({ workspaces, lastOpened }) {
+  return  WorkspaceHistory({ 
+    workspaces: List(workspaces.map((workspace) => Workspace(workspace))), 
+    lastOpened: Workspace(lastOpened) 
+  })
+}
+
 function _loadData() {
   const filePath = _getDestinationFilePath();
 
-  try {
-    if (existsSync(filePath)) {
-      const jsonData = readFileSync(filePath, "utf-8");
-      const { workspaces, lastOpened } = JSON.parse(jsonData);
+  return existsSync(filePath)
+    ? readFile(filePath)
+        .map(output => output.chain(_parseData).fold(() => _saveData(WorkspaceHistory()).run(), (data) => data))
+        .map(_rawToDataMapper)
+    : writeFile(filePath, WorkspaceHistory())
+        .map((result) => result.fold((error) => error, (data) => data));
+}
 
-      return WorkspaceHistory({
-        workspaces: List(workspaces.map((workspace) => Workspace(workspace))),
-        lastOpened: Workspace(lastOpened),
-      });
-    }
-
-    return _saveData(WorkspaceHistory());
-  } catch (err) {
-    console.error("Error while loading recent workspaces:", err);
-  }
+function _saveData(data) {
+  return writeFile(_getDestinationFilePath(), data).map((result) =>
+    result.fold((error) => error, (content) => content)
+  );
 }
 
 module.exports = { _saveData, _loadData };
