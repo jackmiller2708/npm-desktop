@@ -1,0 +1,15 @@
+<ng-container *ngIf="target && dataSource">
+  <ng-template connected-overlay [cdkConnectedOverlayOrigin]="target" [cdkConnectedOverlayOpen]="isShown" [cdkConnectedOverlayPositions]="dropdownPositions" (attach)="onAttach()" (overlayOutsideClick)="shownChange.emit(false)">
+    <ul class="bg-white shadow-md shadow-black rounded-md overflow-hidden">
+      <li *ngFor="let item of dataSource">
+        <div class="py-2 px-4 cursor-pointer hover:bg-slate-400" [ngClass]="item.classNames" (click)="onItemClick(item.onClick)" *ngIf="!item.separator; else separator">
+          <app-icon *ngIf="item.iconPath" [path]="item.iconPath"></app-icon>
+          <app-text [content]="item.content" type="paragraph"></app-text>
+        </div>
+        <ng-template #separator>
+          <div class="border-b w-full"></div>
+        </ng-template>
+      </li>
+    </ul>
+  </ng-template>
+</ng-container>
