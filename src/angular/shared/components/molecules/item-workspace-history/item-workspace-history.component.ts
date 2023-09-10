@@ -1,21 +1,28 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { TextComponent } from '../../atoms/text/text.component';
+import { IconComponent } from '../../atoms/icon/icon.component';
 import { CommonModule } from '@angular/common';
 import { Workspace } from 'src/angular/shared/models/workspace.model';
-import { TextComponent } from '../../atoms/text/text.component';
 
 @Component({
   selector: 'app-item-workspace-history',
   standalone: true,
-  imports: [CommonModule, TextComponent],
+  imports: [CommonModule, TextComponent, IconComponent],
   templateUrl: './item-workspace-history.component.html',
   styleUrls: ['./item-workspace-history.component.scss'],
 })
 export class ItemWorkspaceHistoryComponent {
-  @Input() dataSource: Workspace | undefined;
+  private _editEnabled: boolean;
 
+  @Input() dataSource: Workspace | undefined;
   @Output() selected: EventEmitter<Workspace>;
 
+  get editEnabled(): boolean {
+    return this._editEnabled;
+  }
+
   constructor() {
+    this._editEnabled = false;
     this.selected = new EventEmitter();
   }
 

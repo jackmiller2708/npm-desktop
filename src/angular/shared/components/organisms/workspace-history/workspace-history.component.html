@@ -1,12 +1,9 @@
-<div>
-  <div>
-    <app-text content="Workspaces" type="heading-1" className="title text-2xl font-semibold"></app-text>
-  </div>
-  <div class="flex">
-    <app-button content="Open new workspace..." (onClick)="onOpenWorkspaceBtnClick()"></app-button>
-  </div>
+<div class="flex flex-col gap-2">
+  <app-text content="Workspaces" type="heading-1" className="title text-2xl font-semibold"></app-text>
+  <app-button content="Open new workspace..." (onClick)="onOpenWorkspaceBtnClick()"></app-button>
 </div>
-<div>
+
+<div class="flex flex-col gap-1 flex-1">
   <app-item-workspace-history 
     *ngFor="let workspace of workspaces" 
     [dataSource]="workspace"

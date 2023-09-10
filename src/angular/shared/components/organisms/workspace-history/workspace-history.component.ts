@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject, Subscription, map, takeUntil } from 'rxjs';
 import { ItemWorkspaceHistoryComponent } from '../../molecules/item-workspace-history/item-workspace-history.component';
 import { InterProcessCommunicator } from 'src/angular/shared/services/IPC/inter-process-communicator.service';
@@ -21,6 +21,11 @@ import { List } from 'immutable';
 export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
   private readonly _ngDestroy$: Subject<void>;
   private _workspaces: List<Workspace>;
+
+  @HostBinding('class')
+  private get _classes(): string[] {
+    return ['flex', 'flex-col', 'gap-4']
+  }
 
   get workspaces(): List<Workspace> {
     return this._workspaces;
