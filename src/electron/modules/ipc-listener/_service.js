@@ -1,4 +1,4 @@
-const { isWorkspaceValid } = require("../workspace");
+const { isWorkspaceValid } = require("../workspace/_service");
 const { Either } = require("../../shared/monads/either.monad");
 const { IO } = require("../../shared/monads/io.monad");
 
