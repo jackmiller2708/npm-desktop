@@ -1,6 +1,6 @@
 const { getHistory, addToHistory, setLastOpened } = require("../workspace-history");
+const { validatePathThenAct, ipcReqParser } = require("./_service");
 const { ipcMain, dialog, BrowserWindow } = require("electron")
-const { validatePathThenUpdateHistory: validatePathThenAct } = require("./_service");
 const { Workspace } = require("../../shared/models/workspace.model");
 const { basename } = require("path");
 
@@ -9,7 +9,7 @@ const { basename } = require("path");
  * @param {BrowserWindow} window
  */
 function initIPCListeners(window) {
-  const _IPC = _ipcReqParser(ipcMain);
+  const _IPC = ipcReqParser(ipcMain);
 
   _IPC.on("load-workspace-history", () => {
     getHistory().fold(_emitError, (data) => _emitEvent("workspace-history-loaded", data));
@@ -28,13 +28,6 @@ function initIPCListeners(window) {
   // ============================================================================================
   // ============================================================================================
   // ============================================================================================
-  function _ipcReqParser (ipc) {
-    return {
-      on: (eventName, fn) =>
-        ipc.on(eventName, (_, data) => fn(data ? JSON.parse(data) : data)),
-    };
-  }
-
   async function _openWorkspaceSelectDialog() {
     const result = await dialog.showOpenDialog(window, { properties: ["openDirectory"] });
     

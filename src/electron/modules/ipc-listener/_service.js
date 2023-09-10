@@ -2,7 +2,7 @@ const { isWorkspaceValid } = require("../workspace/_service");
 const { Either } = require("../../shared/monads/either.monad");
 const { IO } = require("../../shared/monads/io.monad");
 
-function validatePathThenUpdateHistory(path, updateFn) {
+function validatePathThenAct(path, updateFn) {
   return IO(() =>
     !isWorkspaceValid(path)
       ? Either.Left(new Error("Invalid Workspace!"))
@@ -10,4 +10,11 @@ function validatePathThenUpdateHistory(path, updateFn) {
   ).run();
 }
 
-module.exports = { validatePathThenUpdateHistory }
+function ipcReqParser(ipc) {
+  return {
+    on: (eventName, fn) =>
+      ipc.on(eventName, (_, data) => fn(data ? JSON.parse(data) : data)),
+  };
+}
+
+module.exports = { validatePathThenAct, ipcReqParser };
