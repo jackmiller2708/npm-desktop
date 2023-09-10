@@ -9,18 +9,18 @@ const { basename } = require("path");
  * @param {BrowserWindow} window
  */
 function initIPCListeners(window) {
-  ipcMain.on("load-workspace-history", () => {
+  const _IPC = _ipcReqParser(ipcMain);
+
+  _IPC.on("load-workspace-history", () => {
     getHistory().fold(_emitError, (data) => _emitEvent("workspace-history-loaded", data));
   });
 
-  ipcMain.on("open-workspace", async (_, workspace) => {
-    if (workspace) {
-      return void setLastOpened(Workspace(workspace)).fold(_emitError, (data) =>
-        _emitEvent("workspace-history-loaded", data)
-      );
-    }
+  _IPC.on("open-workspace", async (workspace) => {
+    const input = workspace
+      ? setLastOpened(Workspace(workspace))
+      : await _openWorkspaceSelectDialog();
 
-    (await _openWorkspaceSelectDialog())?.fold(_emitError, (data) =>
+    return void input?.fold(_emitError, (data) =>
       _emitEvent("workspace-history-loaded", data)
     );
   });
@@ -28,6 +28,13 @@ function initIPCListeners(window) {
   // ============================================================================================
   // ============================================================================================
   // ============================================================================================
+  function _ipcReqParser (ipc) {
+    return {
+      on: (eventName, fn) =>
+        ipc.on(eventName, (_, data) => fn(data ? JSON.parse(data) : data)),
+    };
+  }
+
   async function _openWorkspaceSelectDialog() {
     const result = await dialog.showOpenDialog(window, { properties: ["openDirectory"] });
     
