@@ -1,6 +1,6 @@
+import { Observable, Subscriber } from 'rxjs';
 import { ipcRenderer } from 'electron';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class InterProcessCommunicator {
@@ -15,12 +15,12 @@ export class InterProcessCommunicator {
   }
 
   on<T = unknown>(eventName: string): Observable<T> {
-    return new Observable<T>((subscriber) => {
-      const listener = (_: any, message: string) => subscriber.next(JSON.parse(message));
+    return new Observable<T>((subscriber: Subscriber<T>): () => void => {
+      const listener = (_: any, message: string) => subscriber.next(message ? JSON.parse(message) : message);
 
       this._ipcRenderer?.on(eventName, listener);
 
-      return () => this._ipcRenderer?.off(eventName, listener);
+      return (): void => void this._ipcRenderer?.off(eventName, listener);
     });
   }
 }
