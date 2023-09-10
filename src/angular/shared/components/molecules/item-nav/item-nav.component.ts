@@ -6,13 +6,13 @@ import { RouterModule } from '@angular/router';
 import { NavItem } from './models/nav-item.model';
 
 @Component({
-  selector: 'app-nav-item',
+  selector: 'app-item-nav',
   standalone: true,
   imports: [CommonModule, RouterModule, IconComponent, TextComponent],
-  templateUrl: './nav-item.component.html',
-  styleUrls: ['./nav-item.component.scss'],
+  templateUrl: './item-nav.component.html',
+  styleUrls: ['./item-nav.component.scss'],
 })
-export class NavItemComponent {
+export class ItemNavComponent {
   @Input() content: TemplateRef<any> | undefined;
   @Input() item: NavItem | undefined;
   @Input() className: string;

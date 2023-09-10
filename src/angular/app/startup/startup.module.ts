@@ -1,7 +1,7 @@
 import { GitWorkspaceHistoryComponent } from './../../shared/components/organisms/git-workspace-history/git-workspace-history.component';
 import { WorkspaceHistoryComponent } from 'src/angular/shared/components/organisms/workspace-history/workspace-history.component';
-import { VerticalNavComponent } from 'src/angular/shared/components/molecules/vertical-nav/vertical-nav.component';
 import { StartupRoutingModule } from './startup-routing.module';
+import { NavVerticalComponent } from 'src/angular/shared/components/molecules/nav-vertical/nav-vertical.component';
 import { StartupComponent } from './startup.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -11,7 +11,7 @@ import { NgModule } from '@angular/core';
   imports: [
     CommonModule,
     StartupRoutingModule,
-    VerticalNavComponent,
+    NavVerticalComponent,
     WorkspaceHistoryComponent,
     GitWorkspaceHistoryComponent,
   ],

@@ -1,18 +1,18 @@
 import { Component, HostBinding, Input } from '@angular/core';
-import { NavItemComponent } from '../nav-item/nav-item.component';
+import { ItemNavComponent } from '../item-nav/item-nav.component';
 import { IconComponent } from '../../atoms/icon/icon.component';
 import { TextComponent } from '../../atoms/text/text.component';
 import { CommonModule } from '@angular/common';
-import { NavItem } from '../nav-item/models/nav-item.model';
+import { NavItem } from '../item-nav/models/nav-item.model';
 
 @Component({
-  selector: 'app-vertical-nav',
+  selector: 'app-nav-vertical',
   standalone: true,
-  imports: [CommonModule, NavItemComponent, IconComponent, TextComponent],
-  templateUrl: './vertical-nav.component.html',
-  styleUrls: ['./vertical-nav.component.scss'],
+  imports: [CommonModule, ItemNavComponent, IconComponent, TextComponent],
+  templateUrl: './nav-vertical.component.html',
+  styleUrls: ['./nav-vertical.component.scss'],
 })
-export class VerticalNavComponent {
+export class NavVerticalComponent {
   @Input() dataSource: NavItem[];
   @Input() className: string;
 

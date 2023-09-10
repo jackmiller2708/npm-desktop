@@ -1,5 +1,5 @@
 import { Component, HostBinding } from '@angular/core';
-import { NavItem } from 'src/angular/shared/components/molecules/nav-item/models/nav-item.model';
+import { NavItem } from 'src/angular/shared/components/molecules/item-nav/models/nav-item.model';
 
 @Component({
   selector: 'app-startup',
