@@ -1,6 +1,6 @@
 const { getHistory, addToHistory, setLastOpened } = require("../workspace-history");
 const { ipcMain, dialog, BrowserWindow } = require("electron")
-const { validatePathThenUpdateHistory } = require("./_service");
+const { validatePathThenUpdateHistory: validatePathThenAct } = require("./_service");
 const { Workspace } = require("../../shared/models/workspace.model");
 const { basename } = require("path");
 
@@ -21,9 +21,9 @@ function initIPCListeners(window) {
     
     if (!result.canceled && result.filePaths.length > 0) {
       const workspacePath = result.filePaths[0];
-      const updateFn = () => addToHistory(Workspace({ path: workspacePath, name: basename(workspacePath), timestamp: Date.now() }));
+      const action = () => addToHistory(Workspace({ path: workspacePath, name: basename(workspacePath), timestamp: Date.now() }));
 
-      validatePathThenUpdateHistory(workspacePath, updateFn).fold(
+      validatePathThenAct(workspacePath, action).fold(
         (error) => error,
         (data) => window.webContents.send("workspace-history-loaded", JSON.stringify(data))
       );
