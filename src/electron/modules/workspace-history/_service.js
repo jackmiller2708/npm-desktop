@@ -71,14 +71,9 @@ function _unsetLastOpened(history) {
 }
 
 function _updateAndPersistHistory(updaterFn) {
-  return _loadData().map(updaterFn).chain(_saveData).run();
+  return _loadData()
+    .map(output => output.chain(updaterFn).chain(updatedData => _saveData(updatedData).run()))
+    .run();
 }
 
-module.exports = {
-  _isValidWorkspace,
-  _updateAndPersistHistory,
-  _addToHistory,
-  _updateFromHistory,
-  _setLastOpened,
-  _unsetLastOpened,
-};
+module.exports = { _isValidWorkspace, _updateAndPersistHistory, _addToHistory, _updateFromHistory, _setLastOpened, _unsetLastOpened };
