@@ -44,7 +44,7 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
   }
 
   onWorkspaceSelected(workspace: Workspace): void {
-    this._IPC.send('load-workspace', JSON.stringify(workspace));
+    this._IPC.send('open-workspace', JSON.stringify(workspace));
   }
 
   onOpenWorkspaceBtnClick(): void {

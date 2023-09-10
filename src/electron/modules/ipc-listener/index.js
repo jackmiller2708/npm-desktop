@@ -10,32 +10,42 @@ const { basename } = require("path");
  */
 function initIPCListeners(window) {
   ipcMain.on("load-workspace-history", () => {
-    getHistory().fold(
-      (error) => error,
-      (output) => window.webContents.send("workspace-history-loaded", JSON.stringify(output))
+    getHistory().fold(_emitError, (data) => _emitEvent("workspace-history-loaded", data));
+  });
+
+  ipcMain.on("open-workspace", async (_, workspace) => {
+    if (workspace) {
+      return void setLastOpened(Workspace(workspace)).fold(_emitError, (data) =>
+        _emitEvent("workspace-history-loaded", data)
+      );
+    }
+
+    (await _openWorkspaceSelectDialog())?.fold(_emitError, (data) =>
+      _emitEvent("workspace-history-loaded", data)
     );
   });
 
-  ipcMain.on("open-workspace", async () => {
+  // ============================================================================================
+  // ============================================================================================
+  // ============================================================================================
+  async function _openWorkspaceSelectDialog() {
     const result = await dialog.showOpenDialog(window, { properties: ["openDirectory"] });
     
     if (!result.canceled && result.filePaths.length > 0) {
       const workspacePath = result.filePaths[0];
       const action = () => addToHistory(Workspace({ path: workspacePath, name: basename(workspacePath), timestamp: Date.now() }));
 
-      validatePathThenAct(workspacePath, action).fold(
-        (error) => error,
-        (data) => window.webContents.send("workspace-history-loaded", JSON.stringify(data))
-      );
+      return validatePathThenAct(workspacePath, action);
     }
-  });
+  }
 
-  ipcMain.on("load-workspace", (_, workspace) => {
-    setLastOpened(Workspace(workspace)).fold(
-      (error) => error,
-      (data) => window.webContents.send("workspace-history-loaded", JSON.stringify(data))
-    );
-  });
+  function _emitError(error) {
+    _emitEvent('system-error', { code: error.code ?? 500, message: error.message, type: 'error' });
+  }
+
+  function _emitEvent(eventName, data) {
+    window.webContents.send(eventName, JSON.stringify(data));
+  }
 }
 
 module.exports = { initIPCListeners };
