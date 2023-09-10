@@ -1,1 +1,6 @@
-<p>workspace-history-item works!</p>
+<div *ngIf="dataSource" class="border border-black">
+  <div>
+    <app-text [content]="dataSource.name" type="paragraph" className="font-semibold text-lg cursor-pointer"(onClick)="onSelectedTriggered()"></app-text>
+    <app-text [content]="dataSource.path" type="paragraph" className="text-sm"></app-text>
+  </div>
+</div>

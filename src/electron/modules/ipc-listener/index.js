@@ -1,5 +1,5 @@
 const { BrowserWindow, ipcMain, dialog } = require("electron");
-const { getHistory, addToHistory } = require("../workspace-history");
+const { getHistory, addToHistory, setLastOpened } = require("../workspace-history");
 const { isWorkspaceValid } = require("../workspace");
 const { Workspace } = require("../../shared/models/workspace.model");
 const { basename } = require("path");
@@ -22,9 +22,7 @@ function initIPCListeners(window) {
   });
 
   ipcMain.on("open-workspace", async () => {
-    const result = await dialog.showOpenDialog(window, {
-      properties: ["openDirectory"],
-    });
+    const result = await dialog.showOpenDialog(window, { properties: ["openDirectory"] });
 
     if (!result.canceled && result.filePaths.length > 0) {
       const folderPath = result.filePaths[0];
@@ -35,17 +33,18 @@ function initIPCListeners(window) {
           : Either.Right(addToHistory(Workspace({ path: folderPath, name: basename(folderPath), timestamp: Date.now() })))
       );
 
-      const output = input.run().fold(
+      input.run().fold(
         (error) => error,
-        (data) => data
+        (data) => window.webContents.send("workspace-history-loaded", JSON.stringify(data))
       );
-
-      if (output instanceof Error) {
-        return;
-      }
-
-      window.webContents.send("workspace-history-loaded", JSON.stringify(output));
     }
+  });
+
+  ipcMain.on("load-workspace", (_, workspace) => {
+    setLastOpened(Workspace(workspace)).fold(
+      (error) => error,
+      (data) => window.webContents.send("workspace-history-loaded", JSON.stringify(data))
+    );
   });
 }
 

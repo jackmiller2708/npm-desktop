@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject, Subscription, map, takeUntil } from 'rxjs';
+import { ItemWorkspaceHistoryComponent } from '../../molecules/item-workspace-history/item-workspace-history.component';
 import { InterProcessCommunicator } from 'src/angular/shared/services/IPC/inter-process-communicator.service';
 import { IWorkspaceHistoryDTO } from 'src/angular/shared/interfaces/workspace-history-dto.interface';
 import { WorkspaceHistory } from 'src/angular/shared/models/workspace-history.model';
@@ -12,7 +13,7 @@ import { List } from 'immutable';
 @Component({
   selector: 'app-workspace-history',
   standalone: true,
-  imports: [CommonModule, TextComponent, ButtonComponent],
+  imports: [CommonModule, TextComponent, ButtonComponent, ItemWorkspaceHistoryComponent],
   templateUrl: './workspace-history.component.html',
   styleUrls: ['./workspace-history.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,6 +41,10 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._ngDestroy$.next();
+  }
+
+  onWorkspaceSelected(workspace: Workspace): void {
+    this._IPC.send('load-workspace', JSON.stringify(workspace));
   }
 
   onOpenWorkspaceBtnClick(): void {
