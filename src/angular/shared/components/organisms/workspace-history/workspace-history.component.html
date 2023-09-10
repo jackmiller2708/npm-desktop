@@ -1,12 +1,30 @@
-<div class="flex flex-col gap-2">
-  <app-text content="Workspaces" type="heading-1" className="title text-2xl font-semibold"></app-text>
-  <app-button content="Open new workspace..." (onClick)="onOpenWorkspaceBtnClick()"></app-button>
-</div>
-
-<div class="flex flex-col gap-1 flex-1">
-  <app-item-workspace-history 
-    *ngFor="let workspace of workspaces" 
-    [dataSource]="workspace"
-    (selected)="onWorkspaceSelected($event)"
-  ></app-item-workspace-history>
-</div>
+<ng-container *ngIf="isReady">
+  <ng-container *ngIf="isNoPreviouslyOpenedWorkspace; else previouslyOpened">
+    <div class="flex flex-col gap-2">
+      <div>
+        <app-text content="No recent workspaces" type="heading-1" className="title text-2xl font-semibold"></app-text>
+        <app-text content="Open folder or checkout remote repository." type="paragraph" className="text-slate-600"></app-text>
+      </div>
+      <app-button (onClick)="onOpenWorkspaceBtnClick()" [contentTemplate]="openWorkspaceBtn">
+        <ng-template #openWorkspaceBtn>
+          Open... <span class="text-slate-500">Ctrl + N</span>
+        </ng-template>
+      </app-button>
+    </div>
+  </ng-container>
+  
+  <ng-template #previouslyOpened>
+    <div class="flex flex-col gap-2">
+      <app-text content="Workspaces" type="heading-1" className="title text-2xl font-semibold"></app-text>
+      <app-button content="Open new workspace..." (onClick)="onOpenWorkspaceBtnClick()"></app-button>
+    </div>
+    
+    <div class="flex flex-col gap-1 flex-1">
+      <app-item-workspace-history 
+        *ngFor="let workspace of workspaces" 
+        [dataSource]="workspace"
+        (selected)="onWorkspaceSelected($event)"
+      ></app-item-workspace-history>
+    </div>
+  </ng-template>
+</ng-container>

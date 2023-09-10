@@ -21,6 +21,7 @@ import { List } from 'immutable';
 export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
   private readonly _ngDestroy$: Subject<void>;
   private _workspaces: List<Workspace>;
+  private _isReady: boolean;
 
   @HostBinding('class')
   private get _classes(): string[] {
@@ -31,12 +32,21 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
     return this._workspaces;
   }
 
+  get isNoPreviouslyOpenedWorkspace(): boolean {
+    return this._workspaces.size === 0;
+  }
+
+  get isReady(): boolean {
+    return this._isReady;
+  }
+
   constructor(
     private readonly _IPC: InterProcessCommunicator,
     private readonly _CDR: ChangeDetectorRef
   ) {
     this._ngDestroy$ = new Subject();
     this._workspaces = List();
+    this._isReady = false;
   }
 
   ngOnInit(): void {
@@ -62,6 +72,7 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
     // }
 
     this._workspaces = data.workspaces;
+    this._isReady = true;
     this._CDR.detectChanges();
   }
 
