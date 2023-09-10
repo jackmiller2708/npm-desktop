@@ -48,6 +48,7 @@ export class MenuDropdownComponent {
     this._isShown = false;
     this._dropdownPosition = [
       { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top' },
+      { originX: 'end', originY: 'top', overlayX: 'end', overlayY: 'bottom' },
     ];
   }
 

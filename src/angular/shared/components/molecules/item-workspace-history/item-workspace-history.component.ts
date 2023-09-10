@@ -33,10 +33,11 @@ export class ItemWorkspaceHistoryComponent {
       new MenuItem({ separator: true }),
       new MenuItem({
         content: 'Rename...',
+        onClick: this._enableEditMode.bind(this)
       }),
       new MenuItem({
         content: 'Remove from Recents...',
-        className: 'font-medium text-red-500 hover:!bg-red-200'
+        className: 'font-medium text-red-500 hover:!bg-red-100'
       }),
     ]);
   }
@@ -72,8 +73,12 @@ export class ItemWorkspaceHistoryComponent {
 
   onDropdownBtnClick(): void {
     if (!this._dropdownShown) {
-      this._dropdownShown = true;
-      this._CDR.detectChanges();
+      this.isDropdownShown = true;
     }
+  }
+
+  private _enableEditMode(): void {
+    this._editEnabled = true;
+    this._CDR.detectChanges();
   }
 }
