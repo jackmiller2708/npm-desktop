@@ -18,10 +18,22 @@ export class EitherMonad<L, R> implements IEitherMonad<L, R> {
   }
 
   fold<T>(onLeft: (e: L) => T, onRight: (a: R) => T): T {
-    return this.isRight() ? onRight(this._value as R) : onLeft(this._value as L);
+    return this.isRight()
+      ? onRight(this._value as R)
+      : onLeft(this._value as L);
   }
 
   isRight(): boolean {
     return this._value !== undefined;
   }
+}
+
+// Helper function to create a Right value
+export function right<E, A>(value: A): EitherMonad<E, A> {
+  return new EitherMonad<E, A>(value);
+}
+
+// Helper function to create a Left value
+export function left<E, A>(error: E): EitherMonad<E, A> {
+  return new EitherMonad<E, A>(error);
 }

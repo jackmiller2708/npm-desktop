@@ -1,5 +1,6 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MenuDropdownComponent } from '../menu-dropdown/menu-dropdown.component';
+import { WorkspaceHistoryItem } from './models/workspace-history-item.model';
 import { TextComponent } from '../../atoms/text/text.component';
 import { IconComponent } from '../../atoms/icon/icon.component';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -15,56 +16,70 @@ import { List } from 'immutable';
   templateUrl: './item-workspace-history.component.html',
   styleUrls: ['./item-workspace-history.component.scss'],
 })
-export class ItemWorkspaceHistoryComponent {
-  private _editEnabled: boolean;
-  private _dropdownShown: boolean;
-  private _dropdownMenuItems: List<MenuItem>
+export class ItemWorkspaceHistoryComponent implements AfterViewInit {
+  private _states: WorkspaceHistoryItem;
+  private _isReady: boolean;
 
-  @Input() dataSource: Workspace | undefined;
+  @ViewChild('inputEl')
+  private readonly _input!: ElementRef<HTMLInputElement>;
 
-  private get _menuItems(): List<MenuItem> {
-    return List([
-      new MenuItem({
-        content: 'Show in Explorer',
-      }),
-      new MenuItem({
-        content: 'Copy path',
-      }),
-      new MenuItem({ separator: true }),
-      new MenuItem({
-        content: 'Rename...',
-        onClick: this._enableEditMode.bind(this)
-      }),
-      new MenuItem({
-        content: 'Remove from Recents...',
-        className: 'font-medium text-red-500 hover:!bg-red-100'
-      }),
-    ]);
+  @Input()
+  set state(value: WorkspaceHistoryItem | undefined) {
+    this._states = value ?? this._states;
   }
 
-  get editEnabled(): boolean {
-    return this._editEnabled;
+  @Input()
+  set dataSource(value: Workspace | undefined) {
+    this._detectChangesAndEmitState(
+      this._states,
+      (this._states = this._states.set('dataSource', value))
+    );
   }
 
-  get isDropdownShown(): boolean {
-    return this._dropdownShown;
+  get dataSource(): Workspace | undefined {
+    return this._states.dataSource;
   }
 
-  set isDropdownShown(value: boolean) {
-    this._dropdownShown = value;
-    this._CDR.detectChanges();
+  get isEditing(): boolean {
+    return this._states.isEditing;
+  }
+
+  get isMenuShown(): boolean {
+    return this._states.isMenuShown;
+  }
+
+  set isMenuShown(value: boolean) {
+    this._detectChangesAndEmitState(
+      this._states,
+      (this._states = this._states.set('isMenuShown', value))
+    );
   }
 
   get menuItems(): List<MenuItem> {
-    return this._dropdownMenuItems;
+    return this._states.menuItems;
   }
 
-  @Output() selected: EventEmitter<Workspace>;
+  @Output()
+  ready: EventEmitter<WorkspaceHistoryItem>;
+
+  @Output()
+  selected: EventEmitter<Workspace>;
+
+  @Output()
+  stateChanged: EventEmitter<{ oldState: WorkspaceHistoryItem; currentState: WorkspaceHistoryItem; }>;
 
   constructor(private readonly _CDR: ChangeDetectorRef) {
-    this._editEnabled = this._dropdownShown = false;
-    this._dropdownMenuItems = this._menuItems;
+    this._states = this._init();
+    this._isReady = false;
+
+    this.ready = new EventEmitter();
     this.selected = new EventEmitter();
+    this.stateChanged = new EventEmitter();
+  }
+
+  ngAfterViewInit(): void {
+    this._isReady = true;
+    this.ready.emit(this._states);
   }
 
   onSelectedTriggered(): void {
@@ -72,13 +87,49 @@ export class ItemWorkspaceHistoryComponent {
   }
 
   onDropdownBtnClick(): void {
-    if (!this._dropdownShown) {
-      this.isDropdownShown = true;
+    if (!this._states.isMenuShown) {
+      this._detectChangesAndEmitState(
+        this._states,
+        (this._states = this._states.set('isMenuShown', true))
+      );
     }
   }
 
   private _enableEditMode(): void {
-    this._editEnabled = true;
+    this._detectChangesAndEmitState(
+      this._states,
+      (this._states = this._states.set('isEditing', true))
+    );
+    this._input.nativeElement.focus();
+  }
+
+  private _detectChangesAndEmitState(oldState: WorkspaceHistoryItem, currentState: WorkspaceHistoryItem): void {
+    if (this._isReady && oldState !== currentState) {
+      this.stateChanged.emit({ oldState, currentState });
+    }
+
     this._CDR.detectChanges();
+  }
+
+  private _init(): WorkspaceHistoryItem {
+    return new WorkspaceHistoryItem({
+      menuItems: List([
+        new MenuItem({
+          content: 'Show in Explorer',
+        }),
+        new MenuItem({
+          content: 'Copy path',
+        }),
+        new MenuItem({ separator: true }),
+        new MenuItem({
+          content: 'Rename...',
+          onClick: this._enableEditMode.bind(this),
+        }),
+        new MenuItem({
+          content: 'Remove from Recents...',
+          className: 'font-medium text-red-500 hover:!bg-red-100',
+        }),
+      ]),
+    });
   }
 }
