@@ -1,7 +1,9 @@
-import { List, Record } from "immutable";
-import { IWorkspaceHistory } from "../interfaces/workspace-history.interface";
+import { IWorkspaceHistory } from '../interfaces/workspace-history.interface';
+import { List, Record } from 'immutable';
 
-export class WorkspaceHistory extends Record<IWorkspaceHistory>({
+const defaultValues: IWorkspaceHistory = {
   workspaces: List(),
-  lastOpened: undefined
-}) {}
+  lastOpened: undefined,
+};
+
+export class WorkspaceHistory extends Record<IWorkspaceHistory>(defaultValues) {}
