@@ -6,6 +6,7 @@ import { WorkspaceHistoryItem } from './models/workspace-history-item.model';
 import { TextComponent } from '../../atoms/text/text.component';
 import { IconComponent } from '../../atoms/icon/icon.component';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { StateUpdateFn } from 'src/angular/shared/services/state/interfaces/state-changes.interface';
 import { StateService } from 'src/angular/shared/services/state/state.service';
 import { CommonModule } from '@angular/common';
 import { Workspace } from 'src/angular/shared/models/workspace.model';
@@ -33,8 +34,7 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
 
   @Input()
   set dataSource(value: Workspace | undefined) {
-    this._states = this._updateStateAndEmitChanges(this._states, 'dataSource', () => value);
-    this._CDR.detectChanges();
+    this._applyUpdatesAndDetectChanges('dataSource', () => value);
   }
 
   get dataSource(): Workspace | undefined {
@@ -50,8 +50,8 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
   }
 
   set isMenuShown(value: boolean) {
-    this._states = this._updateStateAndEmitChanges(this._states, 'isMenuShown', () => value);
-    this._CDR.detectChanges();
+    this._applyUpdatesAndDetectChanges('isMenuShown', () => value);
+
   }
 
   get menuItems(): List<MenuItem> {
@@ -90,19 +90,23 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
 
   onDropdownBtnClick(): void {
     if (!this._states.isMenuShown) {
-      this._states = this._updateStateAndEmitChanges(this._states, 'isMenuShown', () => true);
-      this._CDR.detectChanges();
+      this._applyUpdatesAndDetectChanges('isMenuShown', () => true);
     }
   }
 
   private _onRenameMenuOptionClick(): void {
-    this._states = this._updateStateAndEmitChanges(this._states, 'isEditing', () => true);
+    this._applyUpdatesAndDetectChanges('isEditing', () => true);
     this._input.nativeElement.focus();
+  }
+
+  private _applyUpdatesAndDetectChanges(key: keyof IWorkspaceHistoryItem, updater: StateUpdateFn<IWorkspaceHistoryItem>): void {
+    this._states = this._updateStateAndEmitChanges(this._states, key, updater);
     this._CDR.detectChanges();
   }
 
-  private _updateStateAndEmitChanges(states: WorkspaceHistoryItem, key: keyof IWorkspaceHistoryItem, updater: (value: IWorkspaceHistoryItem[keyof IWorkspaceHistoryItem]) => IWorkspaceHistoryItem[keyof IWorkspaceHistoryItem]): WorkspaceHistoryItem {    
-    const [newState] = this._stateService.updateState<IWorkspaceHistoryItem>(states, key, updater)
+  private _updateStateAndEmitChanges(states: WorkspaceHistoryItem, key: keyof IWorkspaceHistoryItem, updater: StateUpdateFn<IWorkspaceHistoryItem>): WorkspaceHistoryItem {
+    const [newState] = this._stateService
+      .updateState<IWorkspaceHistoryItem>(states, key, updater)
       .map(this._emitStateChanges.bind(this))
       .run();
 
@@ -111,7 +115,9 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
 
   private _emitStateChanges([oldState, currentState]: WorkspaceHistoryItem[]): WorkspaceHistoryItem {
     if (this._isReady && oldState !== currentState) {
-      this.stateChanged.emit(new WorkspaceHistoryItemStateChanges({ oldState, currentState }));
+      this.stateChanged.emit(
+        new WorkspaceHistoryItemStateChanges({ oldState, currentState })
+      );
     }
 
     return currentState;
