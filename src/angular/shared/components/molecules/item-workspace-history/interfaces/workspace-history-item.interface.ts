@@ -1,9 +1,9 @@
-import { List, RecordOf } from 'immutable';
-import { IWorkspace } from 'src/angular/shared/interfaces/workspace.interface';
+import { Workspace } from 'src/angular/shared/models/workspace.model';
 import { MenuItem } from '../../menu-dropdown/models/menu-item.model';
+import { List } from 'immutable';
 
 export interface IWorkspaceHistoryItem {
-  dataSource: RecordOf<IWorkspace> | undefined;
+  dataSource:Workspace | undefined;
   menuItems: List<MenuItem>;
   isEditing: boolean;
   isMenuShown: boolean;
