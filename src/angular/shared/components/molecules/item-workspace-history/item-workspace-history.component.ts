@@ -105,19 +105,17 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
   }
 
   private _updateStateAndEmitChanges(states: WorkspaceHistoryItem, key: keyof IWorkspaceHistoryItem, updater: StateUpdateFn<IWorkspaceHistoryItem>): WorkspaceHistoryItem {
-    const [newState] = this._stateService
+    const [currentState] = this._stateService
       .updateState<IWorkspaceHistoryItem>(states, key, updater)
       .map(this._emitStateChanges.bind(this))
       .run();
 
-    return newState;
+    return currentState;
   }
 
   private _emitStateChanges([oldState, currentState]: WorkspaceHistoryItem[]): WorkspaceHistoryItem {
     if (this._isReady && oldState !== currentState) {
-      this.stateChanged.emit(
-        new WorkspaceHistoryItemStateChanges({ oldState, currentState })
-      );
+      this.stateChanged.emit(new WorkspaceHistoryItemStateChanges({ oldState, currentState }));
     }
 
     return currentState;
