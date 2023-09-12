@@ -1,4 +1,4 @@
-const { _updateAndPersistHistory, _setLastOpened, _unsetLastOpened, _addToHistory, _updateFromHistory, _isValidWorkspace } = require("./_service");
+const { _updateAndPersistHistory, _setLastOpened, _unsetLastOpened, _addToHistory, _updateFromHistory, _isValidWorkspace, _removeFromHistory } = require("./_service");
 const { _loadData } = require("./_core");
 
 function getHistory() {
@@ -27,5 +27,10 @@ function updateFromHistory(workspace) {
   );
 }
 
+function removeFromHistory(workspace) {
+  return _isValidWorkspace(workspace).chain((result) =>
+    _updateAndPersistHistory((history) => _removeFromHistory(result, history))
+  );
+}
 
-module.exports = { getHistory, addToHistory, updateFromHistory, setLastOpened, unsetLastOpened };
+module.exports = { getHistory, addToHistory, updateFromHistory, removeFromHistory, setLastOpened, unsetLastOpened };

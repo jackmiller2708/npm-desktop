@@ -1,4 +1,4 @@
-const { getHistory, addToHistory, setLastOpened, updateFromHistory } = require("../workspace-history");
+const { getHistory, addToHistory, setLastOpened, updateFromHistory, removeFromHistory } = require("../workspace-history");
 const { validatePathThenAct, ipcReqParser } = require("./_service");
 const { ipcMain, dialog, BrowserWindow } = require("electron")
 const { Workspace } = require("../../shared/models/workspace.model");
@@ -26,6 +26,10 @@ function initIPCListeners(window) {
   _IPC.on("update-workspace", workspace => {
     updateFromHistory(Workspace(workspace))?.fold(_emitError, (data) => _emitEvent("workspace-history-loaded", data));
   });
+
+  _IPC.on("remove-workspace", workspace => {
+    removeFromHistory(Workspace(workspace))?.fold(_emitError, (data) => _emitEvent("workspace-history-loaded", data));
+  })
 
   // ============================================================================================
   // ============================================================================================

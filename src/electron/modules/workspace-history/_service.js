@@ -48,6 +48,26 @@ function _updateFromHistory(workspace, history) {
   return Either.Right(history.setIn(['workspaces', index, 'name'], workspace.name));
 }
 
+function _removeFromHistory(workspace, history) {
+  let index = 0;
+
+  while (index < history.workspaces.size) {
+    if (history.workspaces.get(index).path === workspace.path) {
+      break;
+    }
+
+    index++;
+  }
+  
+  if (index === history.workspaces.size) {
+    return Either.Left(new Error('Workspace does not exist'));
+  }
+
+  return Either.Right(
+    history.update("workspaces", (workspaces) => workspaces.remove(index))
+  );
+}
+
 function _setLastOpened(workspace, history) {
   let index = 0;
 
@@ -84,4 +104,12 @@ function _updateAndPersistHistory(updaterFn) {
     .run();
 }
 
-module.exports = { _isValidWorkspace, _updateAndPersistHistory, _addToHistory, _updateFromHistory, _setLastOpened, _unsetLastOpened };
+module.exports = {
+  _isValidWorkspace,
+  _updateAndPersistHistory,
+  _addToHistory,
+  _updateFromHistory,
+  _removeFromHistory,
+  _setLastOpened,
+  _unsetLastOpened,
+};

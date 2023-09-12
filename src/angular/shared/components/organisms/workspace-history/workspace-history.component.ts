@@ -81,6 +81,10 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
     this._CDR.detectChanges();
   }
 
+  onWorkspaceItemRemove(workspace: Workspace): void {
+    this._IPC.send('remove-workspace', JSON.stringify(workspace));
+  }
+
   onOpenWorkspaceBtnClick(): void {
     this._IPC.send('open-workspace');
   }

@@ -26,6 +26,7 @@
         [state]="getItemStateAt(i)"
         (selected)="onWorkspaceSelected($event)"
         (ready)="onWorkspaceItemReady($event)"
+        (remove)="onWorkspaceItemRemove($event)"
         (stateChanged)="onWorkspaceItemChanged($event)"
       ></app-item-workspace-history>
     </div>
