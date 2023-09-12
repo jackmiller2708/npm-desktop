@@ -3,6 +3,7 @@ import { WorkspaceHistoryItemStateChanges } from './models/workspace-history-ite
 import { MenuDropdownComponent } from '../menu-dropdown/menu-dropdown.component';
 import { IWorkspaceHistoryItem } from './interfaces/workspace-history-item.interface';
 import { WorkspaceHistoryItem } from './models/workspace-history-item.model';
+import { ProcessService } from 'src/angular/shared/services/process/process.service';
 import { TextComponent } from '../../atoms/text/text.component';
 import { IconComponent } from '../../atoms/icon/icon.component';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -64,16 +65,21 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
   selected: EventEmitter<Workspace>;
 
   @Output()
+  remove: EventEmitter<Workspace>;
+
+  @Output()
   stateChanged: EventEmitter<WorkspaceHistoryItemStateChanges>;
 
   constructor(
+    private readonly _processService: ProcessService,
+    private readonly _stateService: StateService,
     private readonly _CDR: ChangeDetectorRef,
-    private readonly _stateService: StateService
   ) {
     this._states = this._init();
     this._isReady = false;
 
     this.ready = new EventEmitter();
+    this.remove = new EventEmitter();
     this.selected = new EventEmitter();
     this.stateChanged = new EventEmitter();
   }
@@ -99,6 +105,22 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
   private _onRenameMenuOptionClick(): void {
     this._applyUpdatesAndDetectChanges('isEditing', () => true);
     this._input.nativeElement.focus();
+  }
+
+  private _onShowInExplrOPtionClick(): void {
+    this._processService
+      .execute('start', ['""', `"${this._states.dataSource?.path}"`], { shell: true })
+      .subscribe();
+  }
+
+  private _onCopyPathOptionClick(): void {
+    this._processService
+      .execute('echo|set', ['/p', '=', `"${this._states.dataSource?.path}"`, '|', 'clip'], { shell: true })
+      .subscribe();
+  }
+
+  private _onRemoveOptionClick(): void {
+    this.remove.emit(this._states.dataSource);
   }
   // ===========================================================
   // ===========================================================
@@ -149,9 +171,11 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
       menuItems: List([
         new MenuItem({
           content: 'Show in Explorer',
+          onClick: this._onShowInExplrOPtionClick.bind(this),
         }),
         new MenuItem({
           content: 'Copy path',
+          onClick: this._onCopyPathOptionClick.bind(this),
         }),
         new MenuItem({ separator: true }),
         new MenuItem({
@@ -161,6 +185,7 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
         new MenuItem({
           content: 'Remove from Recents...',
           className: 'font-medium text-red-500 hover:!bg-red-100',
+          onClick: this._onRemoveOptionClick.bind(this),
         }),
       ]),
     });
