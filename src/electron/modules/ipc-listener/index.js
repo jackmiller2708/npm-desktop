@@ -12,7 +12,9 @@ function initIPCListeners(window) {
   const _IPC = ipcReqParser(ipcMain);
 
   _IPC.on("load-workspace-history", () => {
-    getHistory().fold(_emitError, (data) => _emitEvent("workspace-history-loaded", data));
+    getHistory().fold(_emitError, (data) =>
+      _emitEvent("workspace-history-loaded", data)
+    );
   });
 
   _IPC.on("open-workspace", async (workspace) => {
@@ -20,15 +22,21 @@ function initIPCListeners(window) {
       ? setLastOpened(Workspace(workspace))
       : await _openWorkspaceSelectDialog();
 
-    input?.fold(_emitError, (data) => _emitEvent("workspace-history-loaded", data));
+    input?.fold(_emitError, (data) =>
+      _emitEvent("workspace-history-loaded", data)
+    );
   });
 
   _IPC.on("update-workspace", workspace => {
-    updateFromHistory(Workspace(workspace))?.fold(_emitError, (data) => _emitEvent("workspace-history-loaded", data));
+    updateFromHistory(Workspace(workspace))?.fold(_emitError, (data) =>
+      _emitEvent("workspace-history-loaded", data)
+    );
   });
 
   _IPC.on("remove-workspace", workspace => {
-    removeFromHistory(Workspace(workspace))?.fold(_emitError, (data) => _emitEvent("workspace-history-loaded", data));
+    removeFromHistory(Workspace(workspace))?.fold(_emitError, (data) =>
+      _emitEvent("workspace-history-loaded", data)
+    );
   })
 
   // ============================================================================================
