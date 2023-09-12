@@ -6,7 +6,7 @@ function validatePathThenAct(path, updateFn) {
   return IO(() =>
     !isWorkspaceValid(path)
       ? Either.Left(new Error("Invalid Workspace!"))
-      : Either.Right(updateFn())
+      : updateFn()
   ).run();
 }
 

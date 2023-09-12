@@ -41,6 +41,8 @@ function _updateFromHistory(workspace, history) {
     return Either.Left(new Error('Workspace does not exist'));
   }
 
+  console.log(index)
+
   if (history.lastOpened?.path === workspace.path) {
     history = history.setIn(['lastOpened', 'name'], workspace.name);
   }

@@ -6,25 +6,25 @@ function getHistory() {
 }
 
 function setLastOpened(workspace) {
-  return _isValidWorkspace(workspace)
-    .chain((result) => _updateAndPersistHistory((history) => _setLastOpened(result, history)))
+  return _isValidWorkspace(workspace).chain((result) =>
+    _updateAndPersistHistory((history) => _setLastOpened(result, history))
+  );
 }
 
 function unsetLastOpened() {
-  return _updateAndPersistHistory(history => _unsetLastOpened(history))
-    .fold((error) => error, (data) => data);
+  return _updateAndPersistHistory((history) => _unsetLastOpened(history));
 }
 
 function addToHistory(workspace) {
-  return _isValidWorkspace(workspace)
-    .chain((result) => _updateAndPersistHistory((history) => _addToHistory(result, history)))
-    .fold((error) => error, (data) => data);
+  return _isValidWorkspace(workspace).chain((result) =>
+    _updateAndPersistHistory((history) => _addToHistory(result, history))
+  );
 }
 
 function updateFromHistory(workspace) {
-  return _isValidWorkspace(workspace)
-    .chain((result) => _updateAndPersistHistory((history) => _updateFromHistory(result, history)))
-    .fold((error) => error, (data) => data);
+  return _isValidWorkspace(workspace).chain((result) =>
+    _updateAndPersistHistory((history) => _updateFromHistory(result, history))
+  );
 }
 
 
