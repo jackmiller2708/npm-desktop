@@ -63,7 +63,15 @@ function _setLastOpened(workspace, history) {
     return Either.Left(new Error('Workspace does not exist'));
   }
 
-  return Either.Right(history.set('lastOpened', history.workspaces.get(index)));
+  const temp = history.workspaces.get(index);
+
+  return Either.Right(
+    history
+      .set("lastOpened", temp)
+      .update("workspaces", (workspaces) =>
+        workspaces.remove(index).unshift(temp)
+      )
+  );
 }
 
 function _unsetLastOpened(history) {
