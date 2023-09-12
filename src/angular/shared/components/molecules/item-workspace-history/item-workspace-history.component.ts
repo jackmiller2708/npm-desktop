@@ -51,7 +51,6 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
 
   set isMenuShown(value: boolean) {
     this._applyUpdatesAndDetectChanges('isMenuShown', () => value);
-
   }
 
   get menuItems(): List<MenuItem> {
@@ -94,16 +93,31 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
     }
   }
 
+  //#region Private Event Handlers
+  // ===========================================================
+  // ===========================================================
   private _onRenameMenuOptionClick(): void {
     this._applyUpdatesAndDetectChanges('isEditing', () => true);
     this._input.nativeElement.focus();
   }
+  // ===========================================================
+  // ===========================================================
+  //#endregion
 
+  //#region Helper Methods
+  // ===========================================================
+  // ===========================================================
+  /**
+   * Applies changes to the local `_state` prop and triggers the change detection cycle.
+   */
   private _applyUpdatesAndDetectChanges(key: keyof IWorkspaceHistoryItem, updater: StateUpdateFn<IWorkspaceHistoryItem>): void {
     this._states = this._updateStateAndEmitChanges(this._states, key, updater);
     this._CDR.detectChanges();
   }
 
+  /**
+   * Updates state changes and emits state changes and return updated state.
+   */
   private _updateStateAndEmitChanges(states: WorkspaceHistoryItem, key: keyof IWorkspaceHistoryItem, updater: StateUpdateFn<IWorkspaceHistoryItem>): WorkspaceHistoryItem {
     const [currentState] = this._stateService
       .updateState<IWorkspaceHistoryItem>(states, key, updater)
@@ -113,6 +127,9 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
     return currentState;
   }
 
+  /**
+   * Emits state changes when the component is ready and return the current state.
+   */
   private _emitStateChanges([oldState, currentState]: WorkspaceHistoryItem[]): WorkspaceHistoryItem {
     if (this._isReady && oldState !== currentState) {
       this.stateChanged.emit(new WorkspaceHistoryItemStateChanges({ oldState, currentState }));
@@ -120,7 +137,13 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
 
     return currentState;
   }
+  // ===========================================================
+  // ===========================================================
+  //#endregion
 
+  /**
+   * Initializes the default state.
+   */
   private _init(): WorkspaceHistoryItem {
     return new WorkspaceHistoryItem({
       menuItems: List([
