@@ -1,9 +1,12 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { WorkspaceHistoryItemStateChanges } from './models/workspace-history-item.state-changes.model';
 import { MenuDropdownComponent } from '../menu-dropdown/menu-dropdown.component';
+import { IWorkspaceHistoryItem } from './interfaces/workspace-history-item.interface';
 import { WorkspaceHistoryItem } from './models/workspace-history-item.model';
 import { TextComponent } from '../../atoms/text/text.component';
 import { IconComponent } from '../../atoms/icon/icon.component';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { StateService } from 'src/angular/shared/services/state/state.service';
 import { CommonModule } from '@angular/common';
 import { Workspace } from 'src/angular/shared/models/workspace.model';
 import { MenuItem } from '../menu-dropdown/models/menu-item.model';
@@ -30,10 +33,8 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
 
   @Input()
   set dataSource(value: Workspace | undefined) {
-    this._detectChangesAndEmitState(
-      this._states,
-      (this._states = this._states.set('dataSource', value))
-    );
+    this._states = this._updateStateAndEmitChanges(this._states, 'dataSource', () => value);
+    this._CDR.detectChanges();
   }
 
   get dataSource(): Workspace | undefined {
@@ -49,10 +50,8 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
   }
 
   set isMenuShown(value: boolean) {
-    this._detectChangesAndEmitState(
-      this._states,
-      (this._states = this._states.set('isMenuShown', value))
-    );
+    this._states = this._updateStateAndEmitChanges(this._states, 'isMenuShown', () => value);
+    this._CDR.detectChanges();
   }
 
   get menuItems(): List<MenuItem> {
@@ -66,9 +65,12 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
   selected: EventEmitter<Workspace>;
 
   @Output()
-  stateChanged: EventEmitter<{ oldState: WorkspaceHistoryItem; currentState: WorkspaceHistoryItem; }>;
+  stateChanged: EventEmitter<WorkspaceHistoryItemStateChanges>;
 
-  constructor(private readonly _CDR: ChangeDetectorRef) {
+  constructor(
+    private readonly _CDR: ChangeDetectorRef,
+    private readonly _stateService: StateService
+  ) {
     this._states = this._init();
     this._isReady = false;
 
@@ -88,27 +90,31 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
 
   onDropdownBtnClick(): void {
     if (!this._states.isMenuShown) {
-      this._detectChangesAndEmitState(
-        this._states,
-        (this._states = this._states.set('isMenuShown', true))
-      );
+      this._states = this._updateStateAndEmitChanges(this._states, 'isMenuShown', () => true);
+      this._CDR.detectChanges();
     }
   }
 
-  private _enableEditMode(): void {
-    this._detectChangesAndEmitState(
-      this._states,
-      (this._states = this._states.set('isEditing', true))
-    );
+  private _onRenameMenuOptionClick(): void {
+    this._states = this._updateStateAndEmitChanges(this._states, 'isEditing', () => true);
     this._input.nativeElement.focus();
+    this._CDR.detectChanges();
   }
 
-  private _detectChangesAndEmitState(oldState: WorkspaceHistoryItem, currentState: WorkspaceHistoryItem): void {
+  private _updateStateAndEmitChanges(states: WorkspaceHistoryItem, key: keyof IWorkspaceHistoryItem, updater: (value: IWorkspaceHistoryItem[keyof IWorkspaceHistoryItem]) => IWorkspaceHistoryItem[keyof IWorkspaceHistoryItem]): WorkspaceHistoryItem {    
+    const [newState] = this._stateService.updateState<IWorkspaceHistoryItem>(states, key, updater)
+      .map(this._emitStateChanges.bind(this))
+      .run();
+
+    return newState;
+  }
+
+  private _emitStateChanges([oldState, currentState]: WorkspaceHistoryItem[]): WorkspaceHistoryItem {
     if (this._isReady && oldState !== currentState) {
-      this.stateChanged.emit({ oldState, currentState });
+      this.stateChanged.emit(new WorkspaceHistoryItemStateChanges({ oldState, currentState }));
     }
 
-    this._CDR.detectChanges();
+    return currentState;
   }
 
   private _init(): WorkspaceHistoryItem {
@@ -123,7 +129,7 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
         new MenuItem({ separator: true }),
         new MenuItem({
           content: 'Rename...',
-          onClick: this._enableEditMode.bind(this),
+          onClick: this._onRenameMenuOptionClick.bind(this),
         }),
         new MenuItem({
           content: 'Remove from Recents...',

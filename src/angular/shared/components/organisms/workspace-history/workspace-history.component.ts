@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject, Subscription, map, takeUntil } from 'rxjs';
+import { WorkspaceHistoryItemStateChanges } from './../../molecules/item-workspace-history/models/workspace-history-item.state-changes.model';
 import { ItemWorkspaceHistoryComponent } from '../../molecules/item-workspace-history/item-workspace-history.component';
 import { InterProcessCommunicator } from 'src/angular/shared/services/IPC/inter-process-communicator.service';
 import { WorkspaceHistoryService } from './workspace-history.service';
@@ -71,7 +72,7 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
     this._workspaceItems = this._workspaceHistoryService.registerItem(this._workspaceItems, item);
   }
 
-  onWorkspaceItemChanged(changes: { oldState: WorkspaceHistoryItem, currentState: WorkspaceHistoryItem }): void {
+  onWorkspaceItemChanged(changes: WorkspaceHistoryItemStateChanges): void {
     this._workspaceItems = this._getStateHandler(changes)(this._workspaceItems, changes);
     this._CDR.detectChanges();
   }
@@ -84,8 +85,8 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
     return this._workspaceItems.get(index);
   }
 
-  private _getStateHandler(changes: { oldState: WorkspaceHistoryItem, currentState: WorkspaceHistoryItem }) {
-    if (changes.currentState.isEditing !== changes.oldState.isEditing) {
+  private _getStateHandler(changes: WorkspaceHistoryItemStateChanges) {
+    if (changes.currentState?.isEditing !== changes.oldState?.isEditing) {
       return this._workspaceHistoryService.validateItemEditState;
     }
 

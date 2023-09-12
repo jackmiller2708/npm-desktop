@@ -1,3 +1,4 @@
+import { WorkspaceHistoryItemStateChanges } from '../../molecules/item-workspace-history/models/workspace-history-item.state-changes.model';
 import { WorkspaceHistoryItem } from '../../molecules/item-workspace-history/models/workspace-history-item.model';
 import { Injectable } from '@angular/core';
 import { List } from 'immutable';
@@ -8,18 +9,18 @@ export class WorkspaceHistoryService {
     return collection.push(item);
   }
 
-  validateItemEditState(collection: List<WorkspaceHistoryItem>, changes: { oldState: WorkspaceHistoryItem; currentState: WorkspaceHistoryItem; }): List<WorkspaceHistoryItem> {
+  validateItemEditState(collection: List<WorkspaceHistoryItem>, changes: WorkspaceHistoryItemStateChanges): List<WorkspaceHistoryItem> {
     return collection.map((state, i) =>
-      collection.indexOf(changes.oldState) === i
-        ? changes.currentState
+      collection.indexOf(changes.oldState!) === i
+        ? changes.currentState!
         : state.set('isEditing', false)
     );
   }
 
-  updateItemState(collection: List<WorkspaceHistoryItem>, changes: { oldState: WorkspaceHistoryItem; currentState: WorkspaceHistoryItem; }): List<WorkspaceHistoryItem> {
+  updateItemState(collection: List<WorkspaceHistoryItem>, changes: WorkspaceHistoryItemStateChanges): List<WorkspaceHistoryItem> {
     const { oldState, currentState } = changes;
-    const index = collection.indexOf(oldState);
+    const index = collection.indexOf(oldState!);
 
-    return collection.set(index, currentState);
+    return collection.set(index, currentState!);
   }
 }
