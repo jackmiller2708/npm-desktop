@@ -36,12 +36,10 @@ function _updateFromHistory(workspace, history) {
 
     index++;
   }
-
-  if (index === history.workspaces.size - 1) {
+  
+  if (index === history.workspaces.size) {
     return Either.Left(new Error('Workspace does not exist'));
   }
-
-  console.log(index)
 
   if (history.lastOpened?.path === workspace.path) {
     history = history.setIn(['lastOpened', 'name'], workspace.name);
@@ -61,7 +59,7 @@ function _setLastOpened(workspace, history) {
     index++;
   }
 
-  if (index === history.workspaces.size - 1) {
+  if (index === history.workspaces.size) {
     return Either.Left(new Error('Workspace does not exist'));
   }
 

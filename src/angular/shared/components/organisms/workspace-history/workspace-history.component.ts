@@ -73,7 +73,11 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
   }
 
   onWorkspaceItemChanged(changes: WorkspaceHistoryItemStateChanges): void {
-    this._workspaceItems = this._getStateHandler(changes)(this._workspaceItems, changes);
+    const handler = this._workspaceHistoryService
+      .getStateHandler(changes)
+      .bind(this._workspaceHistoryService);
+
+    this._workspaceItems = handler(this._workspaceItems, changes);
     this._CDR.detectChanges();
   }
 
@@ -85,19 +89,12 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
     return this._workspaceItems.get(index);
   }
 
-  private _getStateHandler(changes: WorkspaceHistoryItemStateChanges) {
-    if (changes.currentState?.isEditing !== changes.oldState?.isEditing) {
-      return this._workspaceHistoryService.validateItemEditState;
-    }
-
-    return this._workspaceHistoryService.updateItemState;
-  }
-
   private _processDataSource(data: WorkspaceHistory): void {
     // if (data.lastOpened) {
     //   return;
     // }
 
+    this._workspaceItems = List();
     this._workspaces = data.workspaces;
     this._isReady = true;
     this._CDR.detectChanges();
@@ -109,10 +106,7 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
     const workspaceList = List(workspaces.map((workspace) => new Workspace(workspace)));
     const lastOpenedRec = lastOpened ? new Workspace(lastOpened) : lastOpened;
 
-    return new WorkspaceHistory({
-      workspaces: workspaceList,
-      lastOpened: lastOpenedRec,
-    });
+    return new WorkspaceHistory({ workspaces: workspaceList, lastOpened: lastOpenedRec });
   }
 
   private _initStores(): void {

@@ -99,6 +99,17 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
     }
   }
 
+  onInputKeyDown(event: KeyboardEvent): void {
+    if (event.key !== "Enter") {
+      return;
+    }
+
+    const { value } = event.target as HTMLInputElement;
+
+    this._applyUpdatesAndDetectChanges('dataSource', (dataSource: any) => (dataSource as Workspace).set('name', value));
+    this._applyUpdatesAndDetectChanges('isEditing', () => false);
+  }
+
   //#region Private Event Handlers
   // ===========================================================
   // ===========================================================

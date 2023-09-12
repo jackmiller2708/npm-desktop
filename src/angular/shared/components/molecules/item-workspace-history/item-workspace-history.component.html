@@ -4,7 +4,7 @@
       <app-text [content]="dataSource.name" type="paragraph" className="font-semibold text-lg cursor-pointer" (onClick)="onSelectedTriggered()"></app-text>
     </ng-container>
     <ng-template #nameInput>
-      <input #inputEl className="font-semibold text-lg select-text" [value]="dataSource.name"/>
+      <input #inputEl className="font-semibold text-lg select-text" (keydown)="onInputKeyDown($event)" [value]="dataSource.name"/>
     </ng-template>
 
     <app-text [content]="dataSource.path" type="paragraph" className="text-sm"></app-text>
