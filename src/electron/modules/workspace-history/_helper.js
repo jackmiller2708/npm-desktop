@@ -15,7 +15,7 @@ function _rawToDataMapper({ workspaces, lastOpened }) {
   return Either.Right(
     WorkspaceHistory({
       workspaces: List(workspaces.map((workspace) => Workspace(workspace))),
-      lastOpened: Workspace(lastOpened),
+      lastOpened: lastOpened ? Workspace(lastOpened) : lastOpened,
     })
   );
 }
