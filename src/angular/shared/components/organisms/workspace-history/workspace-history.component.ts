@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject, Subscription, map, takeUntil } from 'rxjs';
 import { WorkspaceHistoryItemStateChanges } from './../../molecules/item-workspace-history/models/workspace-history-item.state-changes.model';
 import { ItemWorkspaceHistoryComponent } from '../../molecules/item-workspace-history/item-workspace-history.component';
@@ -12,6 +12,7 @@ import { TextComponent } from '../../atoms/text/text.component';
 import { CommonModule } from '@angular/common';
 import { Workspace } from 'src/angular/shared/models/workspace.model';
 import { List } from 'immutable';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-workspace-history',
@@ -47,6 +48,9 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly _workspaceHistoryService: WorkspaceHistoryService,
+    private readonly _router: Router,
+    // used with `_router.navigate` to mitigate the warning: "Navigation triggered outside Angular zone, did you forget to call 'ngZone.run()'?"
+    private readonly _ngZone: NgZone,
     private readonly _IPC: InterProcessCommunicator,
     private readonly _CDR: ChangeDetectorRef,
   ) {
@@ -94,9 +98,13 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
   }
 
   private _processDataSource(data: WorkspaceHistory): void {
-    // if (data.lastOpened) {
-    //   return;
-    // }
+    if (data.lastOpened) {
+      return void this._ngZone.run(() =>
+        this._router.navigate(['/', 'project'], {
+          state: { workspace: JSON.stringify(data.lastOpened) },
+        })
+      );
+    }
 
     this._workspaceItems = List();
     this._workspaces = data.workspaces;

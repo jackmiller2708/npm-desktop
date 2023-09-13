@@ -1,4 +1,4 @@
-const { getHistory, addToHistory, setLastOpened, updateFromHistory, removeFromHistory } = require("../workspace-history");
+const { getHistory, addToHistory, setLastOpened, updateFromHistory, removeFromHistory, unsetLastOpened } = require("../workspace-history");
 const { validatePathThenAct, ipcReqParser } = require("./_service");
 const { ipcMain, dialog, BrowserWindow } = require("electron")
 const { Workspace } = require("../../shared/models/workspace.model");
@@ -23,6 +23,12 @@ function initIPCListeners(window) {
       : await _openWorkspaceSelectDialog();
 
     input?.fold(_emitError, (data) =>
+      _emitEvent("workspace-history-loaded", data)
+    );
+  });
+
+  _IPC.on("close-workspace", () => {
+    unsetLastOpened().fold(_emitError, (data) =>
       _emitEvent("workspace-history-loaded", data)
     );
   });

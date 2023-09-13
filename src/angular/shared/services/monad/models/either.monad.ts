@@ -26,14 +26,12 @@ export class EitherMonad<L, R> implements IEitherMonad<L, R> {
   isRight(): boolean {
     return this._value !== undefined;
   }
-}
 
-// Helper function to create a Right value
-export function right<E, A>(value: A): EitherMonad<E, A> {
-  return new EitherMonad<E, A>(value);
-}
+  static right<L, R>(value: R): EitherMonad<L, R> {
+    return new EitherMonad<L, R>(value);
+  }
 
-// Helper function to create a Left value
-export function left<E, A>(error: E): EitherMonad<E, A> {
-  return new EitherMonad<E, A>(error);
+  static left<L, R>(error: L): EitherMonad<L, R> {
+    return new EitherMonad<L, R>(error);
+  }
 }
