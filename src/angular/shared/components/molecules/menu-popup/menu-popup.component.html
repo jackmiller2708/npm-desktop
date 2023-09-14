@@ -2,7 +2,12 @@
   <app-popup [target]="target" [isShown]="isShown" [dropdownPositions]="dropdownPositions" (outsideClick)="isShownChange.emit(false)">
     <ul class="bg-white shadow-md shadow-black rounded-md overflow-hidden">
       <li *ngFor="let item of dataSource">
-        <div class="py-2 px-4 cursor-pointer hover:bg-slate-400" [ngClass]="item.classNames" (click)="onItemClick(item.onClick)" *ngIf="!item.separator; else separator">
+        <div 
+          *ngIf="!item.separator; else separator" 
+          class="py-2 px-4 cursor-pointer hover:bg-slate-400 transition-colors ease-out" 
+          [ngClass]="item.classNames" 
+          (click)="onItemClick(item.onClick)"
+        >
           <app-icon *ngIf="item.iconPath" [path]="item.iconPath"></app-icon>
           <app-text [content]="item.content" type="paragraph"></app-text>
         </div>
