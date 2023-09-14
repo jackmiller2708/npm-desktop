@@ -11,7 +11,7 @@ export class StartupComponent {
 
   @HostBinding('class')
   private get _classes(): string[] {
-    return ['max-w-[900px]', 'max-h-[750px]','flex', 'justify-center', 'w-full', 'h-full', 'px-10', 'pt-10', 'gap-5', 'select-none'];
+    return ['max-w-[900px]', 'max-h-[750px]','flex', 'justify-center', 'w-full', 'h-full', 'px-8', 'pt-10', 'gap-5', 'select-none'];
   }
 
   constructor() {

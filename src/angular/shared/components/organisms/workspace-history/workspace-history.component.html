@@ -5,9 +5,9 @@
         <app-text content="No recent workspaces" type="heading-1" className="title text-2xl font-semibold"></app-text>
         <app-text content="Open folder or checkout remote repository." type="paragraph" className="text-slate-600"></app-text>
       </div>
-      <app-button (onClick)="onOpenWorkspaceBtnClick()" [contentTemplate]="openWorkspaceBtn">
+      <app-button [contentTemplate]="openWorkspaceBtn" (onClick)="onOpenWorkspaceBtnClick()">
         <ng-template #openWorkspaceBtn>
-          Open... <span class="text-slate-500">Ctrl + N</span>
+          Open... <span class="text-slate-500 transition-colors group-hover:text-slate-50">Ctrl + N</span>
         </ng-template>
       </app-button>
     </div>
@@ -16,7 +16,11 @@
   <ng-template #previouslyOpened>
     <div class="flex flex-col gap-2">
       <app-text content="Workspaces" type="heading-1" className="title text-2xl font-semibold"></app-text>
-      <app-button content="Open new workspace..." (onClick)="onOpenWorkspaceBtnClick()"></app-button>
+      <app-button [contentTemplate]="openBtn" (onClick)="onOpenWorkspaceBtnClick()">
+        <ng-template #openBtn>
+          Open new workspace... <span class="text-slate-500 transition-colors group-hover:text-slate-50">Ctrl + N</span>
+        </ng-template>
+      </app-button>
     </div>
     
     <div class="flex flex-col gap-1 flex-1">

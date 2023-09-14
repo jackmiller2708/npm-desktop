@@ -1,4 +1,4 @@
-<li *ngIf="item" [routerLink]="item.routerLink" routerLinkActive="active" class="{{ className }}">
+<li *ngIf="item" [routerLink]="item.routerLink" routerLinkActive="active" class="min-w-[175px] rounded-md px-2 py-1 transition-colors {{ className }}">
   <div *ngIf="!content, else contentRef" class="flex items-center gap-2 cursor-pointer">
     <app-icon *ngIf="item.iconPath" [path]="item.iconPath"></app-icon>
     <app-text [content]="item.content" type="inline"></app-text>

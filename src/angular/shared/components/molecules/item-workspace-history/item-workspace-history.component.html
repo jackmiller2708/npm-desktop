@@ -1,17 +1,17 @@
-<div *ngIf="dataSource" class="flex justify-between border border-black rounded-md py-1 px-2">
-  <div>
+<div *ngIf="dataSource" class="flex justify-between border border-slate-500 rounded-md gap-10 py-1 px-2">
+  <div class="flex-1">
     <ng-container *ngIf="!isEditing; else nameInput">
-      <app-text [content]="dataSource.name" type="paragraph" className="font-semibold text-lg cursor-pointer" (onClick)="onSelectedTriggered()"></app-text>
+      <app-text [content]="dataSource.name" type="paragraph" className="block font-semibold w-max text-lg cursor-pointer" (onClick)="onSelectedTriggered()"></app-text>
     </ng-container>
     <ng-template #nameInput>
-      <input #inputEl className="font-semibold text-lg select-text" (keydown)="onInputKeyDown($event)" [value]="dataSource.name"/>
+      <input #inputEl class="w-full text-slate-500 font-semibold text-lg select-text focus:outline-none" (keydown)="onInputKeyDown($event)" [value]="dataSource.name"/>
     </ng-template>
 
     <app-text [content]="dataSource.basePath" type="paragraph" className="text-sm"></app-text>
   </div>
   
   <div class="pt-1">
-    <span class="cursor-pointer" (click)="onDropdownBtnClick()" #dropdownTrigger>
+    <span class="cursor-pointer" (click)="onDropdownBtnClick()" #dropdownTrigger title="more">
       <app-icon path="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"></app-icon>
     </span>
   </div>
@@ -27,9 +27,17 @@
   >
     <div class="flex flex-col gap-5">
       <app-text type="paragraph" content='Are you sure you want to remove "{{ dataSource.name }}" from recents?'></app-text>
+      
       <div class="flex justify-end gap-2">
-        <app-button content="Cancel" (onClick)="onPromptConfirm(false)"></app-button>
-        <app-button content="Delete" (onClick)="onPromptConfirm(true)" className="bg-red-500 text-white !border-red-500 font-medium"></app-button>
+        <app-button 
+          content="Cancel" 
+          (onClick)="onPromptConfirm(false)"
+        ></app-button>
+        <app-button 
+          content="Delete" 
+          (onClick)="onPromptConfirm(true)" 
+          className="bg-red-500 text-white border-red-500 font-medium hover:bg-red-700 hover:border-red-700"
+        ></app-button>
       </div>
     </div>
   </app-prompt-dialog>

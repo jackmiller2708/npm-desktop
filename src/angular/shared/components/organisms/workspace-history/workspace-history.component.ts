@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, NgZone, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { Observable, Subject, Subscription, map, takeUntil } from 'rxjs';
 import { WorkspaceHistoryItemStateChanges } from './../../molecules/item-workspace-history/models/workspace-history-item.state-changes.model';
 import { ItemWorkspaceHistoryComponent } from '../../molecules/item-workspace-history/item-workspace-history.component';
@@ -89,8 +89,11 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
     this._IPC.send('remove-workspace', JSON.stringify(workspace));
   }
 
-  onOpenWorkspaceBtnClick(): void {
-    this._IPC.send('open-workspace');
+  @HostListener('document:keydown', ['$event'])
+  onOpenWorkspaceBtnClick(event?: KeyboardEvent): void {
+    if (!event || (event && event.key === 'n' && event.ctrlKey)) {
+      this._IPC.send('open-workspace');
+    } 
   }
 
   getItemStateAt(index: number) {

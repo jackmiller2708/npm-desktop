@@ -1,4 +1,8 @@
-<button (click)="onClick.emit($event)" class="cursor-pointer border border-black rounded-md py-1 px-2" [ngClass]="classNames">
+<button 
+  (click)="onClick.emit($event)" 
+  class="group cursor-pointer border border-slate-500 rounded-md py-1 px-2 hover:bg-slate-500 hover:text-white transition-colors focus:outline-slate-900" 
+  [ngClass]="classNames"
+>
   <ng-container *ngIf="contentTemplate; else default" [ngTemplateOutlet]="contentTemplate"></ng-container>
   <ng-template #default>{{ content }}</ng-template>
 </button>
