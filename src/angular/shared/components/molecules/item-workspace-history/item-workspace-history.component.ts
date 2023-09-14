@@ -100,8 +100,13 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
   }
 
   onInputKeyDown(event: KeyboardEvent): void {
-    if (event.key !== "Enter") {
+    if (event.key !== 'Enter' && event.key !== 'Escape') {
       return;
+    }
+
+    // Cancels editing
+    if (event.key === 'Escape') {
+      return this._applyUpdatesAndDetectChanges('isEditing', () => false);
     }
 
     const { value } = event.target as HTMLInputElement;
