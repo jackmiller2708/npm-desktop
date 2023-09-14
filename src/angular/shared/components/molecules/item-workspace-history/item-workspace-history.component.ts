@@ -1,6 +1,6 @@
+import { PopupMenuItem } from './../menu-popup/models/popup-menu-item.model';
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { WorkspaceHistoryItemStateChanges } from './models/workspace-history-item.state-changes.model';
-import { MenuDropdownComponent } from '../menu-dropdown/menu-dropdown.component';
 import { IWorkspaceHistoryItem } from './interfaces/workspace-history-item.interface';
 import { WorkspaceHistoryItem } from './models/workspace-history-item.model';
 import { ProcessService } from 'src/angular/shared/services/process/process.service';
@@ -11,13 +11,13 @@ import { StateUpdateFn } from 'src/angular/shared/services/state/interfaces/stat
 import { StateService } from 'src/angular/shared/services/state/state.service';
 import { CommonModule } from '@angular/common';
 import { Workspace } from 'src/angular/shared/models/workspace.model';
-import { MenuItem } from '../menu-dropdown/models/menu-item.model';
 import { List } from 'immutable';
+import { MenuPopupComponent } from '../menu-popup/menu-popup.component';
 
 @Component({
   selector: 'app-item-workspace-history',
   standalone: true,
-  imports: [CommonModule, TextComponent, IconComponent, MenuDropdownComponent, OverlayModule],
+  imports: [CommonModule, TextComponent, IconComponent, MenuPopupComponent, OverlayModule],
   templateUrl: './item-workspace-history.component.html',
   styleUrls: ['./item-workspace-history.component.scss'],
 })
@@ -54,7 +54,7 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
     this._applyUpdatesAndDetectChanges('isMenuShown', () => value);
   }
 
-  get menuItems(): List<MenuItem> {
+  get menuItems(): List<PopupMenuItem> {
     return this._states.menuItems;
   }
 
@@ -180,20 +180,20 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
   private _init(): WorkspaceHistoryItem {
     return new WorkspaceHistoryItem({
       menuItems: List([
-        new MenuItem({
+        new PopupMenuItem({
           content: 'Show in Explorer',
           onClick: this._onShowInExplrOPtionClick.bind(this),
         }),
-        new MenuItem({
+        new PopupMenuItem({
           content: 'Copy path',
           onClick: this._onCopyPathOptionClick.bind(this),
         }),
-        new MenuItem({ separator: true }),
-        new MenuItem({
+        new PopupMenuItem({ separator: true }),
+        new PopupMenuItem({
           content: 'Rename...',
           onClick: this._onRenameMenuOptionClick.bind(this),
         }),
-        new MenuItem({
+        new PopupMenuItem({
           content: 'Remove from Recents...',
           className: 'font-medium text-red-500 hover:!bg-red-100',
           onClick: this._onRemoveOptionClick.bind(this),

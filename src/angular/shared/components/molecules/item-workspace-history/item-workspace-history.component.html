@@ -14,5 +14,5 @@
       <app-icon path="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"></app-icon>
     </span>
   </div>
-  <app-menu-dropdown [dataSource]="menuItems" [target]="dropdownTrigger" [(shown)]="isMenuShown"></app-menu-dropdown>
+  <app-menu-popup [dataSource]="menuItems" [target]="dropdownTrigger" [(isShown)]="isMenuShown"></app-menu-popup>
 </div>

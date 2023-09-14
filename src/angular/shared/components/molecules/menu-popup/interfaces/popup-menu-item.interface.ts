@@ -1,4 +1,4 @@
-export interface IMenuItem {
+export interface IPopupMenuItem {
   content: string;
   onClick: () => void;
   separator: boolean

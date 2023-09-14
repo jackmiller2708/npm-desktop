@@ -1,10 +1,10 @@
+import { PopupMenuItem } from '../../menu-popup/models/popup-menu-item.model';
 import { Workspace } from 'src/angular/shared/models/workspace.model';
-import { MenuItem } from '../../menu-dropdown/models/menu-item.model';
 import { List } from 'immutable';
 
 export interface IWorkspaceHistoryItem {
   dataSource:Workspace | undefined;
-  menuItems: List<MenuItem>;
+  menuItems: List<PopupMenuItem>;
   isEditing: boolean;
   isMenuShown: boolean;
 }
