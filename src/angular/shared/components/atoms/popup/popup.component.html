@@ -1,0 +1,10 @@
+<ng-template *ngIf="target"
+  connected-overlay
+  [cdkConnectedOverlayOrigin]="target"
+  [cdkConnectedOverlayOpen]="isShown"
+  [cdkConnectedOverlayPositions]="dropdownPositions"
+  (attach)="onAttach()"
+  (overlayOutsideClick)="outsideClick.emit()"
+>
+  <ng-content></ng-content>
+</ng-template>
