@@ -1,8 +1,8 @@
 import { Component, NgZone, OnDestroy } from '@angular/core';
 import { InterProcessCommunicator } from 'src/angular/shared/services/IPC/inter-process-communicator.service';
 import { MonadService } from 'src/angular/shared/services/monad/monad.service';
-import { EitherMonad } from './../../shared/services/monad/models/either.monad';
 import { Workspace } from 'src/angular/shared/models/workspace.model';
+import { Either } from 'src/angular/shared/services/monad/models/either.monad';
 import { Router } from '@angular/router';
 
 @Component({
@@ -31,13 +31,13 @@ export class ProjectComponent implements OnDestroy {
     this._ngZone.run(() => this._router.navigate(['/', 'startup']));
   }
 
-  private _extractWorkspace(state: Record<string, any>): EitherMonad<Error, Workspace> {
+  private _extractWorkspace(state: Record<string, any>): Either<Error, Workspace> {
     try {
       const { workspace } = state;
 
-      return EitherMonad.right(new Workspace(JSON.parse(workspace)));
+      return this._monadService.either().right(new Workspace(JSON.parse(workspace)));
     } catch (err) {
-      return EitherMonad.left(err as Error);
+      return this._monadService.either().left(err as Error);
     }
   }
 
