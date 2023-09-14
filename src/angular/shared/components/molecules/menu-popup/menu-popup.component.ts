@@ -67,6 +67,9 @@ export class MenuPopupComponent implements AfterViewInit {
   @Output()
   stateChanged: EventEmitter<PopupMenuStateChanges>;
 
+  @Output()
+  ready: EventEmitter<PopupMenuProps>;
+
   constructor(
     private readonly _stateService: StateService,
     private readonly _CDR: ChangeDetectorRef
@@ -80,6 +83,7 @@ export class MenuPopupComponent implements AfterViewInit {
 
     this.isShownChange = new EventEmitter();
     this.stateChanged = new EventEmitter();
+    this.ready = new EventEmitter();
   }
 
   onItemClick(handlerFn: () => void): void {
@@ -89,6 +93,7 @@ export class MenuPopupComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this._isReady = true;
+    this.ready.emit(this._states);
   }
 
   private _applyUpdatesAndDetectChanges(key: keyof IPopupMenuProps, updater: StateUpdateFn<IPopupMenuProps>): void {

@@ -60,6 +60,9 @@ export class PopupComponent {
   @Output()
   stateChanged: EventEmitter<PopupStateChanges>;
 
+  @Output()
+  ready: EventEmitter<PopupProps>;
+
   constructor(
     private readonly _stateService: StateService,
     private readonly _CDR: ChangeDetectorRef
@@ -69,6 +72,7 @@ export class PopupComponent {
 
     this.outsideClick = new EventEmitter();
     this.stateChanged = new EventEmitter();
+    this.ready = new EventEmitter();
   }
 
   onAttach(): void {
