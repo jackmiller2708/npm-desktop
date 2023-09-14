@@ -1,9 +1,10 @@
-import { PopupMenuItem } from './../menu-popup/models/popup-menu-item.model';
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { WorkspaceHistoryItemStateChanges } from './models/workspace-history-item.state-changes.model';
 import { IWorkspaceHistoryItem } from './interfaces/workspace-history-item.interface';
 import { WorkspaceHistoryItem } from './models/workspace-history-item.model';
+import { MenuPopupComponent } from '../menu-popup/menu-popup.component';
 import { ProcessService } from 'src/angular/shared/services/process/process.service';
+import { PopupMenuItem } from './../menu-popup/models/popup-menu-item.model';
 import { TextComponent } from '../../atoms/text/text.component';
 import { IconComponent } from '../../atoms/icon/icon.component';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -12,7 +13,6 @@ import { StateService } from 'src/angular/shared/services/state/state.service';
 import { CommonModule } from '@angular/common';
 import { Workspace } from 'src/angular/shared/models/workspace.model';
 import { List } from 'immutable';
-import { MenuPopupComponent } from '../menu-popup/menu-popup.component';
 
 @Component({
   selector: 'app-item-workspace-history',
