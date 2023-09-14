@@ -9,8 +9,19 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./button.component.scss'],
 })
 export class ButtonComponent {
+  private _classNames: string[] | undefined;
+
   @Input() contentTemplate: TemplateRef<any> | undefined;
   @Input() content: string | undefined;
+
+  @Input()
+  set className(value: string) {
+    this._classNames = value.split(' ');
+  }
+
+  get classNames(): string[] {
+    return this._classNames ?? [];
+  }
 
   @Output() onClick: EventEmitter<MouseEvent>;
 

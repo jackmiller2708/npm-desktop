@@ -1,8 +1,10 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { WorkspaceHistoryItemStateChanges } from './models/workspace-history-item.state-changes.model';
 import { IWorkspaceHistoryItem } from './interfaces/workspace-history-item.interface';
+import { PromptDialogComponent } from '../prompt-dialog/prompt-dialog.component';
 import { WorkspaceHistoryItem } from './models/workspace-history-item.model';
 import { MenuPopupComponent } from '../menu-popup/menu-popup.component';
+import { ButtonComponent } from '../../atoms/button/button.component';
 import { ProcessService } from 'src/angular/shared/services/process/process.service';
 import { PopupMenuItem } from './../menu-popup/models/popup-menu-item.model';
 import { TextComponent } from '../../atoms/text/text.component';
@@ -11,19 +13,27 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { StateUpdateFn } from 'src/angular/shared/services/state/interfaces/state-changes.interface';
 import { StateService } from 'src/angular/shared/services/state/state.service';
 import { CommonModule } from '@angular/common';
+import { MonadService } from 'src/angular/shared/services/monad/monad.service';
 import { Workspace } from 'src/angular/shared/models/workspace.model';
+import { Either } from 'src/angular/shared/services/monad/models/either.monad';
 import { List } from 'immutable';
+
+const imports = [CommonModule, OverlayModule, TextComponent, IconComponent, MenuPopupComponent, PromptDialogComponent, ButtonComponent];
 
 @Component({
   selector: 'app-item-workspace-history',
-  standalone: true,
-  imports: [CommonModule, TextComponent, IconComponent, MenuPopupComponent, OverlayModule],
   templateUrl: './item-workspace-history.component.html',
   styleUrls: ['./item-workspace-history.component.scss'],
+  standalone: true,
+  imports,
 })
 export class ItemWorkspaceHistoryComponent implements AfterViewInit {
   private _states: WorkspaceHistoryItem;
+  private _isPromptShown: boolean;
   private _isReady: boolean;
+
+  private _dialogConfirm: | ((value: boolean | PromiseLike<boolean>) => void) | undefined;
+  private _dialogReject: ((reason?: any) => void) | undefined;
 
   @ViewChild('inputEl')
   private readonly _input!: ElementRef<HTMLInputElement>;
@@ -58,6 +68,10 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
     return this._states.menuItems;
   }
 
+  get isPromptShown(): boolean {
+    return this._isPromptShown;
+  }
+
   @Output()
   ready: EventEmitter<WorkspaceHistoryItem>;
 
@@ -71,12 +85,13 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
   stateChanged: EventEmitter<WorkspaceHistoryItemStateChanges>;
 
   constructor(
+    private readonly _monadService: MonadService,
     private readonly _processService: ProcessService,
     private readonly _stateService: StateService,
-    private readonly _CDR: ChangeDetectorRef,
+    private readonly _CDR: ChangeDetectorRef
   ) {
     this._states = this._init();
-    this._isReady = false;
+    this._isReady = this._isPromptShown = false;
 
     this.ready = new EventEmitter();
     this.remove = new EventEmitter();
@@ -115,6 +130,26 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
     this._applyUpdatesAndDetectChanges('isEditing', () => false);
   }
 
+  onPromptConfirm(value: boolean): void {
+    if (!this._dialogConfirm) {
+      return;
+    }
+
+    this._dialogConfirm(value);
+    this._dialogConfirm = undefined;
+  }
+
+  onPromptReject(): void {
+    if (!this._dialogReject) {
+      return;
+    }
+
+    this._dialogReject('Dialog closed');
+    this._dialogReject = undefined;
+    this._isPromptShown = false;
+    this._CDR.detectChanges();
+  }
+
   //#region Private Event Handlers
   // ===========================================================
   // ===========================================================
@@ -135,8 +170,18 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
       .subscribe();
   }
 
-  private _onRemoveOptionClick(): void {
-    this.remove.emit(this._states.dataSource);
+  private async _onRemoveOptionClick(): Promise<void> {
+    (await this._showConfirmationPrompt()).fold<void>(
+      (reason: string): void => void reason,
+      (result: boolean) => {
+        if (result) {
+          this.remove.emit(this._states.dataSource);
+        }
+      }
+    );
+
+    this._isPromptShown = false;
+    this._CDR.detectChanges();
   }
   // ===========================================================
   // ===========================================================
@@ -150,7 +195,10 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
    */
   private _applyUpdatesAndDetectChanges(key: keyof IWorkspaceHistoryItem, updater: StateUpdateFn<IWorkspaceHistoryItem>): void {
     this._states = this._updateStateAndEmitChanges(this._states, key, updater);
-    this._CDR.detectChanges();
+    
+    if (this._isReady) {
+      this._CDR.detectChanges();
+    }
   }
 
   /**
@@ -174,6 +222,24 @@ export class ItemWorkspaceHistoryComponent implements AfterViewInit {
     }
 
     return currentState;
+  }
+
+  /**
+   * Shows confirmation popup and returns the confirmation result.
+   */
+  private async _showConfirmationPrompt(): Promise<Either<string, boolean>> {
+    try {
+      const result = await new Promise<boolean>((resolve, reject) => {
+        this._isPromptShown = true;
+        this._dialogConfirm = resolve;
+        this._dialogReject = reject;
+        this._CDR.detectChanges();
+      });
+
+      return this._monadService.either().right(result);
+    } catch (err) {
+      return this._monadService.either().left(err as string);
+    }
   }
   // ===========================================================
   // ===========================================================

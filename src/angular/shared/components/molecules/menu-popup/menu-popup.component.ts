@@ -98,7 +98,10 @@ export class MenuPopupComponent implements AfterViewInit {
 
   private _applyUpdatesAndDetectChanges(key: keyof IPopupMenuProps, updater: StateUpdateFn<IPopupMenuProps>): void {
     this._states = this._updateStateAndEmitChanges(this._states, key, updater);
-    this._CDR.detectChanges();
+    
+    if (this._isReady) {
+      this._CDR.detectChanges();
+    }
   }
 
   private _updateStateAndEmitChanges(states: PopupMenuProps, key: keyof IPopupMenuProps, updater: StateUpdateFn<IPopupMenuProps>): PopupMenuProps {

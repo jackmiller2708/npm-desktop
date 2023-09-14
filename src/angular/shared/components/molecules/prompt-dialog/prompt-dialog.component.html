@@ -1,0 +1,23 @@
+<app-dialog [isShown]="isShown">
+  <div class="bg-white rounded-md overflow-hidden">
+    <div *ngIf="showHeader" class="relative flex items-center px-4 py-2 h-10 border-b" [ngClass]="headerClass">
+      <div *ngIf="headerIconPath || headerContent" class="flex gap-2 items-center">
+        <div class="h-[24px] w-[24px] flex items-center justify-center">
+          <span class="scale-150">
+            <app-icon *ngIf="headerIconPath" [path]="headerIconPath"></app-icon>
+          </span>
+        </div>
+        <app-text *ngIf="headerContent" [content]="headerContent" type="heading-1" className="text-xl font-semibold"></app-text>
+      </div>
+  
+      <div class="absolute flex items-center justify-center cursor-pointer top-1/2 -translate-y-1/2 right-4" (click)="onCloseBtnClick()">
+        <span class="scale-110" title="close">
+          <app-icon path="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></app-icon>
+        </span>
+      </div>
+    </div>
+    <div class="p-4">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</app-dialog>

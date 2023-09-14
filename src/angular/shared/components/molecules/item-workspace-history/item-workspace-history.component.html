@@ -9,10 +9,28 @@
 
     <app-text [content]="dataSource.basePath" type="paragraph" className="text-sm"></app-text>
   </div>
+  
   <div class="pt-1">
     <span class="cursor-pointer" (click)="onDropdownBtnClick()" #dropdownTrigger>
       <app-icon path="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"></app-icon>
     </span>
   </div>
+
   <app-menu-popup [dataSource]="menuItems" [target]="dropdownTrigger" [(isShown)]="isMenuShown"></app-menu-popup>
+  
+  <app-prompt-dialog 
+    headerContent="Warning!"
+    headerIconPath="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24V296c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"
+    headerClass="bg-yellow-300"
+    [isShown]="isPromptShown" 
+    (close)="onPromptReject()"
+  >
+    <div class="flex flex-col gap-5">
+      <app-text type="paragraph" content='Are you sure you want to remove "{{ dataSource.name }}" from recents?'></app-text>
+      <div class="flex justify-end gap-2">
+        <app-button content="Cancel" (onClick)="onPromptConfirm(false)"></app-button>
+        <app-button content="Delete" (onClick)="onPromptConfirm(true)" className="bg-red-500 text-white !border-red-500 font-medium"></app-button>
+      </div>
+    </div>
+  </app-prompt-dialog>
 </div>
