@@ -24,7 +24,7 @@ export class PopupComponent {
 
   @HostBinding('class')
   private get _classes(): string[] {
-    return ['absolute'];
+    return ['hidden'];
   }
 
   @Input()
