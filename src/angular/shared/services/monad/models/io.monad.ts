@@ -1,19 +1,17 @@
-import { IIOMonad } from '../interfaces/monad-io.interface';
-
-export class IOMonad<T> implements IIOMonad<T> {
+export class IOMonad<T> {
   constructor(private readonly _effect: () => T) {}
 
-  private _apply<B>(fn: (a: T) => B | IIOMonad<B>): IIOMonad<B> {
+  private _apply<B>(fn: (a: T) => B | IOMonad<B>): IOMonad<B> {
     const result = fn(this._effect());
 
     return result instanceof IOMonad ? result : new IOMonad(() => result);
   }
 
-  chain<B>(fn: (a: T) => IIOMonad<B> | B): IIOMonad<B> {
+  chain<B>(fn: (a: T) => IOMonad<B> | B): IOMonad<B> {
     return this._apply(fn);
   }
 
-  map<B>(fn: (a: T) => B): IIOMonad<B> {
+  map<B>(fn: (a: T) => B): IOMonad<B> {
     return this._apply(fn);
   }
 
