@@ -1,5 +1,6 @@
-import { Component, HostBinding, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { CdkConnectedOverlay, ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
+import { Component, HostBinding, Input, Output, EventEmitter } from '@angular/core';
+import { ConnectedPosition } from '@angular/cdk/overlay';
+import { PopupComponent } from '../../atoms/popup/popup.component';
 import { TextComponent } from '../../atoms/text/text.component';
 import { IconComponent } from '../../atoms/icon/icon.component';
 import { CommonModule } from '@angular/common';
@@ -9,16 +10,13 @@ import { List } from 'immutable';
 @Component({
   selector: 'app-menu-dropdown',
   standalone: true,
-  imports: [CommonModule, OverlayModule, TextComponent, IconComponent],
+  imports: [CommonModule, TextComponent, IconComponent, PopupComponent],
   templateUrl: './menu-dropdown.component.html',
   styleUrls: ['./menu-dropdown.component.scss'],
 })
 export class MenuDropdownComponent {
   private _isShown: boolean;
   private _dropdownPosition: ConnectedPosition[];
-
-  @ViewChild(CdkConnectedOverlay)
-  private readonly _overlay!: CdkConnectedOverlay;
 
   @Input() dataSource: List<MenuItem> | undefined;
   @Input() target: Element | undefined;
@@ -50,10 +48,6 @@ export class MenuDropdownComponent {
       { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top' },
       { originX: 'end', originY: 'top', overlayX: 'end', overlayY: 'bottom' },
     ];
-  }
-
-  onAttach(): void {
-    this._overlay.overlayRef.updatePosition();
   }
 
   onItemClick(handlerFn: () => void): void {
