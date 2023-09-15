@@ -1,5 +1,5 @@
 import { Component, HostBinding, ElementRef, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Observable, Subject, switchMap, takeUntil, tap, timer } from 'rxjs';
+import { Observable, Subject, Subscription, switchMap, takeUntil, timer } from 'rxjs';
 import { DisplayToastService } from './services/display-toast.service';
 import { ItemToastComponent } from '../item-toast/item-toast.component';
 import { PopupComponent } from '../../atoms/popup/popup.component';
@@ -128,7 +128,7 @@ export class DisplayToastComponent implements OnInit, OnDestroy {
     );
   }
 
-  private _register<T>(store$: Observable<T>, processor: (data: T) => void) {
+  private _register<T>(store$: Observable<T>, processor: (data: T) => void): Subscription {
     return store$
       .pipe(takeUntil(this._ngDestroy$))
       .subscribe(processor.bind(this));
