@@ -3,6 +3,10 @@ type F = (...args: any[]) => void;
 export class Helper {
   private constructor() {}
 
+  static clamp(num: number, min: number, max: number): number {
+    return Math.min(Math.max(num, min), max);
+  }
+
   static throttle(fn: F, t: number): F {
     let lastTimeout: NodeJS.Timeout;
     let lastCall: number;

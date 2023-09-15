@@ -1,5 +1,5 @@
 <ng-container *ngIf="target && dataSource">
-  <app-popup [target]="target" [isShown]="isShown" [dropdownPositions]="dropdownPositions" (outsideClick)="isShownChange.emit(false)">
+  <app-popup [target]="target" [isShown]="isShown" [positions]="dropdownPositions" (outsideClick)="isShownChange.emit(false)">
     <ul class="bg-white shadow-md shadow-black rounded-md overflow-hidden">
       <li *ngFor="let item of dataSource">
         <div 

@@ -1,0 +1,5 @@
+<app-popup [isShown]="isMessageShown" [target]="hostElement">
+  <ng-container *ngIf="isMessageShown">
+    <app-item-toast [text]="message.text" [variant]="message.variant" [action]="message.actionLabel" (close)="onToastClose()"></app-item-toast>
+  </ng-container>
+</app-popup>

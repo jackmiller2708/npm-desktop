@@ -1,0 +1,25 @@
+:host {
+  ::ng-deep {
+    color: rgb(248, 250, 252);
+   
+    svg path {
+      fill: rgb(248, 250, 252);
+    }
+  }
+
+  &.neutral {
+    background: #0d86f0;
+  }
+
+  &.warn {
+    background: #eab106;
+  }
+
+  &.success {
+    background: #198754;
+  }
+
+  &.error {
+    background: #d62436;
+  }
+}

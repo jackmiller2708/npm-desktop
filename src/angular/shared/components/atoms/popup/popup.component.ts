@@ -46,12 +46,12 @@ export class PopupComponent {
   }
 
   @Input()
-  set dropdownPositions(value: ConnectedPosition[]) {
-    this._applyUpdatesAndDetectChanges('dropdownPositions', () => value);
+  set positions(value: ConnectedPosition[]) {
+    this._applyUpdatesAndDetectChanges('positions', () => value);
   }
 
-  get dropdownPositions(): ConnectedPosition[] {
-    return this._states.dropdownPositions;
+  get positions(): ConnectedPosition[] {
+    return this._states.positions;
   }
 
   @Output() 
@@ -76,6 +76,10 @@ export class PopupComponent {
   }
 
   onAttach(): void {
+    if (!this._overlay) {
+      return void setTimeout(() => this._overlay.overlayRef.updatePosition());
+    }
+
     this._overlay.overlayRef.updatePosition();
   }
 
