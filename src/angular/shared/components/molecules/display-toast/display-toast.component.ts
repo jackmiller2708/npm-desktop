@@ -20,7 +20,7 @@ import { Stack } from 'immutable';
 export class DisplayToastComponent implements OnInit, OnDestroy {
   private readonly _ngDestroy$: Subject<void>;
 
-  private _startMessageCountdown$: Subject<void>;
+  private _startMessageCountdown$: Subject<number>;
   private _messages: Stack<ToastItem>;
   private _isShown: boolean;
 
@@ -80,8 +80,8 @@ export class DisplayToastComponent implements OnInit, OnDestroy {
     if (nextMessage) {
       this._messages = this._messages.pop();
 
-      if (nextMessage.isAutoDismiss) {
-        this._startMessageCountdown$.next();
+      if (nextMessage.duration) {
+        this._startMessageCountdown$.next(nextMessage.duration);
       }
 
       this._isShown = true;
@@ -100,8 +100,8 @@ export class DisplayToastComponent implements OnInit, OnDestroy {
     this._messages = newMessages;
     this._isShown = true;
 
-    if (message.isAutoDismiss) {
-      this._startMessageCountdown$.next();
+    if (message.duration) {
+      this._startMessageCountdown$.next(message.duration);
     }
 
     this._CDR.detectChanges();
@@ -118,18 +118,14 @@ export class DisplayToastComponent implements OnInit, OnDestroy {
   private _initStores(): void {
     const { addMessage$ } = this._toastService;
 
-    this._register(this._getMessageCounter(2000), this._onMessageFinished);
+    this._register(this._getMessageCounter(), this._onMessageFinished);
     this._register(addMessage$, this._onMessageAdd);
   }
 
-  private _getMessageCounter(duration: number) {
+  private _getMessageCounter() {
     return this._startMessageCountdown$.pipe(
-      switchMap(() => this._getTimer(duration))
+      switchMap((duration: number) => timer(duration))
     );
-  }
-
-  private _getTimer(duration: number) {
-    return timer(duration).pipe(tap((): void => void (this._isShown = true)));
   }
 
   private _register<T>(store$: Observable<T>, processor: (data: T) => void) {

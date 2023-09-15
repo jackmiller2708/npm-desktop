@@ -1,7 +1,7 @@
 export interface IToastItem {
   text: string;
   variant: 'warn' | 'error' | 'success' | 'neutral';
-  isAutoDismiss: boolean;
+  duration: number;
   actionLabel: IToastAction | undefined;
 }
 

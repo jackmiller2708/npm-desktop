@@ -4,7 +4,7 @@ import { Record } from 'immutable';
 const defaultValues: IToastItem = {
   text: '',
   variant: 'neutral',
-  isAutoDismiss: false,
+  duration: 2000,
   actionLabel: undefined,
 };
 

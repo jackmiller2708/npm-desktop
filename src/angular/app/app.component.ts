@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } fr
 import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { InterProcessCommunicator } from '../shared/services/IPC/inter-process-communicator.service';
 import { ToastService } from '../shared/services/toast/toast.service';
+import { IToastItem } from '../shared/components/molecules/display-toast/interfaces/toast-item.interface';
 
 @Component({
   selector: 'app-root',
@@ -36,9 +37,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this._toastService.addMessage({
       text: error['message'] as string,
       variant: 'error',
-      isAutoDismiss: false,
-      actionLabel: undefined,
-    });
+    } as IToastItem);
   }
 
   private _initStores() {
