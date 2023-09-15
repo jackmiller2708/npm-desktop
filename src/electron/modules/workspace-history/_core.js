@@ -1,14 +1,14 @@
+const { readFile, writeFile, getResourcePath } = require("../file-system");
 const { _parseData, _rawToDataMapper } = require("./_helper");
-const { readFile, writeFile } = require("../file-system");
 const { WorkspaceHistory } = require("../../shared/models/workspace-history.model");
 const { existsSync } = require("fs");
-const { join } = require("path");
 const { Either } = require("../../shared/monads/either.monad");
+const { join } = require("path");
 
 const HISTORY_FILE = "workspace.history.json";
 
 function _getDestinationFilePath() {
-  return join(__dirname, HISTORY_FILE);
+  return join(getResourcePath(), HISTORY_FILE);
 }
 
 function _processRawData(output) {

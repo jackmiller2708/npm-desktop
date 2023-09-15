@@ -27,7 +27,10 @@ function bootstrap(window) {
 
   initIPCListeners(window);
   window.loadURL(servePath);
-  window.webContents.openDevTools();
+  
+  if (!app.isPackaged) {
+    window.webContents.openDevTools();
+  }
 }
 
 /**

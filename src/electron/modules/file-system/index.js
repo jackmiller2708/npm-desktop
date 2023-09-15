@@ -1,6 +1,11 @@
 const { writeFileSync, readFileSync } = require("fs");
 const { Either } = require("../../shared/monads/either.monad");
+const { app } = require("electron");
 const { IO } = require("../../shared/monads/io.monad");
+
+function getResourcePath() {
+  return app.isPackaged ? process.resourcesPath : __dirname;
+}
 
 /**
  * Reads a file synchronously from the given file path and returns an IO monad
@@ -43,4 +48,4 @@ function writeFile(filePath, data) {
   });
 }
 
-module.exports = { readFile, writeFile };
+module.exports = { readFile, writeFile, getResourcePath };
