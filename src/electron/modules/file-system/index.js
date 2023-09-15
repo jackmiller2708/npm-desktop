@@ -1,10 +1,11 @@
-const { writeFileSync, readFileSync } = require("fs");
+const { writeFileSync, readFileSync, mkdirSync } = require("fs");
+const { join, dirname } = require("path");
 const { Either } = require("../../shared/monads/either.monad");
 const { app } = require("electron");
 const { IO } = require("../../shared/monads/io.monad");
 
 function getResourcePath() {
-  return app.isPackaged ? process.resourcesPath : __dirname;
+  return join(app.isPackaged ? process.resourcesPath : __dirname, "data");
 }
 
 /**
@@ -39,6 +40,7 @@ function readFile(filePath) {
 function writeFile(filePath, data) {
   return IO(() => {
     try {
+      mkdirSync(dirname(filePath), { recursive: true });
       writeFileSync(filePath, JSON.stringify(data));
 
       return Either.Right(data);
