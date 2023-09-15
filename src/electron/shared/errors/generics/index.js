@@ -1,0 +1,3 @@
+const ERR_INVALID_DATA_TYPE = "ERR_INVALID_DATA_TYPE";
+
+module.exports = { ERR_INVALID_DATA_TYPE };

@@ -1,3 +1,5 @@
+const { ERR_WORKSPACE_NOT_FOUND } = require("../../shared/errors/workspace.history");
+const { ERR_INVALID_DATA_TYPE } = require("../../shared/errors/generics");
 const { _loadData, _saveData } = require("./_core");
 const { isRecord } = require("immutable");
 const { Either } = require("../../shared/monads/either.monad");
@@ -9,7 +11,7 @@ function _isValidWorkspace(workspace) {
     return Either.Right(workspace)
   }
 
-  return Either.Left(new Error('Invalid workspace'));
+  return Either.Left(new Error(ERR_INVALID_DATA_TYPE));
 }
 
 function _addToHistory(workspace, history) {
@@ -38,7 +40,7 @@ function _updateFromHistory(workspace, history) {
   }
   
   if (index === history.workspaces.size) {
-    return Either.Left(new Error('Workspace does not exist'));
+    return Either.Left(new Error(ERR_WORKSPACE_NOT_FOUND));
   }
 
   if (history.lastOpened?.path === workspace.path) {
@@ -60,7 +62,7 @@ function _removeFromHistory(workspace, history) {
   }
   
   if (index === history.workspaces.size) {
-    return Either.Left(new Error('Workspace does not exist'));
+    return Either.Left(new Error(ERR_WORKSPACE_NOT_FOUND));
   }
 
   return Either.Right(
@@ -80,7 +82,7 @@ function _setLastOpened(workspace, history) {
   }
 
   if (index === history.workspaces.size) {
-    return Either.Left(new Error('Workspace does not exist'));
+    return Either.Left(new Error(ERR_WORKSPACE_NOT_FOUND));
   }
 
   const temp = history.workspaces.get(index);
