@@ -48,6 +48,7 @@
     "@electron-forge/maker-squirrel": "^6.4.1",
     "@electron-forge/maker-zip": "^6.4.1",
     "@electron-forge/plugin-auto-unpack-natives": "^6.4.1",
+    "@types/animejs": "^3.1.7",
     "@types/jasmine": "~4.3.0",
     "@types/luxon": "^3.3.2",
     "@types/node": "^20.5.7",
