@@ -23,7 +23,14 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/angular/favicon.ico", "src/angular/assets"],
+            "assets": [
+              "src/angular/favicon.ico",
+              {
+                "glob": "**/*",
+                "input": "src/angular/assets/",
+                "output": "/assets/"
+              }
+            ],
             "styles": ["src/angular/styles.scss"],
             "scripts": [],
             "customWebpackConfig": {
@@ -111,7 +118,14 @@
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/angular/favicon.ico", "src/angular/assets"],
+            "assets": [
+              "src/angular/favicon.ico",
+              {
+                "glob": "**/*",
+                "input": "src/angular/assets/",
+                "output": "/assets/"
+              }
+            ],
             "styles": ["src/angular/styles.scss"],
             "scripts": []
           }
