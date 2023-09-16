@@ -75,7 +75,9 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
     this._ngDestroy$.next();
   }
 
-  onToastClose(): void {
+  async onToastClose(): Promise<void> {
+    this._playCloseAnimation();
+    await this._toastAnimation?.finished;
     this._onToastFinished();
   }
 
