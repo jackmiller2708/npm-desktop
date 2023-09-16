@@ -20,7 +20,7 @@ export class DisplayToastService {
 
   private _priorityComparator(messageA: ToastItem, messageB: ToastItem) {
     if (messageA.variant === 'error' && messageB.variant === 'error') {
-      return messageA.actionLabel ? (messageB.actionLabel ? 0 : -1) :( messageB.actionLabel ? 1 : 0);
+      return messageA.action ? (messageB.action ? 0 : -1) :( messageB.action ? 1 : 0);
     }
 
     if (messageA.variant === 'error') {
@@ -31,15 +31,15 @@ export class DisplayToastService {
       return 1;
     }
 
-    if (messageA.actionLabel && messageB.actionLabel) {
+    if (messageA.action && messageB.action) {
       return this._variantPriorityComparator(messageA.variant, messageB.variant);
     }
 
-    if (messageA.actionLabel) {
+    if (messageA.action) {
       return -1;
     }
 
-    if (messageB.actionLabel) {
+    if (messageB.action) {
       return 1;
     }
     

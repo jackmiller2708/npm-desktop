@@ -1,5 +1,16 @@
-<app-popup [isShown]="isMessageShown" [target]="hostElement">
-  <ng-container *ngIf="isMessageShown">
-    <app-item-toast [text]="message.text" [variant]="message.variant" [action]="message.actionLabel" (close)="onToastClose()"></app-item-toast>
-  </ng-container>
+<div #toastHost></div>
+
+<app-popup [isShown]="isMessageShown" [target]="toastHost">
+  <div class="relative">
+    <div #toastContainer class="absolute bottom-0 left-2">
+      <ng-container *ngIf="isMessageShown && currentMessage">
+        <app-item-toast
+          [text]="currentMessage.text"
+          [variant]="currentMessage.variant"
+          [action]="currentMessage.action"
+          (close)="onToastClose()"
+        ></app-item-toast>
+      </ng-container>
+    </div>
+  </div>
 </app-popup>
