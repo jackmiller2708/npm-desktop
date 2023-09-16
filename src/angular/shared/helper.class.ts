@@ -1,7 +1,13 @@
+import { Observable, takeUntil } from 'rxjs';
 type F = (...args: any[]) => void;
 
 export class Helper {
   private constructor() {}
+
+  static makeObservableRegistrar(ngDestroy: Observable<void>) {
+    return <T>(store$: Observable<T>, processor: (data: T) => void) =>
+      store$.pipe(takeUntil(ngDestroy)).subscribe(processor.bind(this));
+  }
 
   static clamp(num: number, min: number, max: number): number {
     return Math.min(Math.max(num, min), max);

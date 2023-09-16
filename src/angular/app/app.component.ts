@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { InterProcessCommunicator } from '../shared/services/IPC/inter-process-communicator.service';
 import { ToastService } from '../shared/services/toast/toast.service';
 import { IToastItem } from '../shared/components/molecules/display-toast/interfaces/toast-item.interface';
+import { Subject } from 'rxjs';
+import { Helper } from '../shared/helper.class';
 
 @Component({
   selector: 'app-root',
@@ -37,18 +38,14 @@ export class AppComponent implements OnInit, OnDestroy {
     this._toastService.addMessage({
       text: error['message'] as string,
       variant: 'error',
+      isAutoDismissible: true,
     } as IToastItem);
   }
 
   private _initStores() {
+    const _register = Helper.makeObservableRegistrar.call(this, this._ngDestroy$);
     const error$ = this._IPC.on<Record<string, any>>('system-error');
 
-    this._register(error$, this._handleError);
-  }
-
-  private _register<T>(store$: Observable<T>, processor: (data: T) => void): Subscription {
-    return store$
-      .pipe(takeUntil(this._ngDestroy$))
-      .subscribe(processor.bind(this));
+    _register(error$, this._handleError);
   }
 }
