@@ -1,5 +1,5 @@
 import { Component, HostBinding, ElementRef, OnDestroy, OnInit, ChangeDetectorRef, ViewChild, AfterViewInit } from '@angular/core';
-import { Observable, Subject, from, switchMap, timer, tap } from 'rxjs';
+import { Observable, Subject, from, switchMap, timer, tap, takeUntil } from 'rxjs';
 import { DisplayToastService } from './services/display-toast.service';
 import { ItemToastComponent } from '../item-toast/item-toast.component';
 import { PopupComponent } from '../../atoms/popup/popup.component';
@@ -23,6 +23,7 @@ import anime from 'animejs/lib/anime.es';
 })
 export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly _startToastCountdown$: Subject<number>;
+  private readonly _stopToastCountdown$: Subject<void>;
   private readonly _ngDestroy$: Subject<void>;
 
   @ViewChild('toastContainer', { static: true })
@@ -57,6 +58,7 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {
     this._ngDestroy$ = new Subject();
     this._startToastCountdown$ = new Subject();
+    this._stopToastCountdown$ = new Subject();
     this._isShown = false;
 
     this._priorityStack = Stack();
@@ -76,13 +78,16 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async onToastClose(): Promise<void> {
+    this._stopToastCountdown$.next();
     this._playCloseAnimation();
+
     await this._toastAnimation?.finished;
+    
     this._onToastFinished();
   }
 
   //#region Private Event Handler
-  private _onToastFinished() {
+  private _onToastFinished(): void {
     this._priorityStack = this._updateToastsAndSort(
       this._popToast(this._priorityStack),
       (_toasts) => _toasts.concat(this._waitList)
@@ -92,14 +97,14 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
     this._startBroadcasting();
   }
 
-  private _onToastAdd(message: ToastItem): void {
+  private _onToastAdd(toast: ToastItem): void {
     if (this._isShown) {
-      return void (this._waitList = this._holdToast(this._waitList, message));
+      return void (this._waitList = this._holdToast(this._waitList, toast));
     }
 
     this._priorityStack = this._updateToastsAndSort(
       this._priorityStack,
-      (_toasts) => this._addToast(_toasts, message)
+      (_toasts) => this._addToast(_toasts, toast)
     );
 
     this._CDR.detectChanges();
@@ -183,9 +188,12 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
     this._toastAnimation?.play();
   }
 
-  private _getMessageTimer() {
+  private _getToastTimer() {
+    const _getTimer = (duration: number) =>
+      timer(duration).pipe(takeUntil(this._stopToastCountdown$));
+
     return this._startToastCountdown$.pipe(
-      switchMap((duration: number) => timer(duration)),
+      switchMap(_getTimer),
       tap(() => this._playCloseAnimation()),
       switchMap(() => from(this._toastAnimation!.finished))
     );
@@ -197,7 +205,7 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
     const _register = Helper.makeObservableRegistrar.call(this, this._ngDestroy$);
     const { addMessage$ } = this._toastService;
 
-    _register(this._getMessageTimer(), this._onToastFinished);
+    _register(this._getToastTimer(), this._onToastFinished);
     _register(addMessage$ as Observable<ToastItem>, this._onToastAdd);
   }
   //#endregion
