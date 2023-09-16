@@ -121,12 +121,12 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
     return collection.push(toast);
   }
 
-  private _sortToasts(collection: Stack<ToastItem>) {
-    return collection.sort(this._displayToastService.sortFn.byPriority);
-  }
-
   private _popToast(collection: Stack<ToastItem>) {
     return collection.pop();
+  }
+
+  private _sortToasts(collection: Stack<ToastItem>) {
+    return collection.sort(this._displayToastService.sortFn.byPriority);
   }
 
   private _updateToastsAndSort(collection: Stack<ToastItem>, updateFn: (collection: Stack<ToastItem>) => Stack<ToastItem>) {
