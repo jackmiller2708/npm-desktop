@@ -3,11 +3,11 @@ import { PromptDialogStateChanges } from './models/prompt-dialog-state-changes.m
 import { IPromptDialogProps } from './interfaces/prompt-dialog-props.interface';
 import { PromptDialogProps } from './models/prompt-dialog-props.model';
 import { DialogComponent } from '../../atoms/dialog/dialog.component';
-import { StateUpdateFn } from 'src/angular/shared/services/state/interfaces/state-changes.interface';
+import { StateUpdateFn } from '@services/state/interfaces/state-changes.interface';
 import { IconComponent } from '../../atoms/icon/icon.component';
 import { TextComponent } from '../../atoms/text/text.component';
 import { CommonModule } from '@angular/common';
-import { StateService } from 'src/angular/shared/services/state/state.service';
+import { StateService } from '@services/state/state.service';
 
 @Component({
   selector: 'app-prompt-dialog',

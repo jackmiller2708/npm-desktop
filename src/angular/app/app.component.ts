@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { InterProcessCommunicator } from '../shared/services/IPC/inter-process-communicator.service';
-import { ToastService } from '../shared/services/toast/toast.service';
-import { IToastItem } from '../shared/components/molecules/display-toast/interfaces/toast-item.interface';
+import { InterProcessCommunicator } from '@services/IPC/inter-process-communicator.service';
+import { ToastService } from '@services/toast/toast.service';
+import { IToastItem } from '@components/molecules/display-toast/interfaces/toast-item.interface';
 import { Subject } from 'rxjs';
-import { Helper } from '../shared/helper.class';
+import { Helper } from '@shared/helper.class';
 
 @Component({
   selector: 'app-root',

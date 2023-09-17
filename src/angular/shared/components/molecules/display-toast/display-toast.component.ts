@@ -4,12 +4,12 @@ import { DisplayToastService } from './services/display-toast.service';
 import { ItemToastComponent } from '../item-toast/item-toast.component';
 import { PopupComponent } from '../../atoms/popup/popup.component';
 import { AnimeInstance } from 'animejs';
-import { MonadService } from 'src/angular/shared/services/monad/monad.service';
+import { MonadService } from '@services/monad/monad.service';
 import { CommonModule } from '@angular/common';
-import { ToastService } from 'src/angular/shared/services/toast/toast.service';
+import { ToastService } from '@services/toast/toast.service';
 import { ToastItem } from './models/toast-item.model';
 import { List, Stack } from 'immutable';
-import { Helper } from 'src/angular/shared/helper.class';
+import { Helper } from '@shared/helper.class';
 
 import anime from 'animejs/lib/anime.es';
 

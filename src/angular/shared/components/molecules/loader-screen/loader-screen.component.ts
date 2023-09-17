@@ -1,9 +1,9 @@
 import { Component, HostBinding, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { Subject, skip, distinctUntilChanged } from 'rxjs';
-import { LoaderService } from 'src/angular/shared/services/loader/loader.service';
+import { LoaderService } from '@services/loader/loader.service';
 import { AnimeInstance } from 'animejs';
 import { CommonModule } from '@angular/common';
-import { Helper } from 'src/angular/shared/helper.class';
+import { Helper } from '@shared/helper.class';
 
 import anime from 'animejs/lib/anime.es';
 

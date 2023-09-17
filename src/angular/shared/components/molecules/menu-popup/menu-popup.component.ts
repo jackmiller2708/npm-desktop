@@ -4,12 +4,12 @@ import { ConnectedPosition } from '@angular/cdk/overlay';
 import { IPopupMenuProps } from './interfaces/popup-menu-props.interface';
 import { PopupMenuProps } from './models/popup-menu-props.interface';
 import { PopupComponent } from '../../atoms/popup/popup.component';
-import { StateUpdateFn } from 'src/angular/shared/services/state/interfaces/state-changes.interface';
+import { StateUpdateFn } from '@services/state/interfaces/state-changes.interface';
 import { IconComponent } from '../../atoms/icon/icon.component';
 import { TextComponent } from '../../atoms/text/text.component';
 import { PopupMenuItem } from './models/popup-menu-item.model';
 import { CommonModule } from '@angular/common';
-import { StateService } from 'src/angular/shared/services/state/state.service';
+import { StateService } from '@services/state/state.service';
 import { List } from 'immutable';
 
 @Component({

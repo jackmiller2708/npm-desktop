@@ -1,14 +1,14 @@
 import { Component, NgZone, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
-import { InterProcessCommunicator } from 'src/angular/shared/services/IPC/inter-process-communicator.service';
+import { InterProcessCommunicator } from '@services/IPC/inter-process-communicator.service';
 import { ActivatedRoute, Params } from '@angular/router';
-import { LoaderService } from 'src/angular/shared/services/loader/loader.service';
-import { MonadService } from 'src/angular/shared/services/monad/monad.service';
-import { Workspace } from 'src/angular/shared/models/workspace.model';
-import { Package } from 'src/angular/shared/models/package.model';
+import { LoaderService } from '@services/loader/loader.service';
+import { MonadService } from '@services/monad/monad.service';
+import { Workspace } from '@models/workspace.model';
+import { Package } from '@models/package.model';
 import { Subject } from 'rxjs';
-import { Either } from 'src/angular/shared/services/monad/models/either.monad';
+import { Either } from '@services/monad/models/either.monad';
 import { Router } from '@angular/router';
-import { Helper } from 'src/angular/shared/helper.class';
+import { Helper } from '@shared/helper.class';
 import { Map } from 'immutable';
 
 @Component({

@@ -5,17 +5,17 @@ import { PromptDialogComponent } from '../prompt-dialog/prompt-dialog.component'
 import { WorkspaceHistoryItem } from './models/workspace-history-item.model';
 import { MenuPopupComponent } from '../menu-popup/menu-popup.component';
 import { ButtonComponent } from '../../atoms/button/button.component';
-import { ProcessService } from 'src/angular/shared/services/process/process.service';
+import { ProcessService } from '@services/process/process.service';
 import { PopupMenuItem } from './../menu-popup/models/popup-menu-item.model';
 import { TextComponent } from '../../atoms/text/text.component';
 import { IconComponent } from '../../atoms/icon/icon.component';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { StateUpdateFn } from 'src/angular/shared/services/state/interfaces/state-changes.interface';
-import { StateService } from 'src/angular/shared/services/state/state.service';
+import { StateUpdateFn } from '@services/state/interfaces/state-changes.interface';
+import { StateService } from '@services/state/state.service';
 import { CommonModule } from '@angular/common';
-import { MonadService } from 'src/angular/shared/services/monad/monad.service';
-import { Workspace } from 'src/angular/shared/models/workspace.model';
-import { Either } from 'src/angular/shared/services/monad/models/either.monad';
+import { MonadService } from '@services/monad/monad.service';
+import { Workspace } from '@models/workspace.model';
+import { Either } from '@services/monad/models/either.monad';
 import { List } from 'immutable';
 
 const imports = [CommonModule, OverlayModule, TextComponent, IconComponent, MenuPopupComponent, PromptDialogComponent, ButtonComponent];

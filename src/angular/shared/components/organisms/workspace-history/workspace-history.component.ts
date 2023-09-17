@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, NgZone, OnDestroy, OnInit, HostListener } from '@angular/core';
-import { Observable, Subject, Subscription, filter, firstValueFrom, map, switchMap, takeUntil, tap } from 'rxjs';
+import { Observable, Subject, Subscription, filter, firstValueFrom, map, switchMap, takeUntil } from 'rxjs';
 import { WorkspaceHistoryItemStateChanges } from './../../molecules/item-workspace-history/models/workspace-history-item.state-changes.model';
 import { ItemWorkspaceHistoryComponent } from '../../molecules/item-workspace-history/item-workspace-history.component';
-import { InterProcessCommunicator } from 'src/angular/shared/services/IPC/inter-process-communicator.service';
+import { InterProcessCommunicator } from '@services/IPC/inter-process-communicator.service';
 import { WorkspaceHistoryService } from './workspace-history.service';
 import { WorkspaceHistoryItem } from '../../molecules/item-workspace-history/models/workspace-history-item.model';
-import { IWorkspaceHistoryDTO } from 'src/angular/shared/interfaces/dtos/workspace-history-dto.interface';
-import { WorkspaceHistory } from 'src/angular/shared/models/workspace-history.model';
+import { IWorkspaceHistoryDTO } from '@interfaces/dtos/workspace-history-dto.interface';
+import { WorkspaceHistory } from '@models/workspace-history.model';
 import { ButtonComponent } from '../../atoms/button/button.component';
 import { TextComponent } from '../../atoms/text/text.component';
-import { LoaderService } from 'src/angular/shared/services/loader/loader.service';
+import { LoaderService } from '@services/loader/loader.service';
 import { CommonModule } from '@angular/common';
-import { Workspace } from 'src/angular/shared/models/workspace.model';
+import { Workspace } from '@models/workspace.model';
 import { List } from 'immutable';
 import { Router } from '@angular/router';
 
