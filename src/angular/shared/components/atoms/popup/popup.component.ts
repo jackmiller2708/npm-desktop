@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostBinding, Input, Output, ViewChild } from '@angular/core';
 import { CdkConnectedOverlay, ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
 import { PopupStateChanges } from './models/popup-state-changes.model';
-import { StateUpdateFn } from 'src/angular/shared/services/state/interfaces/state-changes.interface';
+import { StateUpdateFn } from '@services/state/interfaces/state-changes.interface';
 import { CommonModule } from '@angular/common';
-import { StateService } from 'src/angular/shared/services/state/state.service';
+import { StateService } from '@services/state/state.service';
 import { IPopupProps } from './interfaces/popup-props.interface';
 import { PopupProps } from './models/popup-props.model';
 

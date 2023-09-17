@@ -1,5 +1,5 @@
 import { ProjectRoutingModule } from './project-routing.module';
-import { ButtonComponent } from 'src/angular/shared/components/atoms/button/button.component';
+import { ButtonComponent } from '@components/atoms/button/button.component';
 import { ProjectComponent } from './project.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';

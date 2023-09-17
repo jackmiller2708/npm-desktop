@@ -3,10 +3,10 @@ import { IToastAction, IToastItemProps } from './interfaces/toast-item-props.int
 import { ToastItemStateChanges } from './models/toast-item-state-changes.model';
 import { ButtonComponent } from '../../atoms/button/button.component';
 import { ToastItemProps } from './models/toast-item-props.model';
-import { StateUpdateFn } from 'src/angular/shared/services/state/interfaces/state-changes.interface';
+import { StateUpdateFn } from '@services/state/interfaces/state-changes.interface';
 import { IconComponent } from '../../atoms/icon/icon.component';
 import { TextComponent } from '../../atoms/text/text.component';
-import { StateService } from 'src/angular/shared/services/state/state.service';
+import { StateService } from '@services/state/state.service';
 import { CommonModule } from '@angular/common';
 import { Map } from 'immutable';
 

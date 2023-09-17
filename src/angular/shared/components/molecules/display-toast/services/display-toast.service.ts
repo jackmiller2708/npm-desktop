@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToastItem } from '../models/toast-item.model';
-import { Helper } from 'src/angular/shared/helper.class';
+import { Helper } from '@shared/helper.class';
 
 @Injectable()
 export class DisplayToastService {

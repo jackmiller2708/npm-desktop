@@ -1,5 +1,5 @@
 import { WorkspaceHistoryItemStateChanges } from '../../molecules/item-workspace-history/models/workspace-history-item.state-changes.model';
-import { InterProcessCommunicator } from 'src/angular/shared/services/IPC/inter-process-communicator.service';
+import { InterProcessCommunicator } from '@services/IPC/inter-process-communicator.service';
 import { WorkspaceHistoryItem } from '../../molecules/item-workspace-history/models/workspace-history-item.model';
 import { Injectable } from '@angular/core';
 import { List } from 'immutable';

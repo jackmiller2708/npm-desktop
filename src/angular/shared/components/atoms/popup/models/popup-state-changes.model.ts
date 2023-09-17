@@ -1,4 +1,4 @@
-import { IStateChanges } from 'src/angular/shared/services/state/interfaces/state-changes.interface';
+import { IStateChanges } from '@services/state/interfaces/state-changes.interface';
 import { IPopupProps } from '../interfaces/popup-props.interface';
 import { Record } from 'immutable';
 
