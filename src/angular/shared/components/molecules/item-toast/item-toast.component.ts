@@ -72,10 +72,6 @@ export class ItemToastComponent implements AfterViewInit {
     return this._iconPaths.get(this._states.variant, '');
   }
 
-  get hostElement(): Element {
-    return this._el.nativeElement;
-  }
-
   @Output()
   ready: EventEmitter<ToastItemProps>;
 
