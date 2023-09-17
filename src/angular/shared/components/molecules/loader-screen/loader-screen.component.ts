@@ -1,5 +1,5 @@
-import { Subject, skip, distinctUntilChanged, from, Observable, switchMap, tap } from 'rxjs';
 import { Component, HostBinding, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { Subject, skip, distinctUntilChanged } from 'rxjs';
 import { LoaderService } from 'src/angular/shared/services/loader/loader.service';
 import { AnimeInstance } from 'animejs';
 import { CommonModule } from '@angular/common';
@@ -16,7 +16,6 @@ import anime from 'animejs/lib/anime.es';
 })
 export class LoaderScreenComponent implements OnInit, OnDestroy {
   private readonly _ngDestroy$: Subject<void>;
-  private readonly _animationFinished$: Observable<void>;
   private _animation: AnimeInstance;
 
   @HostBinding('class')
@@ -29,22 +28,13 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
     private readonly _el: ElementRef<Element>
   ) {
     this._animation = this._initAnimation(this._el.nativeElement);
-    this._animationFinished$ = from(this._animation.finished)
-
     this._ngDestroy$ = new Subject();
   }
 
   ngOnInit(): void {
     Helper.makeObservableRegistrar.call(this, this._ngDestroy$)(
-      this._loaderService.isLoading$.pipe(
-        skip(1),
-        distinctUntilChanged(),
-        tap(() => this._loaderService.setAnimationState('start')),
-        tap((isClose) => this._play(!isClose)),
-        switchMap(() => this._animationFinished$),
-        tap(() => this._loaderService.setAnimationState('finish'))
-      ),
-      () => void null
+      this._loaderService.isLoading$.pipe(skip(1), distinctUntilChanged()),
+      (isLoading) => this._play(!isLoading)
     );
   }
 
@@ -83,6 +73,8 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
       translateX: '-100%',
       easing: 'cubicBezier(.5, .05, .1, .3)',
       duration: 300,
+      begin: () => this._loaderService.setAnimationState('start'),
+      complete: () => this._loaderService.setAnimationState('finish')
     });
   }
 }
