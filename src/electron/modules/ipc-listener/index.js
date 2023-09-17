@@ -1,6 +1,8 @@
 const { getHistory, addToHistory, setLastOpened, updateFromHistory, removeFromHistory, unsetLastOpened } = require("../workspace-history");
 const { validatePathThenAct, ipcReqParser } = require("./_service");
 const { ipcMain, dialog, BrowserWindow } = require("electron")
+const { Subject, takeUntil } = require("rxjs");
+const { loadWorkspace } = require("../workspace");
 const { Workspace } = require("../../shared/models/workspace.model");
 const { basename } = require("path");
 
@@ -9,6 +11,7 @@ const { basename } = require("path");
  * @param {BrowserWindow} window
  */
 function initIPCListeners(window) {
+  const _workspaceClose$ = new Subject();
   const _IPC = ipcReqParser(ipcMain);
 
   _IPC.on("load-workspace-history", () => {
@@ -28,9 +31,10 @@ function initIPCListeners(window) {
   });
 
   _IPC.on("close-workspace", () => {
-    unsetLastOpened().fold(_emitError, (data) =>
-      _emitEvent("workspace-history-loaded", data)
-    );
+    unsetLastOpened().fold(_emitError, (data) => {
+      _workspaceClose$.next();
+      _emitEvent("workspace-history-loaded", data);
+    });
   });
 
   _IPC.on("update-workspace", workspace => {
@@ -44,6 +48,12 @@ function initIPCListeners(window) {
       _emitEvent("workspace-history-loaded", data)
     );
   })
+
+  _IPC.on("load-workspace", (workspace) => {
+    loadWorkspace(Workspace(workspace))
+      .pipe(takeUntil(_workspaceClose$))
+      .subscribe((data) => _emitEvent("workspace-loaded", data));
+  });
 
   // ============================================================================================
   // ============================================================================================
@@ -60,11 +70,18 @@ function initIPCListeners(window) {
   }
 
   function _emitError(error) {
-    _emitEvent('system-error', { code: error.code ?? 500, message: error.message, type: 'error' });
+    _emitEvent("system-error", {
+      code: error.code ?? 500,
+      message: error.message,
+      type: "error",
+    });
   }
 
   function _emitEvent(eventName, data) {
-    window.webContents.send(eventName, JSON.stringify(data));
+    window.webContents.send(
+      eventName,
+      typeof data !== "string" ? JSON.stringify(data) : data
+    );
   }
 }
 
