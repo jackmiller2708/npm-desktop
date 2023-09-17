@@ -1,5 +1,5 @@
-import { Subject, Observable, takeUntil, Subscription, skip } from 'rxjs';
 import { Component, HostBinding, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { Subject, skip, distinctUntilChanged } from 'rxjs';
 import { LoaderService } from 'src/angular/shared/services/loader/loader.service';
 import { AnimeInstance } from 'animejs';
 import { CommonModule } from '@angular/common';
@@ -33,8 +33,8 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this._register(
-      this._loaderScreenService.isLoading$.pipe(skip(2)),
+    Helper.makeObservableRegistrar.call(this, this._ngDestroy$)(
+      this._loaderScreenService.isLoading$.pipe(skip(1), distinctUntilChanged()),
       (isLoading) => this._play(!isLoading)
     );
   }
@@ -59,9 +59,5 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
       easing: 'cubicBezier(.5, .05, .1, .3)',
       duration: 300,
     });
-  }
-
-  private _register<T>(store$: Observable<T>, processor: (data: T) => void): Subscription {
-    return store$.pipe(takeUntil(this._ngDestroy$)).subscribe(processor.bind(this));
   }
 }
