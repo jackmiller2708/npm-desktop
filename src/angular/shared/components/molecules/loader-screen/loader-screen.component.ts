@@ -1,5 +1,5 @@
+import { Subject, skip, distinctUntilChanged, from, Observable, throttleTime, switchMap, tap } from 'rxjs';
 import { Component, HostBinding, ElementRef, OnInit, OnDestroy } from '@angular/core';
-import { Subject, skip, distinctUntilChanged } from 'rxjs';
 import { LoaderService } from 'src/angular/shared/services/loader/loader.service';
 import { AnimeInstance } from 'animejs';
 import { CommonModule } from '@angular/common';
@@ -16,6 +16,7 @@ import anime from 'animejs/lib/anime.es';
 })
 export class LoaderScreenComponent implements OnInit, OnDestroy {
   private readonly _ngDestroy$: Subject<void>;
+  private readonly _animationFinished$: Observable<void>;
   private _animation: AnimeInstance;
 
   @HostBinding('class')
@@ -24,18 +25,27 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private readonly _loaderScreenService: LoaderService,
+    private readonly _loaderService: LoaderService,
     private readonly _el: ElementRef<Element>
   ) {
     this._animation = this._initAnimation(this._el.nativeElement);
-    this._play = Helper.throttle(this._play.bind(this), 1000);
+    this._animationFinished$ = from(this._animation.finished);
+
     this._ngDestroy$ = new Subject();
   }
 
   ngOnInit(): void {
     Helper.makeObservableRegistrar.call(this, this._ngDestroy$)(
-      this._loaderScreenService.isLoading$.pipe(skip(1), distinctUntilChanged()),
-      (isLoading) => this._play(!isLoading)
+      this._loaderService.isLoading$.pipe(
+        skip(1),
+        distinctUntilChanged(),
+        throttleTime(1000),
+        tap(() => this._loaderService.setAnimationState('start')),
+        tap((isClose) => this._play(!isClose)),
+        switchMap(() => this._animationFinished$),
+        tap(() => this._loaderService.setAnimationState('finish'))
+      ),
+      () => void 0
     );
   }
 
@@ -44,7 +54,23 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
   }
 
   private _play(reverse?: boolean): void {
-    if ((typeof reverse === 'boolean' && reverse) || this._animation.reversed) {
+    if ((typeof reverse === 'boolean' && reverse)) {
+      return this._playCloseAnimation()
+    }
+
+    this._playOpenAnimation();
+  }
+
+  private _playOpenAnimation() {
+    if (this._animation.reversed) {
+      this._animation.reverse();
+    }
+
+    this._animation.play();
+  }
+
+  private _playCloseAnimation() {
+    if (!this._animation.reversed) {
       this._animation.reverse();
     }
 
