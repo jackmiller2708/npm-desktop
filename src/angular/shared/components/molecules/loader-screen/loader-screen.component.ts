@@ -1,6 +1,6 @@
 import { Subject, Observable, takeUntil, Subscription, skip } from 'rxjs';
 import { Component, HostBinding, ElementRef, OnInit, OnDestroy } from '@angular/core';
-import { LoaderScreenService } from './services/loader-screen.service';
+import { LoaderService } from 'src/angular/shared/services/loader/loader.service';
 import { AnimeInstance } from 'animejs';
 import { CommonModule } from '@angular/common';
 import { Helper } from 'src/angular/shared/helper.class';
@@ -24,7 +24,7 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private readonly _loaderScreenService: LoaderScreenService,
+    private readonly _loaderScreenService: LoaderService,
     private readonly _el: ElementRef<Element>
   ) {
     this._animation = this._initAnimation(this._el.nativeElement);

@@ -1,13 +1,12 @@
+import { LoaderService } from './loader.service';
 import { TestBed } from '@angular/core/testing';
 
-import { LoaderScreenService } from './loader-screen.service';
-
 describe('LoaderScreenService', () => {
-  let service: LoaderScreenService;
+  let service: LoaderService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(LoaderScreenService);
+    service = TestBed.inject(LoaderService);
   });
 
   it('should be created', () => {

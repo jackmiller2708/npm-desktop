@@ -2,7 +2,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
-export class LoaderScreenService {
+export class LoaderService {
   private readonly _isLoading: BehaviorSubject<boolean>;
   readonly isLoading$: Observable<boolean>;
 
