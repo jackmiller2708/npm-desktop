@@ -1,4 +1,4 @@
-import { Subject, skip, distinctUntilChanged, from, Observable, throttleTime, switchMap, tap } from 'rxjs';
+import { Subject, skip, distinctUntilChanged, from, Observable, switchMap, tap } from 'rxjs';
 import { Component, HostBinding, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { LoaderService } from 'src/angular/shared/services/loader/loader.service';
 import { AnimeInstance } from 'animejs';
@@ -29,7 +29,7 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
     private readonly _el: ElementRef<Element>
   ) {
     this._animation = this._initAnimation(this._el.nativeElement);
-    this._animationFinished$ = from(this._animation.finished);
+    this._animationFinished$ = from(this._animation.finished)
 
     this._ngDestroy$ = new Subject();
   }
@@ -39,13 +39,12 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
       this._loaderService.isLoading$.pipe(
         skip(1),
         distinctUntilChanged(),
-        throttleTime(1000),
         tap(() => this._loaderService.setAnimationState('start')),
         tap((isClose) => this._play(!isClose)),
         switchMap(() => this._animationFinished$),
         tap(() => this._loaderService.setAnimationState('finish'))
       ),
-      () => void 0
+      () => void null
     );
   }
 
