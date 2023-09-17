@@ -1,5 +1,5 @@
 import { Component, HostBinding, ElementRef, OnDestroy, OnInit, ChangeDetectorRef, ViewChild, AfterViewInit } from '@angular/core';
-import { Observable, Subject, from, switchMap, timer, tap, takeUntil } from 'rxjs';
+import { Observable, Subject, switchMap, timer, tap, takeUntil, firstValueFrom } from 'rxjs';
 import { DisplayToastService } from './services/display-toast.service';
 import { ItemToastComponent } from '../item-toast/item-toast.component';
 import { PopupComponent } from '../../atoms/popup/popup.component';
@@ -22,6 +22,7 @@ import anime from 'animejs/lib/anime.es';
   providers: [DisplayToastService],
 })
 export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly _toastAnimationFinish$: Subject<void>;
   private readonly _startToastCountdown$: Subject<number>;
   private readonly _stopToastCountdown$: Subject<void>;
   private readonly _ngDestroy$: Subject<void>;
@@ -59,6 +60,7 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
     this._ngDestroy$ = new Subject();
     this._startToastCountdown$ = new Subject();
     this._stopToastCountdown$ = new Subject();
+    this._toastAnimationFinish$ = new Subject();
     this._isShown = false;
 
     this._priorityStack = Stack();
@@ -77,13 +79,13 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
     this._ngDestroy$.next();
   }
 
-  async onToastClose(): Promise<void> {
+  onToastClose(): void {
     this._stopToastCountdown$.next();
     this._playCloseAnimation();
 
-    await this._toastAnimation?.finished;
-    
-    this._onToastFinished();
+    firstValueFrom(this._toastAnimationFinish$).then(
+      this._onToastFinished.bind(this)
+    );
   }
 
   //#region Private Event Handler
@@ -169,6 +171,7 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
       autoplay: false,
       easing: 'spring(1, 80, 10, 0)',
       duration: 100,
+      complete: () => this._toastAnimationFinish$.next(),
     });
   }
 
@@ -194,8 +197,8 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
 
     return this._startToastCountdown$.pipe(
       switchMap(_getTimer),
-      tap(() => this._playCloseAnimation()),
-      switchMap(() => from(this._toastAnimation!.finished))
+      tap((): void => this._playCloseAnimation()),
+      switchMap((): Subject<void> => this._toastAnimationFinish$)
     );
   }
   //#endregion
