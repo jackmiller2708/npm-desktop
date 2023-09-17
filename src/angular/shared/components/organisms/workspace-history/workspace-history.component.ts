@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, NgZone, OnDestroy, OnInit, HostListener } from '@angular/core';
-import { Observable, Subject, Subscription, map, takeUntil } from 'rxjs';
+import { Observable, Subject, Subscription, filter, firstValueFrom, map, switchMap, takeUntil, tap } from 'rxjs';
 import { WorkspaceHistoryItemStateChanges } from './../../molecules/item-workspace-history/models/workspace-history-item.state-changes.model';
 import { ItemWorkspaceHistoryComponent } from '../../molecules/item-workspace-history/item-workspace-history.component';
 import { InterProcessCommunicator } from 'src/angular/shared/services/IPC/inter-process-communicator.service';
@@ -9,6 +9,7 @@ import { IWorkspaceHistoryDTO } from 'src/angular/shared/interfaces/dtos/workspa
 import { WorkspaceHistory } from 'src/angular/shared/models/workspace-history.model';
 import { ButtonComponent } from '../../atoms/button/button.component';
 import { TextComponent } from '../../atoms/text/text.component';
+import { LoaderService } from 'src/angular/shared/services/loader/loader.service';
 import { CommonModule } from '@angular/common';
 import { Workspace } from 'src/angular/shared/models/workspace.model';
 import { List } from 'immutable';
@@ -48,6 +49,7 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly _workspaceHistoryService: WorkspaceHistoryService,
+    private readonly _loaderService: LoaderService,
     private readonly _router: Router,
     // used with `_router.navigate` to mitigate the warning: "Navigation triggered outside Angular zone, did you forget to call 'ngZone.run()'?"
     private readonly _ngZone: NgZone,
@@ -100,11 +102,22 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
     return this._workspaceItems.get(index);
   }
 
-  private _processDataSource(data: WorkspaceHistory): void {
+  private async _processDataSource(data: WorkspaceHistory): Promise<void> {
     if (data.lastOpened) {
+      const loaderAnimationFinished = firstValueFrom(
+        this._loaderService.isLoading$.pipe(
+          filter((value: boolean): boolean => value),
+          switchMap(() => this._loaderService.loadAnimationFinish$)
+        )
+      );
+
+      this._loaderService.setLoading(true);
+
+      await loaderAnimationFinished;
+
       return void this._ngZone.run(() =>
         this._router.navigate(['/', 'project'], {
-          state: { workspace: JSON.stringify(data.lastOpened) },
+          queryParams: { workspace: JSON.stringify(data.lastOpened) },
         })
       );
     }
