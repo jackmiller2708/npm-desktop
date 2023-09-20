@@ -16,18 +16,16 @@ import anime from 'animejs/lib/anime.es';
 })
 export class LoaderScreenComponent implements OnInit, OnDestroy {
   private readonly _ngDestroy$: Subject<void>;
-  private _animation: AnimeInstance;
 
   @HostBinding('class')
   private get _classes(): string[] {
-    return ['h-screen', 'w-screen', 'absolute', 'left-full', 'bg-white'];
+    return ['h-screen', 'w-screen', 'absolute', 'left-full', 'bg-white', 'flex', 'items-center', 'justify-center'];
   }
 
   constructor(
     private readonly _loaderService: LoaderService,
     private readonly _el: ElementRef<Element>
   ) {
-    this._animation = this._initAnimation(this._el.nativeElement);
     this._ngDestroy$ = new Subject();
   }
 
@@ -44,33 +42,29 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
 
   private _play(reverse?: boolean): void {
     if ((typeof reverse === 'boolean' && reverse)) {
-      return this._playCloseAnimation()
+      return this._closeAnimation().play();
     }
 
-    this._playOpenAnimation();
+    this._openAnimation().play();
   }
 
-  private _playOpenAnimation() {
-    if (this._animation.reversed) {
-      this._animation.reverse();
-    }
-
-    this._animation.play();
-  }
-
-  private _playCloseAnimation() {
-    if (!this._animation.reversed) {
-      this._animation.reverse();
-    }
-
-    this._animation.play();
-  }
-
-  private _initAnimation(element: Element): AnimeInstance {
+  private _openAnimation() {
     return anime({
-      targets: element,
+      targets: this._el.nativeElement,
       autoplay: false,
-      translateX: '-100%',
+      translateX: ['0%', '-100%'],
+      easing: 'cubicBezier(.5, .05, .1, .3)',
+      duration: 300,
+      begin: () => this._loaderService.setAnimationState('start'),
+      complete: () => this._loaderService.setAnimationState('finish')
+    });
+  } 
+
+  private  _closeAnimation() {
+    return anime({
+      targets: this._el.nativeElement,
+      autoplay: false,
+      translateX: ['-100%', '-200%'],
       easing: 'cubicBezier(.5, .05, .1, .3)',
       duration: 300,
       begin: () => this._loaderService.setAnimationState('start'),
