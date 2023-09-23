@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, Renderer2, RendererStyleFlags2 } from '@angular/core';
 import { Subject, filter, fromEvent, switchMap, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Helper } from '@shared/helper.class';
@@ -15,16 +15,34 @@ const MAX_RESIZE_PERCENTAGE = 80;
 })
 export class ContainerResizableComponent implements OnInit, OnDestroy {
   private readonly _ngDestroy: Subject<void>;
+  private _minWidth: number | undefined;
+  private _maxWidth: number | undefined;
   private _classNames: string[];
+
+  @HostBinding('class')
+  private get _classes(): string[] {
+    return this._classNames.concat('block', `w-[${this._maxPercentage}%]`, 'h-full');
+  }
 
   @Input()
   set className(value: string) {
     this._classNames = value.split(' ');
   }
 
-  @HostBinding('class')
-  private get _classes(): string[] {
-    return this._classNames.concat('block');
+  set minPercentage(value: number) {
+    this._minWidth = Helper.clamp(value, 0, 100);
+  }
+
+  set maxPercentage(value: number) {
+    this._maxWidth = Helper.clamp(value, 0, 100);
+  }
+
+  private get _minPercentage(): number {
+    return  this._minWidth ?? MIN_RESIZE_PERCENTAGE;
+  }
+
+  private get _maxPercentage(): number {
+    return this._maxWidth ?? MAX_RESIZE_PERCENTAGE;
   }
 
   private get _el(): HTMLElement {
@@ -73,20 +91,16 @@ export class ContainerResizableComponent implements OnInit, OnDestroy {
   private _onBeginDrag(event: MouseEvent) {
     const relX = event.pageX - this._el.getBoundingClientRect().left;
 
-    if (this._el.classList.contains('flex-1')) {
-      this._renderer.setStyle(this._el, 'width', `${relX}px`);
-      this._renderer.removeClass(this._el, 'flex-1');
-    }
-
+    this._renderer.setStyle(this._el, 'width', `${relX}px`, RendererStyleFlags2.Important);
     this._renderer.setStyle(document.body, 'cursor', 'col-resize');
     this._renderer.setStyle(document.body, 'user-select', 'none');
   }
 
   private _onDragging(event: MouseEvent) {
     const relX = ((event.pageX - this._el.getBoundingClientRect().left) / window.innerWidth) * 100;
-    const resizedPercentage = Helper.clamp(relX, MIN_RESIZE_PERCENTAGE, MAX_RESIZE_PERCENTAGE);
+    const resizedPercentage = Helper.clamp(relX, this._minPercentage, this._maxPercentage);
 
-    this._renderer.setStyle(this._el, 'width', `${resizedPercentage}%`);
+    this._renderer.setStyle(this._el, 'width', `${resizedPercentage}%`, RendererStyleFlags2.Important);
   }
 
   private _onEndDrag(): void {
