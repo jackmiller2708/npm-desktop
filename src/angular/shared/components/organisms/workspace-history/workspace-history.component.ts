@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, NgZone, OnDestroy, OnInit, HostListener } from '@angular/core';
-import { Observable, Subject, Subscription, filter, firstValueFrom, map, switchMap, takeUntil } from 'rxjs';
+import { Subject, filter, firstValueFrom, map, switchMap } from 'rxjs';
 import { WorkspaceHistoryItemStateChanges } from './../../molecules/item-workspace-history/models/workspace-history-item.state-changes.model';
 import { ItemWorkspaceHistoryComponent } from '../../molecules/item-workspace-history/item-workspace-history.component';
 import { InterProcessCommunicator } from '@services/IPC/inter-process-communicator.service';
 import { WorkspaceHistoryService } from './workspace-history.service';
+import { OverlayscrollbarsModule } from 'overlayscrollbars-ngx';
 import { WorkspaceHistoryItem } from '../../molecules/item-workspace-history/models/workspace-history-item.model';
 import { IWorkspaceHistoryDTO } from '@interfaces/dtos/workspace-history-dto.interface';
 import { WorkspaceHistory } from '@models/workspace-history.model';
@@ -12,13 +13,22 @@ import { TextComponent } from '../../atoms/text/text.component';
 import { LoaderService } from '@services/loader/loader.service';
 import { CommonModule } from '@angular/common';
 import { Workspace } from '@models/workspace.model';
-import { List } from 'immutable';
+import { Helper } from '@shared/helper.class';
 import { Router } from '@angular/router';
+import { List } from 'immutable';
+
+const imports = [
+  CommonModule,
+  OverlayscrollbarsModule,
+  TextComponent,
+  ButtonComponent,
+  ItemWorkspaceHistoryComponent,
+];
 
 @Component({
   selector: 'app-workspace-history',
   standalone: true,
-  imports: [CommonModule, TextComponent, ButtonComponent, ItemWorkspaceHistoryComponent],
+  imports,
   providers: [WorkspaceHistoryService],
   templateUrl: './workspace-history.component.html',
   styleUrls: ['./workspace-history.component.scss'],
@@ -32,7 +42,7 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
 
   @HostBinding('class')
   private get _classes(): string[] {
-    return ['flex', 'flex-col', 'gap-4']
+    return ['flex', 'flex-col', 'gap-4', 'h-full']
   }
 
   get workspaces(): List<Workspace> {
@@ -138,14 +148,9 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
   }
 
   private _initStores(): void {
+    const _register = Helper.makeObservableRegistrar.call(this, this._ngDestroy$);
     const workspaceHistory$ = this._IPC.on<IWorkspaceHistoryDTO>('workspace-history-loaded').pipe(map(this._dtoToDataMapper));
 
-    this._register(workspaceHistory$, this._processDataSource);
-  }
-
-  private _register<T>(store$: Observable<T>, processor: (data: T) => void): Subscription {
-    return store$
-      .pipe(takeUntil(this._ngDestroy$))
-      .subscribe(processor.bind(this));
+    _register(workspaceHistory$, this._processDataSource);
   }
 }

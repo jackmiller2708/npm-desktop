@@ -22,17 +22,19 @@
         </ng-template>
       </app-button>
     </div>
-    
-    <div class="flex flex-col gap-1 flex-1">
-      <app-item-workspace-history 
-        *ngFor="let workspace of workspaces; let i = index" 
-        [dataSource]="workspace"
-        [state]="getItemStateAt(i)"
-        (selected)="onWorkspaceSelected($event)"
-        (ready)="onWorkspaceItemReady($event)"
-        (remove)="onWorkspaceItemRemove($event)"
-        (stateChanged)="onWorkspaceItemChanged($event)"
-      ></app-item-workspace-history>
-    </div>
+
+    <overlay-scrollbars class="flex-1 min-h-0 pr-3">
+      <div class="flex flex-col gap-1">
+        <app-item-workspace-history 
+          *ngFor="let workspace of workspaces; let i = index" 
+          [dataSource]="workspace"
+          [state]="getItemStateAt(i)"
+          (selected)="onWorkspaceSelected($event)"
+          (ready)="onWorkspaceItemReady($event)"
+          (remove)="onWorkspaceItemRemove($event)"
+          (stateChanged)="onWorkspaceItemChanged($event)"
+        ></app-item-workspace-history>
+      </div>
+    </overlay-scrollbars>
   </ng-template>
 </ng-container>
