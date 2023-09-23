@@ -19,7 +19,7 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
 
   @HostBinding('class')
   private get _classes(): string[] {
-    return ['h-screen', 'w-screen', 'absolute', 'left-full', 'bg-white', 'flex', 'items-center', 'justify-center'];
+    return ['h-screen', 'w-screen', 'absolute', 'left-full', 'bg-white', 'flex', 'items-center', 'justify-center', 'z-10'];
   }
 
   constructor(
