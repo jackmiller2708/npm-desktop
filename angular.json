@@ -31,7 +31,10 @@
                 "output": "/assets/"
               }
             ],
-            "styles": ["src/angular/styles.scss"],
+            "styles": [
+              "node_modules/overlayscrollbars/styles/overlayscrollbars.css",
+              "src/angular/styles.scss"
+            ],
             "scripts": [],
             "customWebpackConfig": {
               "path": "./webpack.config.ts",
@@ -127,7 +130,10 @@
                 "output": "/assets/"
               }
             ],
-            "styles": ["src/angular/styles.scss"],
+            "styles": [
+              "node_modules/overlayscrollbars/styles/overlayscrollbars.css",
+              "src/angular/styles.scss"
+            ],
             "scripts": []
           }
         }
