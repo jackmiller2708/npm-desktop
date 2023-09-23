@@ -1,3 +1,11 @@
-<p>{{ name }}</p>
+<ng-container *ngIf="appDeps.size && devDeps.size">
+  <div class="flex justify-between py-1">
+    <h1 class="text-3xl font-medium">{{ name }}</h1>
+    <app-button content="Close project" (onClick)="onClosePrjBtnClick()"></app-button>
+  </div>
 
-<app-button content="Close project" (onClick)="onClosePrjBtnClick()"></app-button>
+  <div class="flex-1 min-h-0 overflow-y-auto px-2">
+    <app-display-package [dataSource]="appDeps" name="Dependencies"></app-display-package>
+    <app-display-package [dataSource]="devDeps" name="Dev Dependencies"></app-display-package>
+  </div>
+</ng-container>

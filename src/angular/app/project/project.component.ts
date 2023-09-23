@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, ChangeDetectorRef, HostBinding } from '@angular/core';
 import { InterProcessCommunicator } from '@services/IPC/inter-process-communicator.service';
 import { ActivatedRoute, Params } from '@angular/router';
 import { LoaderService } from '@services/loader/loader.service';
@@ -21,6 +21,11 @@ export class ProjectComponent implements OnInit, OnDestroy {
   private _workspace: Workspace | undefined;
   private _appDeps: Map<string, Package>;
   private _devDeps: Map<string, Package>;
+
+  @HostBinding('class')
+  private get _classes(): string[] {
+    return ['h-full', 'w-full', 'flex', 'flex-col', 'px-2', 'pt-2'];
+  }
 
   get name(): string {
     return this._workspace?.name ?? "";
@@ -83,8 +88,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
       appDeps = appDeps.set(key, pkg);
     }
 
-    this._appDeps = appDeps;
-    this._devDeps = devDeps;
+    this._appDeps = appDeps.sortBy(pkg => pkg.name);
+    this._devDeps = devDeps.sortBy(pkg => pkg.name);
     this._loaderService.setLoading(false);
     this._CDR.detectChanges();
   }

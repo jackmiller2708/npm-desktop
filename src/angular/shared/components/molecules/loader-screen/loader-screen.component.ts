@@ -48,7 +48,7 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
     this._openAnimation().play();
   }
 
-  private _openAnimation() {
+  private _openAnimation(): AnimeInstance {
     return anime({
       targets: this._el.nativeElement,
       autoplay: false,
@@ -60,7 +60,7 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
     });
   } 
 
-  private  _closeAnimation() {
+  private  _closeAnimation(): AnimeInstance {
     return anime({
       targets: this._el.nativeElement,
       autoplay: false,
