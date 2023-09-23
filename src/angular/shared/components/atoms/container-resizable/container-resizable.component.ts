@@ -1,5 +1,5 @@
 import { Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, Renderer2, RendererStyleFlags2 } from '@angular/core';
-import { Subject, filter, fromEvent, switchMap, takeUntil } from 'rxjs';
+import { Subject, filter, fromEvent, share, switchMap, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Helper } from '@shared/helper.class';
 
@@ -114,7 +114,7 @@ export class ContainerResizableComponent implements OnInit, OnDestroy {
     const _mouseUp$ = fromEvent<MouseEvent>(document, 'mouseup');
 
     const _endDrag$ = _mouseUp$;
-    const _beginDrag$ = _mouseDown$.pipe(filter(() => this._rootEl.classList.contains('cursor-col-resize')));
+    const _beginDrag$ = _mouseDown$.pipe(filter(() => this._rootEl.classList.contains('cursor-col-resize')), share());
     const _dragging$ = _beginDrag$.pipe(switchMap(() => _mouseMove$.pipe(takeUntil(_endDrag$))));
 
     _register(_mouseMove$, this._onDocumentMouseMove);
