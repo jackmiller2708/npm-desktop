@@ -21,7 +21,7 @@ export class ContainerResizableComponent implements OnInit, OnDestroy {
 
   @HostBinding('class')
   private get _classes(): string[] {
-    return this._classNames.concat('block', `w-[${this._maxPercentage}%]`, 'h-full');
+    return this._classNames.concat('block');
   }
 
   @Input()
