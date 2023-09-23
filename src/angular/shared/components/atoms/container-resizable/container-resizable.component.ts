@@ -29,10 +29,12 @@ export class ContainerResizableComponent implements OnInit, OnDestroy {
     this._classNames = value.split(' ');
   }
 
+  @Input()
   set minPercentage(value: number) {
     this._minWidth = Helper.clamp(value, 0, 100);
   }
 
+  @Input()
   set maxPercentage(value: number) {
     this._maxWidth = Helper.clamp(value, 0, 100);
   }
