@@ -1,0 +1,11 @@
+:host {
+  ::ng-deep {
+    .check path {
+      fill: green;
+    }
+
+    .xmark path {
+      fill: red;
+    }
+  }
+}

@@ -5,8 +5,8 @@
   </div>
 
   <div class="flex gap-2 flex-1 min-h-0 px-2">
-    <app-container-resizable className="border-r-2" [maxPercentage]="70">
-      <overlay-scrollbars class="h-full w-full pr-2" [defer]="true">
+    <app-container-resizable className="border-r-2 min-w-max" [maxPercentage]="70">
+      <overlay-scrollbars class="h-full w-full pr-5" [defer]="true">
         <app-display-package *ngIf="appDeps.size" [dataSource]="appDeps" name="Dependencies"></app-display-package>
         <app-display-package *ngIf="devDeps.size" [dataSource]="devDeps" name="Dev Dependencies"></app-display-package>
       </overlay-scrollbars>

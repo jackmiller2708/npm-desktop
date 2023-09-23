@@ -1,3 +1,4 @@
 <ng-container *ngIf="dataSource">
-  {{ dataSource.name }}
+  <app-icon [ngClass]="dataSource.path ? 'check' : 'xmark'" [path]="iconPath"></app-icon>
+  <span>{{ dataSource.name }}</span>
 </ng-container>
