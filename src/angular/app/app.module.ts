@@ -7,12 +7,7 @@ import { NgModule } from '@angular/core';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    LoaderScreenComponent,
-    DisplayToastComponent,
-  ],
+  imports: [BrowserModule, AppRoutingModule, LoaderScreenComponent, DisplayToastComponent],
   providers: [],
   bootstrap: [AppComponent],
 })
