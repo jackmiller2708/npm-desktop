@@ -3,7 +3,7 @@
     <span class="scale-110 pt-1">
       <app-icon [path]="iconPath"></app-icon>
     </span>
-    <app-text [content]="text" className="pb-[1px]"></app-text>
+    <app-text [content]="text" className="pb-[1px] w-max"></app-text>
   </div>
   <div class="flex justify-end" *ngIf="action">
     <app-button [content]="action.label" (onClick)="action.command()"></app-button>

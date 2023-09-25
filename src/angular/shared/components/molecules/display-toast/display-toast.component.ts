@@ -1,4 +1,4 @@
-import { Component, HostBinding, ElementRef, OnDestroy, OnInit, ChangeDetectorRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, HostBinding, ElementRef, OnDestroy, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { Observable, Subject, switchMap, timer, tap, takeUntil, firstValueFrom } from 'rxjs';
 import { DisplayToastService } from './services/display-toast.service';
 import { ItemToastComponent } from '../item-toast/item-toast.component';
@@ -21,7 +21,7 @@ import anime from 'animejs/lib/anime.es';
   imports: [CommonModule, ItemToastComponent, PopupComponent],
   providers: [DisplayToastService],
 })
-export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DisplayToastComponent implements OnInit, OnDestroy {
   private readonly _toastAnimationFinish$: Subject<void>;
   private readonly _startToastCountdown$: Subject<number>;
   private readonly _stopToastCountdown$: Subject<void>;
@@ -32,10 +32,7 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _priorityStack: Stack<ToastItem>;
   private _waitList: List<ToastItem>;
-
-  private _toastAnimation: AnimeInstance | undefined;
   private _currentToast: ToastItem | undefined;
-
   private _isShown: boolean;
 
   @HostBinding('class')
@@ -69,10 +66,6 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this._initStores();
-  }
-
-  ngAfterViewInit(): void {
-    this._toastAnimation = this._initToastAnimation();
   }
 
   ngOnDestroy(): void {
@@ -164,7 +157,7 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
     this._CDR.detectChanges();
   }
 
-  private _initToastAnimation(): AnimeInstance {
+  private _openAnimation(): AnimeInstance {
     return anime({
       targets: this._toastContainer.nativeElement,
       translateX: 'calc(-100% - 0.5rem)',
@@ -175,20 +168,23 @@ export class DisplayToastComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private _playOpenAnimation(): void {
-    if (this._toastAnimation?.reversed) {
-      this._toastAnimation?.reverse();
-    }
+  private _closeAnimation(): AnimeInstance {
+    return anime({
+      targets: this._toastContainer.nativeElement,
+      translateX: ['calc(-100% - 0.5rem)', 'calc(0% - 0.5rem)'],
+      autoplay: false,
+      easing: 'cubicBezier(.5, .05, .1, .3)',
+      duration: 100,
+      complete: () => this._toastAnimationFinish$.next(),
+    });
+  }
 
-    this._toastAnimation?.play();
+  private _playOpenAnimation(): void {
+    this._openAnimation().play();
   }
 
   private _playCloseAnimation(): void {
-    if (!this._toastAnimation?.reversed) {
-      this._toastAnimation?.reverse();
-    }
-
-    this._toastAnimation?.play();
+    this._closeAnimation().play();
   }
 
   private _getToastTimer() {
