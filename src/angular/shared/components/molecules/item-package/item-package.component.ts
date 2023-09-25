@@ -30,6 +30,7 @@ export class ItemPackageComponent {
       'rounded-sm',
       'transition-colors',
       'duration-100',
+      'select-none'
     ];
   }
 
