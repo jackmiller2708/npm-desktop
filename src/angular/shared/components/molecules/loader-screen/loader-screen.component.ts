@@ -9,17 +9,37 @@ import anime from 'animejs/lib/anime.es';
 
 @Component({
   selector: 'app-loader-screen',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './loader-screen.component.html',
   styleUrls: ['./loader-screen.component.scss'],
+  standalone: true,
+  imports: [CommonModule],
 })
 export class LoaderScreenComponent implements OnInit, OnDestroy {
   private readonly _ngDestroy$: Subject<void>;
+  private _openAnimation: AnimeInstance | undefined;
+  private _closeAnimation: AnimeInstance | undefined;
 
   @HostBinding('class')
   private get _classes(): string[] {
-    return ['h-screen', 'w-screen', 'absolute', 'left-full', 'bg-white', 'flex', 'items-center', 'justify-center', 'z-10'];
+    return [
+      'h-screen',
+      'w-screen',
+      'absolute',
+      'left-full',
+      'bg-white',
+      'flex',
+      'items-center',
+      'justify-center',
+      'z-10',
+    ];
+  }
+
+  set openAnimation(value: AnimeInstance) {
+    this._openAnimation = value;
+  }
+
+  set closeAnimation(value: AnimeInstance) {
+    this._closeAnimation = value;
   }
 
   constructor(
@@ -42,13 +62,13 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
 
   private _play(reverse?: boolean): void {
     if ((typeof reverse === 'boolean' && reverse)) {
-      return this._closeAnimation().play();
+      return (this._closeAnimation ?? this._defaultCloseAnimation()).play();
     }
 
-    this._openAnimation().play();
+    (this._openAnimation ?? this._defaultOpenAnimation()).play();
   }
 
-  private _openAnimation(): AnimeInstance {
+  private _defaultOpenAnimation(): AnimeInstance {
     return anime({
       targets: this._el.nativeElement,
       autoplay: false,
@@ -60,7 +80,7 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
     });
   } 
 
-  private  _closeAnimation(): AnimeInstance {
+  private  _defaultCloseAnimation(): AnimeInstance {
     return anime({
       targets: this._el.nativeElement,
       autoplay: false,
