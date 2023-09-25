@@ -19,21 +19,26 @@ export class ItemPackageComponent {
 
   @HostBinding('class')
   private get _classes(): string[] {
-    return [
+    const classes = [
       'flex',
       'gap-3',
       'justify-between',
       'items-center',
-      'cursor-pointer',
+      'hover:cursor-pointer',
       'hover:bg-slate-300',
       'px-2',
       'py-1',
       'rounded-sm',
       'transition-colors',
       'duration-100',
-      'select-none',
-      this._isSelected ? '!bg-slate-500' : '',
+      'select-none'
     ];
+
+    if (this._isSelected) {
+      classes.push('bg-slate-500', 'text-white', 'shadow-md', 'pointer-events-none');
+    }
+
+    return classes;
   }
 
   @Input()
