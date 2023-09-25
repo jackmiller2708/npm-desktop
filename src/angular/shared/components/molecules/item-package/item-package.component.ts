@@ -18,7 +18,19 @@ export class ItemPackageComponent {
 
   @HostBinding('class')
   private get _classes(): string[] {
-    return ['flex', 'gap-1', 'items-center', 'cursor-pointer'];
+    return [
+      'flex',
+      'gap-3',
+      'justify-between',
+      'items-center',
+      'cursor-pointer',
+      'hover:bg-slate-300',
+      'px-2',
+      'py-1',
+      'rounded-sm',
+      'transition-colors',
+      'duration-100',
+    ];
   }
 
   @Input()

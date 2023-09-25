@@ -3,7 +3,7 @@
     <span>{{ name }}</span>
     <span>({{ packageCount }})</span>
   </div>
-  <div class="flex flex-col px-2 ml-1 border-l">
+  <div class="flex flex-col pl-1 ml-1 border-l">
     <app-item-package *ngFor="let item of dataSource" [dataSource]="item[1]"></app-item-package>
   </div>
 </ng-container>
