@@ -100,6 +100,15 @@ export class ItemToastComponent implements AfterViewInit {
     this.ready.emit(this._states);
   }
 
+  onActionClick(): void {
+    if (!this.action) {
+      return;
+    }
+
+    this.action.command();
+    this.close.emit();
+  }
+
   private _applyUpdatesAndDetectChanges(key: keyof IToastItemProps, updater: StateUpdateFn<IToastItemProps>): void {
     this._states = this._updateStateAndEmitChanges(this._states, key, updater);
 

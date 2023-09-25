@@ -1,25 +1,54 @@
+$neutral: #0d86f0;
+$warn: #eab106;
+$success: #198754;
+$error: #d62436;
+
 :host {
   ::ng-deep {
     color: rgb(248, 250, 252);
-   
+
+    button {
+      border-color: rgb(248, 250, 252);
+
+      &:hover {
+        background: rgb(248, 250, 252);
+      }
+    }
+
     svg path {
       fill: rgb(248, 250, 252);
     }
   }
 
   &.neutral {
-    background: #0d86f0;
+    background: $neutral;
+
+    ::ng-deep button:hover {
+      color: $neutral;
+    }
   }
 
   &.warn {
-    background: #eab106;
+    background: $warn;
+
+    ::ng-deep button:hover {
+      color: $warn;
+    }
   }
 
   &.success {
-    background: #198754;
+    background: $success;
+
+    ::ng-deep button:hover {
+      color: $success;
+    }
   }
 
   &.error {
-    background: #d62436;
+    background: $error;
+
+    ::ng-deep button:hover {
+      color: $error;
+    }
   }
 }

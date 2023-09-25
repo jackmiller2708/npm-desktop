@@ -6,7 +6,7 @@
     <app-text [content]="text" className="pb-[1px] w-max"></app-text>
   </div>
   <div class="flex justify-end" *ngIf="action">
-    <app-button [content]="action.label" (onClick)="action.command()"></app-button>
+    <app-button [content]="action.label" (onClick)="onActionClick()"></app-button>
   </div>
 </div>
 
