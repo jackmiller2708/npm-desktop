@@ -78,7 +78,11 @@ export class ProjectComponent implements OnInit, OnDestroy {
     appDeps = devDeps = Map();
 
     for (const [key, obj] of depsEntries) {
-      const pkg = new Package({ name: key, ...obj });
+      const pkg = new Package({
+        name: key,
+        version: this._extractPackageVersion(obj, key),
+        ...obj,
+      });
 
       if (key in devDependencies) {
         devDeps = devDeps.set(key, pkg);
@@ -92,6 +96,23 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this._devDeps = devDeps.sortBy(pkg => pkg.name);
     this._loaderService.setLoading(false);
     this._CDR.detectChanges();
+  }
+
+  private _extractPackageVersion(pkg: Record<string, any>, name: string): string {
+    if (pkg['missing'] && pkg['required']) {
+      return pkg['required'];
+    }
+
+    // Accommodates cases when the package is missing from workspace
+    // but the required version is not provided.
+    if (pkg['missing'] && !pkg['required']) {
+      const [message] = pkg['problems'];
+      const [, secondHalf] = message.split(name);
+
+      return secondHalf.slice(1, secondHalf.indexOf(','));
+    }
+
+    return pkg['version'];
   }
 
   private _extractWorkspaceFromParams(params: Params): Either<Error, Workspace> {
