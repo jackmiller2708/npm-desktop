@@ -100,7 +100,9 @@ export class ContainerResizableComponent implements OnInit, OnDestroy {
 
   private _onDragging(event: MouseEvent) {
     const relX = ((event.pageX - this._el.getBoundingClientRect().left) / window.innerWidth) * 100;
-    const resizedPercentage = Helper.clamp(relX, this._minPercentage, this._maxPercentage);
+    const relMinPercentage = (this._el.getBoundingClientRect().left / window.innerWidth) * 100;
+    const calculatedMinPercentage = relMinPercentage < this._minPercentage ? relMinPercentage : this._minPercentage;
+    const resizedPercentage = Helper.clamp(relX, calculatedMinPercentage, this._maxPercentage);
 
     this._renderer.setStyle(this._el, 'width', `${resizedPercentage}%`, RendererStyleFlags2.Important);
   }
