@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input } from '@angular/core';
+import { Component, HostBinding, Input, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
 import { ItemPackageComponent } from '../item-package/item-package.component';
 import { CommonModule } from '@angular/common';
 import { Package } from '@shared/models/package.model';
@@ -12,6 +12,7 @@ import { Map } from 'immutable';
   imports: [CommonModule, ItemPackageComponent],
 })
 export class DisplayPackageComponent {
+  private _selectedPackage: Package | undefined;
   private _dataSource: Map<string, Package> | undefined;
   private _name: string | undefined;
 
@@ -40,5 +41,27 @@ export class DisplayPackageComponent {
 
   get packageCount(): number {
     return this._dataSource?.size ?? 0;
+  }
+
+  @Input()
+  set selectedPackage(value: Package | undefined) {
+    this._selectedPackage = value;
+  }
+
+  get selectedPackage(): Package | undefined {
+    return this._selectedPackage;
+  }
+
+  @Output()
+  readonly selectedPackageChange: EventEmitter<Package>;
+
+  constructor(private readonly _CDR: ChangeDetectorRef) {
+    this.selectedPackageChange = new EventEmitter();
+  }
+
+  onPackageClick(pkg: Package): void {
+    this._selectedPackage = pkg;
+    this.selectedPackageChange.emit(pkg);
+    this._CDR.detectChanges();
   }
 }

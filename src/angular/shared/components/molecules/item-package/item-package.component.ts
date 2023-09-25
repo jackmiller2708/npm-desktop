@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input } from '@angular/core';
+import { Component, HostBinding, Input, EventEmitter, Output, HostListener } from '@angular/core';
 import { IconComponent } from '@shared/components/atoms/icon/icon.component';
 import { CommonModule } from '@angular/common';
 import { Package } from '@shared/models/package.model';
@@ -15,6 +15,7 @@ const XMARK_PATH = "M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L19
 })
 export class ItemPackageComponent {
   private _package: Package | undefined;
+  private _isSelected: boolean;
 
   @HostBinding('class')
   private get _classes(): string[] {
@@ -30,7 +31,8 @@ export class ItemPackageComponent {
       'rounded-sm',
       'transition-colors',
       'duration-100',
-      'select-none'
+      'select-none',
+      this._isSelected ? '!bg-slate-500' : '',
     ];
   }
 
@@ -45,5 +47,23 @@ export class ItemPackageComponent {
 
   get iconPath(): string {
     return this._package?.path ? CHECK_PATH : XMARK_PATH;
+  }
+
+  @Input()
+  set isSelected(value: boolean) {
+    this._isSelected = value;
+  }
+
+  @Output()
+  readonly onClick: EventEmitter<Package>;
+
+  constructor() {
+    this._isSelected = false;
+    this.onClick = new EventEmitter();
+  }
+
+  @HostListener('click')
+  private _onSelfClick(): void {
+    this.onClick.emit(this._package);
   }
 }

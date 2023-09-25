@@ -19,6 +19,7 @@ import { Map } from 'immutable';
 export class ProjectComponent implements OnInit, OnDestroy {
   private readonly _ngDestroy$: Subject<void>;
   private _workspace: Workspace | undefined;
+  private _selectedPackage: Package | undefined;
   private _appDeps: Map<string, Package>;
   private _devDeps: Map<string, Package>;
 
@@ -37,6 +38,15 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   get devDeps(): Map<string, Package> {
     return this._devDeps;
+  }
+
+  set selectedPackage(value: Package) {
+    this._selectedPackage = value;
+    this._CDR.detectChanges();
+  }
+
+  get selectedPackage(): Package | undefined {
+    return this._selectedPackage;
   }
 
   constructor(

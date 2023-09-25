@@ -1,4 +1,4 @@
-import { Component, HostBinding } from '@angular/core';
+import { Component, HostBinding, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Package } from '@shared/models/package.model';
 
@@ -17,7 +17,8 @@ export class DetailsPackageComponent {
     return ['h-full', 'w-full'];
   }
 
-  set dataSource(value: Package) {
+  @Input()
+  set dataSource(value: Package | undefined) {
     this._package = value ?? this._package;
   }
 

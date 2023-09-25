@@ -7,12 +7,22 @@
   <div class="flex gap-2 flex-1 min-h-0 px-2">
     <app-container-resizable className="border-r-2 min-w-max" [maxPercentage]="70">
       <overlay-scrollbars class="h-full w-full pr-5" [defer]="true">
-        <app-display-package *ngIf="appDeps.size" [dataSource]="appDeps" name="Dependencies"></app-display-package>
-        <app-display-package *ngIf="devDeps.size" [dataSource]="devDeps" name="Dev Dependencies"></app-display-package>
+        <app-display-package 
+          *ngIf="appDeps.size" 
+          name="Dependencies" 
+          [dataSource]="appDeps" 
+          [(selectedPackage)]="selectedPackage"
+        ></app-display-package>
+        <app-display-package 
+          *ngIf="devDeps.size" 
+          name="Dev Dependencies" 
+          [dataSource]="devDeps" 
+          [(selectedPackage)]="selectedPackage"
+        ></app-display-package>
       </overlay-scrollbars>
     </app-container-resizable>
     <div class="flex-1">
-      <app-details-package></app-details-package>
+      <app-details-package [dataSource]="selectedPackage"></app-details-package>
     </div>
   </div>
 </ng-container>

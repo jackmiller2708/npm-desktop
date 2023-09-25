@@ -4,6 +4,11 @@
     <span>({{ packageCount }})</span>
   </div>
   <div class="flex flex-col pl-1 ml-1 border-l">
-    <app-item-package *ngFor="let item of dataSource" [dataSource]="item[1]"></app-item-package>
+    <app-item-package 
+      *ngFor="let item of dataSource" 
+      (onClick)="onPackageClick($event)"
+      [dataSource]="item[1]" 
+      [isSelected]="selectedPackage === item[1]"
+    ></app-item-package>
   </div>
 </ng-container>
