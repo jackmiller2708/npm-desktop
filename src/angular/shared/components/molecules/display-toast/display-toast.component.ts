@@ -1,5 +1,5 @@
 import { Component, HostBinding, ElementRef, OnDestroy, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { Observable, Subject, switchMap, timer, tap, takeUntil, firstValueFrom } from 'rxjs';
+import { Observable, Subject, switchMap, timer, tap, takeUntil, firstValueFrom, take } from 'rxjs';
 import { DisplayToastService } from './services/display-toast.service';
 import { ItemToastComponent } from '../item-toast/item-toast.component';
 import { PopupComponent } from '../../atoms/popup/popup.component';
@@ -12,6 +12,8 @@ import { List, Stack } from 'immutable';
 import { Helper } from '@shared/helper.class';
 
 import anime from 'animejs/lib/anime.es';
+
+const TOAST_ANIMATION_DURATION = 100;
 
 @Component({
   selector: 'app-display-toast',
@@ -163,7 +165,7 @@ export class DisplayToastComponent implements OnInit, OnDestroy {
       translateX: 'calc(-100% - 0.5rem)',
       autoplay: false,
       easing: 'spring(1, 80, 10, 0)',
-      duration: 100,
+      duration: TOAST_ANIMATION_DURATION,
       complete: () => this._toastAnimationFinish$.next(),
     });
   }
@@ -174,7 +176,7 @@ export class DisplayToastComponent implements OnInit, OnDestroy {
       translateX: ['calc(-100% - 0.5rem)', 'calc(0% - 0.5rem)'],
       autoplay: false,
       easing: 'cubicBezier(.5, .05, .1, .3)',
-      duration: 100,
+      duration: TOAST_ANIMATION_DURATION,
       complete: () => this._toastAnimationFinish$.next(),
     });
   }
@@ -189,12 +191,12 @@ export class DisplayToastComponent implements OnInit, OnDestroy {
 
   private _getToastTimer() {
     const _getTimer = (duration: number) =>
-      timer(duration).pipe(takeUntil(this._stopToastCountdown$));
+      timer(duration + TOAST_ANIMATION_DURATION).pipe(takeUntil(this._stopToastCountdown$));
 
     return this._startToastCountdown$.pipe(
       switchMap(_getTimer),
       tap((): void => this._playCloseAnimation()),
-      switchMap((): Subject<void> => this._toastAnimationFinish$)
+      switchMap((): Observable<void> => this._toastAnimationFinish$.pipe(take(1))),
     );
   }
   //#endregion
