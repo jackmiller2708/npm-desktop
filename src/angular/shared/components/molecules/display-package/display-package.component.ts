@@ -59,6 +59,10 @@ export class DisplayPackageComponent {
     this.selectedPackageChange = new EventEmitter();
   }
 
+  dependencyIdentity(_: number, [__, dependency]: [string, Package]): Package {
+    return dependency;
+  }
+
   onPackageClick(pkg: Package): void {
     this._selectedPackage = pkg;
     this.selectedPackageChange.emit(pkg);
