@@ -59,7 +59,7 @@ export class DisplayPackageComponent {
     this.selectedPackageChange = new EventEmitter();
   }
 
-  dependencyIdentity(_: number, [, dependency]: [string, Package]): Package {
+  packageIdentity(_: number, [, dependency]: [string, Package]): Package {
     return dependency;
   }
 
