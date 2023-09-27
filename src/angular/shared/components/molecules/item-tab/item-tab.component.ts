@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, HostListener, EventEmitter, Output } from '@angular/core';
+import { Component, HostBinding, Input, HostListener, EventEmitter, Output, ElementRef, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import { IconComponent } from '@shared/components/atoms/icon/icon.component';
 import { CommonModule } from '@angular/common';
 import { Package } from '@shared/models/package.model';
@@ -10,7 +10,7 @@ import { Package } from '@shared/models/package.model';
   standalone: true,
   imports: [CommonModule, IconComponent],
 })
-export class ItemTabComponent {
+export class ItemTabComponent implements AfterViewInit, OnChanges {
   private _package: Package | undefined;
   private _isSelected: boolean;
 
@@ -26,6 +26,7 @@ export class ItemTabComponent {
       'hover:bg-slate-400',
       'cursor-pointer',
       'group',
+      'shrink-0',
       this._isSelected ? 'bg-slate-500' : 'bg-slate-600',
     ];
   }
@@ -54,10 +55,22 @@ export class ItemTabComponent {
   @Output()
   readonly onClose: EventEmitter<Package>;
 
-  constructor() {
+  constructor(private readonly _elRef: ElementRef<HTMLElement>) {
     this._isSelected = false;
     this.onClick = new EventEmitter();
     this.onClose = new EventEmitter();
+  }
+
+  ngAfterViewInit(): void {
+    this._elRef.nativeElement.scrollIntoView();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const { isSelected } = changes;
+
+    if (isSelected && isSelected.currentValue) {
+      this._elRef.nativeElement.scrollIntoView();
+    }
   }
 
   onCloseBtnClick(event: MouseEvent): void {

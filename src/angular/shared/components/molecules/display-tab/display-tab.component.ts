@@ -1,4 +1,5 @@
 import { Component, Input, EventEmitter, Output, OnChanges, SimpleChanges, HostBinding, ChangeDetectorRef } from '@angular/core';
+import { OverlayscrollbarsModule } from 'overlayscrollbars-ngx';
 import { ItemTabComponent } from '../item-tab/item-tab.component';
 import { List, OrderedSet } from 'immutable';
 import { CommonModule } from '@angular/common';
@@ -9,7 +10,7 @@ import { Package } from '@shared/models/package.model';
   templateUrl: './display-tab.component.html',
   styleUrls: ['./display-tab.component.scss'],
   standalone: true,
-  imports: [CommonModule, ItemTabComponent],
+  imports: [CommonModule, ItemTabComponent, OverlayscrollbarsModule],
 })
 export class DisplayTabComponent implements OnChanges {
   private _selectedPackage: Package | undefined;
@@ -18,7 +19,7 @@ export class DisplayTabComponent implements OnChanges {
 
   @HostBinding('class')
   private get _classes(): string[] {
-    return ['flex', 'bg-slate-200'];
+    return ['block', 'w-full', 'bg-slate-200', 'divide-x'];
   }
 
   @Input()
@@ -56,18 +57,18 @@ export class DisplayTabComponent implements OnChanges {
   }
 
   onTabClose(pkg: Package): void {
+    const index = this._tabSelectionOrder.indexOf(pkg);
+    
     this._tabs = this._tabs.remove(pkg);
 
-    if (this._tabSelectionOrder.last() === pkg) {
+    if (this._tabSelectionOrder.size - 1 === index) {
       this._tabSelectionOrder = this._tabSelectionOrder.pop();
       this._selectTab(this._tabSelectionOrder.last());
 
       return;
     }
 
-    this._tabSelectionOrder = this._tabSelectionOrder.remove(
-      this._tabSelectionOrder.indexOf(pkg)
-    );
+    this._tabSelectionOrder = this._tabSelectionOrder.remove(index);
     this._CDR.detectChanges();
   }
 

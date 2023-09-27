@@ -1,7 +1,11 @@
-<app-item-tab
-  *ngFor="let tab of tabs"
-  [dataSource]="tab"
-  [isSelected]="tab === selectedPackage"
-  (onClick)="onTabClick($event)"
-  (onClose)="onTabClose($event)"
-></app-item-tab>
+<overlay-scrollbars class="w-full" [options]="{ scrollbars: { autoHide: 'move' } }">
+  <div class="flex divide-x">
+    <app-item-tab
+      *ngFor="let tab of tabs"
+      [dataSource]="tab"
+      [isSelected]="tab === selectedPackage"
+      (onClick)="onTabClick($event)"
+      (onClose)="onTabClose($event)"
+    ></app-item-tab>
+  </div>
+</overlay-scrollbars>

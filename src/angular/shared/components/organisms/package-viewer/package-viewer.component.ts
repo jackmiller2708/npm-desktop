@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { Component, Input, EventEmitter, Output, HostBinding } from '@angular/core';
 import { DetailsPackageComponent } from '@shared/components/molecules/details-package/details-package.component';
 import { DisplayTabComponent } from '@shared/components/molecules/display-tab/display-tab.component';
 import { CommonModule } from '@angular/common';
@@ -13,6 +13,11 @@ import { Package } from '@shared/models/package.model';
 })
 export class PackageViewerComponent {
   private _selectedPackage: Package | undefined;
+
+  @HostBinding('class')
+  private get _classes(): string[] {
+    return ['block', 'w-full', 'h-full'];
+  }
 
   @Input()
   set selectedPackage(value: Package | undefined) {
