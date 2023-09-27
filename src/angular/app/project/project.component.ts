@@ -143,7 +143,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   private _makeHighlightPackageToastCommand(missingPackageList: List<Package>): () => void {
     return () => {
-      this._highlightedDeps = missingPackageList;
+      this._highlightedDeps = missingPackageList.filter(pkg => pkg !== this._selectedPackage);
       this._CDR.detectChanges();
     };
   }
