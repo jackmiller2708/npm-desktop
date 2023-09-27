@@ -9,6 +9,7 @@
       (onClick)="onPackageClick($event)"
       [dataSource]="item[1]" 
       [isSelected]="selectedPackage === item[1]"
+      [isHighLighted]="highlightedPackages?.includes(item[1])"
     ></app-item-package>
   </div>
 </ng-container>

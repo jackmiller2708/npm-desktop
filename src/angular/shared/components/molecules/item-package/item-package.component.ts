@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, EventEmitter, Output, HostListener } from '@angular/core';
+import { Component, HostBinding, Input, EventEmitter, Output, HostListener, ElementRef } from '@angular/core';
 import { IconComponent } from '@shared/components/atoms/icon/icon.component';
 import { CommonModule } from '@angular/common';
 import { Package } from '@shared/models/package.model';
@@ -16,6 +16,7 @@ const XMARK_PATH = "M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L19
 export class ItemPackageComponent {
   private _package: Package | undefined;
   private _isSelected: boolean;
+  private _isHighlighted: boolean;
 
   @HostBinding('class')
   private get _classes(): string[] {
@@ -36,6 +37,10 @@ export class ItemPackageComponent {
 
     if (this._isSelected) {
       classes.push('bg-slate-500', 'text-white', 'shadow-md', 'pointer-events-none');
+    }
+
+    if (this._isHighlighted && !this._isSelected) {
+      classes.push('bg-red-200', 'hover:!bg-red-300');
     }
 
     return classes;
@@ -59,11 +64,16 @@ export class ItemPackageComponent {
     this._isSelected = value;
   }
 
+  @Input()
+  set isHighLighted(value: boolean | undefined) {
+    this._isHighlighted = value ?? this._isHighlighted;
+  }
+
   @Output()
   readonly onClick: EventEmitter<Package>;
 
-  constructor() {
-    this._isSelected = false;
+  constructor(private readonly _elRef: ElementRef<Element>) {
+    this._isSelected = this._isHighlighted = false;
     this.onClick = new EventEmitter();
   }
 

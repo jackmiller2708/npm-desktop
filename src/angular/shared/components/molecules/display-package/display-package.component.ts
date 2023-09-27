@@ -1,8 +1,8 @@
 import { Component, HostBinding, Input, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
 import { ItemPackageComponent } from '../item-package/item-package.component';
 import { CommonModule } from '@angular/common';
+import { List, Map } from 'immutable';
 import { Package } from '@shared/models/package.model';
-import { Map } from 'immutable';
 
 @Component({
   selector: 'app-display-package',
@@ -13,6 +13,7 @@ import { Map } from 'immutable';
 })
 export class DisplayPackageComponent {
   private _selectedPackage: Package | undefined;
+  private _highlightedPackages: List<Package> | undefined;
   private _dataSource: Map<string, Package> | undefined;
   private _name: string | undefined;
 
@@ -50,6 +51,15 @@ export class DisplayPackageComponent {
 
   get selectedPackage(): Package | undefined {
     return this._selectedPackage;
+  }
+
+  @Input()
+  set highlightedPackages(value: List<Package>) {
+    this._highlightedPackages = value;
+  }
+
+  get highlightedPackages(): List<Package> | undefined {
+    return this._highlightedPackages;
   }
 
   @Output()
