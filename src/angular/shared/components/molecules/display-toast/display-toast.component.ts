@@ -107,6 +107,12 @@ export class DisplayToastComponent implements OnInit, OnDestroy {
     this._CDR.detectChanges();
     this._startBroadcasting();
   }
+
+  private _onClearMessages(): void {
+    this._waitList = this._waitList.clear();
+    this._priorityStack = this._priorityStack.clear();
+    this.onToastClose();
+  }
   //#endregion
 
   //#region Private Helpers
@@ -204,10 +210,11 @@ export class DisplayToastComponent implements OnInit, OnDestroy {
   //#region Observable Helpers
   private _initStores(): void {
     const _register = Helper.makeObservableRegistrar.call(this, this._ngDestroy$);
-    const { addMessage$ } = this._toastService;
+    const { addMessage$, clearMessages$ } = this._toastService;
 
     _register(this._getToastTimer(), this._onToastFinished);
     _register(addMessage$ as Observable<ToastItem>, this._onToastAdd);
+    _register(clearMessages$, this._onClearMessages);
   }
   //#endregion
 }

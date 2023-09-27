@@ -88,6 +88,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this._IPC.send('close-workspace');
     this._titleService.removeTitle();
     this._titleService.resetWindowTitle();
+    this._toastService.clearMessages();
     this._ngDestroy$.next();
   }
 
