@@ -12,7 +12,6 @@ function createWindow() {
     minWidth: 800,
     minHeight: 600,
     autoHideMenuBar: true,
-    icon: "../assets/icons/icon.png",
     frame: false,
     webPreferences: { nodeIntegration: true, contextIsolation: false },
   });
