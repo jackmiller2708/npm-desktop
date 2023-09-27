@@ -18,10 +18,11 @@ export class BarTitleComponent implements OnInit, OnDestroy {
   private _blurred: boolean;
   private _isMaximized: boolean;
   private _title: string | undefined;
+  private _isVisible: boolean;
 
   @HostBinding('class')
   private get _classes(): string[] {
-    return [
+    const classes = [
       'relative',
       'flex',
       'justify-between',
@@ -31,11 +32,22 @@ export class BarTitleComponent implements OnInit, OnDestroy {
       this._blurred ? 'bg-gray-900' : 'bg-black',
       'pl-2',
     ];
+
+    if (!this._isVisible) {
+      classes.push('hidden')
+    }
+
+    return classes;
   }
 
   @Input()
   set blurred(value: boolean) {
     this._blurred = value;
+  }
+
+  @Input()
+  set isVisible(value: boolean) {
+    this._isVisible = value;
   }
 
   @Input()
@@ -57,6 +69,7 @@ export class BarTitleComponent implements OnInit, OnDestroy {
     private readonly _CDR: ChangeDetectorRef
   ) {
     this._ngDestroy = new Subject();
+    this._isVisible = true;
     this._blurred = false;
     this._isMaximized = false;
   }

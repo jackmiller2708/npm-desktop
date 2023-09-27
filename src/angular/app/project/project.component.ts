@@ -30,7 +30,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   @HostBinding('class')
   private get _classes(): string[] {
-    return ['h-full', 'w-full', 'flex', 'flex-col', 'px-2', 'pt-2'];
+    return ['h-full', 'w-full', 'flex', 'flex-col'];
   }
 
   get name(): string {
@@ -135,6 +135,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this._version = version;
     this._appDeps = appDeps.sortBy(pkg => pkg.name);
     this._devDeps = devDeps.sortBy(pkg => pkg.name);
+    this._titleService.setTitle(`${this._workspace!.name} - ${version}`);
     this._loaderService.setLoading(false);
     
     if (missingPackageList.size > 0) {
@@ -159,6 +160,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
     return {
       text: `There are ${missingPackageList.size} missing required package(s)`,
       variant: 'warn',
+      duration: 5000,
+      isAutoDismissible: true,
       action: {
         label: 'Highlight!',
         command: this._makeHighlightPackageToastCommand(missingPackageList),
@@ -196,7 +199,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
       (error: Error): void => void error,
       (workspace: Workspace): void => {
         this._workspace = workspace;
-        this._titleService.setTitle(workspace.name);
         this._titleService.setWindowTitle(`${workspace.name} - NPM Desktop`);
         this._IPC.send('load-workspace', JSON.stringify(workspace));
       }

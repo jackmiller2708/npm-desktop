@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { Subject, debounceTime, fromEvent, map, merge } from 'rxjs';
 import { InterProcessCommunicator } from '@services/IPC/inter-process-communicator.service';
 import { ToastService } from '@services/toast/toast.service';
@@ -15,6 +15,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly _ngDestroy$: Subject<void>;
   private _isWindowActive: boolean;
   private _isWindowMaximize: boolean;
+  private _isFullscreen: boolean;
 
   @HostBinding('class')
   private get _classes(): string[] {
@@ -24,7 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private get _isWindowMaximized(): boolean {
     return (
       window.innerWidth === screen.availWidth &&
-      window.innerHeight === screen.availHeight
+      (window.innerHeight === screen.availHeight || this._isFullscreen)
     );
   }
 
@@ -32,6 +33,9 @@ export class AppComponent implements OnInit, OnDestroy {
     return this._isWindowActive;
   }
 
+  get isFullscreen(): boolean {
+    return this._isFullscreen;
+  }
 
   get isWindowMaximize(): boolean {
     return this._isWindowMaximize;
@@ -43,6 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly _CDR: ChangeDetectorRef
   ) {
     this._isWindowMaximize = this._isWindowMaximized;
+    this._isFullscreen = false;
     this._isWindowActive = document.hasFocus();
     this._ngDestroy$ = new Subject();
   }
@@ -55,17 +60,22 @@ export class AppComponent implements OnInit, OnDestroy {
     this._ngDestroy$.next();
   }
 
-  private _handleWindowResize() {
+  private _onWindowFullscreenChange({ flag }: Record<string, any>): void {
+    this._isFullscreen = flag;
+    this._CDR.detectChanges();
+  }
+
+  private _onWindowResize(): void {
     this._isWindowMaximize = this._isWindowMaximized;
     this._CDR.detectChanges();
   }
 
-  private _handleWindowVisibilityChange(isFocus: boolean): void {
+  private _onWindowVisibilityChange(isFocus: boolean): void {
     this._isWindowActive = isFocus;
     this._CDR.detectChanges();
   }
 
-  private _handleError(error: Record<string, any>) {
+  private _onAppError(error: Record<string, any>) {
     this._toastService.addMessage({
       text: error['message'] as string,
       variant: 'error',
@@ -77,14 +87,16 @@ export class AppComponent implements OnInit, OnDestroy {
     const _register = Helper.makeObservableRegistrar.call(this, this._ngDestroy$);
 
     const error$ = this._IPC.on<Record<string, any>>('system-error');
+    const fullscreenChange$ = this._IPC.on<Record<string, any>>('fullscreen');
     const windowResize$ = fromEvent(window, 'resize').pipe(debounceTime(100));
     const windowVisibilityChange$ = merge(
       fromEvent(window, 'focus').pipe(map(() => true)),
       fromEvent(window, 'blur').pipe(map(() => false))
     ); 
 
-    _register(error$, this._handleError);
-    _register(windowVisibilityChange$, this._handleWindowVisibilityChange);
-    _register(windowResize$, this._handleWindowResize);
+    _register(error$, this._onAppError);
+    _register(windowVisibilityChange$, this._onWindowVisibilityChange);
+    _register(windowResize$, this._onWindowResize);
+    _register(fullscreenChange$, this._onWindowFullscreenChange);
   }
 }

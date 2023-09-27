@@ -1,6 +1,6 @@
 const { getHistory, addToHistory, setLastOpened, updateFromHistory, removeFromHistory, unsetLastOpened } = require("../workspace-history");
 const { validatePathThenAct, ipcReqParser } = require("./_service");
-const { ipcMain, dialog, BrowserWindow } = require("electron")
+const { ipcMain, dialog, BrowserWindow, app } = require("electron")
 const { Subject, takeUntil } = require("rxjs");
 const { loadWorkspace } = require("../workspace");
 const { Workspace } = require("../../shared/models/workspace.model");
@@ -17,6 +17,8 @@ function initIPCListeners(window) {
     restore: () => window.restore(),
     maximize: () => window.maximize(),
     minimize: () => window.minimize(),
+    fullscreen: () => window.setFullScreen(true),
+    exitFullscreen: () => window.setFullScreen(false),
   };
   
   const _IPC = ipcReqParser(ipcMain);
@@ -67,6 +69,14 @@ function initIPCListeners(window) {
       _windowControls[command]();
     }
   })
+
+  window.on("enter-full-screen", () => {
+    _emitEvent("fullscreen", { flag: true });
+  });
+
+  window.on("leave-full-screen", () => {
+    _emitEvent("fullscreen", { flag: false });
+  });
 
   // ============================================================================================
   // ============================================================================================

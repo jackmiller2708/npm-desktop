@@ -1,34 +1,27 @@
 <ng-container *ngIf="appDeps.size || devDeps.size">
-  <div class="flex justify-between pb-1 border-b">
-    <div>
-      <h1 class="text-3xl font-medium">{{ name }}</h1>
-      <div>
-        <span>Version: {{ version }}</span>
+  <div class="flex gap-2 flex-1 min-h-0">
+    <app-container-resizable className="flex flex-col border-r-2 min-w-max" [maxPercentage]="70">
+      <div class="bg-slate-200 pl-2 py-1 select-none">EXPLORER</div>
+      <div class="flex-1 min-h-0">
+        <overlay-scrollbars class="h-full w-full pr-5 pl-2" [defer]="true">
+          <app-display-package 
+            *ngIf="appDeps.size" 
+            name="Dependencies" 
+            [dataSource]="appDeps" 
+            [highlightedPackages]="highlightedDeps"
+            [(selectedPackage)]="selectedPackage"
+            (selectedPackageChange)="onSelectedPackageChange($event)"
+          ></app-display-package>
+          <app-display-package 
+            *ngIf="devDeps.size" 
+            name="Dev Dependencies" 
+            [dataSource]="devDeps" 
+            [highlightedPackages]="highlightedDeps"
+            [(selectedPackage)]="selectedPackage"
+            (selectedPackageChange)="onSelectedPackageChange($event)"
+          ></app-display-package>
+        </overlay-scrollbars>
       </div>
-    </div>
-    <app-button content="Close project" (onClick)="onClosePrjBtnClick()"></app-button>
-  </div>
-
-  <div class="flex gap-2 flex-1 min-h-0 px-2">
-    <app-container-resizable className="border-r-2 min-w-max" [maxPercentage]="70">
-      <overlay-scrollbars class="h-full w-full pr-5" [defer]="true">
-        <app-display-package 
-          *ngIf="appDeps.size" 
-          name="Dependencies" 
-          [dataSource]="appDeps" 
-          [highlightedPackages]="highlightedDeps"
-          [(selectedPackage)]="selectedPackage"
-          (selectedPackageChange)="onSelectedPackageChange($event)"
-        ></app-display-package>
-        <app-display-package 
-          *ngIf="devDeps.size" 
-          name="Dev Dependencies" 
-          [dataSource]="devDeps" 
-          [highlightedPackages]="highlightedDeps"
-          [(selectedPackage)]="selectedPackage"
-          (selectedPackageChange)="onSelectedPackageChange($event)"
-        ></app-display-package>
-      </overlay-scrollbars>
     </app-container-resizable>
     <div class="flex-1">
       <app-details-package [dataSource]="selectedPackage"></app-details-package>

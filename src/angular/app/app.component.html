@@ -1,4 +1,8 @@
-<app-bar-title [blurred]="!isWindowActive" [isMaximized]="isWindowMaximize"></app-bar-title>
+<app-bar-title 
+  [blurred]="!isWindowActive" 
+  [isMaximized]="isWindowMaximize"
+  [isVisible]="!isFullscreen"
+></app-bar-title>
 
 <div class="flex-1 min-h-0 relative flex flex-col items-center justify-center overflow-hidden">
   <app-loader-screen>
