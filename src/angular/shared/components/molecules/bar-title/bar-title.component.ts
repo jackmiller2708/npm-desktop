@@ -21,7 +21,7 @@ export class BarTitleComponent {
       'justify-between',
       'items-center',
       'w-screen',
-      'h-7',
+      'h-8',
       this._blurred ? 'bg-gray-900' : 'bg-black',
       'pl-2',
     ];
