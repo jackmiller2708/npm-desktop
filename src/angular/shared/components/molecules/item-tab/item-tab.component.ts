@@ -73,7 +73,6 @@ export class ItemTabComponent implements AfterViewInit, OnChanges {
     }
   }
 
-  @HostListener('auxclick')
   onCloseBtnClick(event: MouseEvent): void {
     event.stopPropagation();
     this.onClose.emit(this._package);
