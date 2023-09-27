@@ -1,6 +1,9 @@
+<app-bar-title [blurred]="!isWindowActive" [isMaximized]="isWindowMaximize"></app-bar-title>
 
-<app-loader-screen>
-  <span class="loader font-sans">L &nbsp; ading Workspace</span>
-</app-loader-screen>
-<router-outlet></router-outlet>
-<app-display-toast></app-display-toast>
+<div class="flex-1 min-h-0 relative flex flex-col items-center justify-center overflow-hidden">
+  <app-loader-screen>
+    <span class="loader font-sans">L &nbsp; ading Workspace</span>
+  </app-loader-screen>
+  <router-outlet></router-outlet>
+  <app-display-toast></app-display-toast>
+</div>
