@@ -1,7 +1,7 @@
 <div class="flex flex-col gap-2 p-3 max-w-[254px]">
   <div class="flex gap-2 items-start">
     <span class="scale-110 pt-1">
-      <app-icon [path]="iconPath"></app-icon>
+      <app-icon fill="#fff" [path]="iconPath"></app-icon>
     </span>
     <app-text [content]="text" className="pb-[1px] w-max"></app-text>
   </div>
@@ -13,7 +13,10 @@
 <div class="pr-4 py-2 self-stretch">
   <div class="pl-4 py-2 border-l flex justify-center items-start h-full">
     <span class="scale-110 cursor-pointer" title="close" (click)="close.emit()">
-      <app-icon path="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></app-icon>
+      <app-icon
+        fill="#fff"
+        path="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
+      ></app-icon>
     </span>
   </div>
 </div>

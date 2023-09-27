@@ -1,6 +1,10 @@
 <ng-container *ngIf="dataSource">
   <span class="flex gap-1 items-center">
-    <app-icon [ngClass]="dataSource.path ? 'check' : 'xmark'" [path]="iconPath"></app-icon>
+    <app-icon
+      [ngClass]="dataSource.path ? 'check' : 'xmark'"
+      [path]="iconPath"
+      [fill]="dataSource.path ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)'"
+    ></app-icon>
     <span>{{ dataSource.name }}</span>
   </span>
 
