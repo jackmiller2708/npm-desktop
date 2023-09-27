@@ -10,8 +10,9 @@ import { Workspace } from '@models/workspace.model';
 import { List, Map } from 'immutable';
 import { Package } from '@models/package.model';
 import { Either } from '@services/monad/models/either.monad';
-import { Router } from '@angular/router';
 import { Helper } from '@shared/helper.class';
+import { Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-project',
@@ -67,6 +68,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     private readonly _toastService: ToastService,
     private readonly _router: Router,
     private readonly _route: ActivatedRoute,
+    private readonly _title: Title,
     // used with `_router.navigate` to mitigate the warning: "Navigation triggered outside Angular zone, did you forget to call 'ngZone.run()'?"
     private readonly _ngZone: NgZone,
     private readonly _IPC: InterProcessCommunicator,
@@ -133,7 +135,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this._loaderService.setLoading(false);
     
     if (missingPackageList.size > 0) {
-      firstValueFrom(this._loaderService.loadAnimationFinish$).then(() =>
+      firstValueFrom(this._loaderService.loadAnimationFinish$).then((): void =>
         this._toastService.addMessage(this._makeMissingPackageToast(missingPackageList))
       );
     }
@@ -143,7 +145,9 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   private _makeHighlightPackageToastCommand(missingPackageList: List<Package>): () => void {
     return () => {
-      this._highlightedDeps = missingPackageList.filter(pkg => pkg !== this._selectedPackage);
+      this._highlightedDeps = missingPackageList.filter(
+        (pkg: Package): boolean => pkg !== this._selectedPackage
+      );
       this._CDR.detectChanges();
     };
   }
@@ -189,6 +193,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
       (error: Error): void => void error,
       (workspace: Workspace): void => {
         this._workspace = workspace;
+        this._title.setTitle(`${workspace.name} - NPM Desktop`);
         this._IPC.send('load-workspace', JSON.stringify(workspace));
       }
     );

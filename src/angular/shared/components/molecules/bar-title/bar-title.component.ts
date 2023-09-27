@@ -1,4 +1,5 @@
 import { Component, HostBinding, Input } from '@angular/core';
+import { InterProcessCommunicator } from '@shared/services/IPC/inter-process-communicator.service';
 import { IconComponent } from '@shared/components/atoms/icon/icon.component';
 import { CommonModule } from '@angular/common';
 
@@ -40,8 +41,24 @@ export class BarTitleComponent {
     return this._isMaximized;
   }
 
-  constructor() {
+  constructor(private readonly _IPC: InterProcessCommunicator) {
     this._blurred = false;
     this._isMaximized = false;
+  }
+
+  onMaximizeControlClick(): void {
+    this._IPC.send('window-control', JSON.stringify({ command: 'maximize' }));
+  }
+
+  onMinimizeControlClick(): void {
+    this._IPC.send('window-control', JSON.stringify({ command: 'minimize' }));
+  }
+
+  onCloseControlClick(): void {
+    this._IPC.send('window-control', JSON.stringify({ command: 'close' }));
+  }
+
+  onRestoreControlClick(): void {
+    this._IPC.send('window-control', JSON.stringify({ command: 'restore' }));
   }
 }

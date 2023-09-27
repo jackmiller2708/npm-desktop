@@ -12,6 +12,13 @@ const { basename } = require("path");
  */
 function initIPCListeners(window) {
   const _workspaceClose$ = new Subject();
+  const _windowControls = {
+    close: () => window.close(),
+    restore: () => window.restore(),
+    maximize: () => window.maximize(),
+    minimize: () => window.minimize(),
+  };
+  
   const _IPC = ipcReqParser(ipcMain);
 
   _IPC.on("load-workspace-history", () => {
@@ -54,6 +61,12 @@ function initIPCListeners(window) {
       .pipe(takeUntil(_workspaceClose$))
       .subscribe((data) => _emitEvent("workspace-loaded", data));
   });
+
+  _IPC.on("window-control", ({ command }) => {
+    if (command in _windowControls) {
+      _windowControls[command]();
+    }
+  })
 
   // ============================================================================================
   // ============================================================================================

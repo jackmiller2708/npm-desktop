@@ -6,24 +6,26 @@
 ></app-icon>
 
 <div class="h-full no-drag flex">
-  <span title="minimize" class="h-full px-3 flex items-center justify-center hover:bg-gray-700">
+  <span title="minimize" class="h-full px-3 flex items-center justify-center hover:bg-gray-700" (click)="onMinimizeControlClick()">
     <app-icon
       fill="#FFF"
       viewBox="0 0 448 512"
       path="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"
     ></app-icon>
   </span>
-  <span title="minimize" class="h-full px-3 flex items-center justify-center hover:bg-gray-700">
+  <span *ngIf="isMaximized" title="restore down" class="h-full px-3 flex items-center justify-center hover:bg-gray-700" (click)="onRestoreControlClick()">    
     <app-icon
       fill="#FFF"
-      [path]="
-        isMaximized
-          ? 'M432 48H208c-17.7 0-32 14.3-32 32V96H128V80c0-44.2 35.8-80 80-80H432c44.2 0 80 35.8 80 80V304c0 44.2-35.8 80-80 80H416V336h16c17.7 0 32-14.3 32-32V80c0-17.7-14.3-32-32-32zM48 448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V256H48V448zM64 128H320c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V192c0-35.3 28.7-64 64-64z'
-          : 'M.3 89.5C.1 91.6 0 93.8 0 96V224 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64V224 96c0-35.3-28.7-64-64-64H64c-2.2 0-4.4 .1-6.5 .3c-9.2 .9-17.8 3.8-25.5 8.2C21.8 46.5 13.4 55.1 7.7 65.5c-3.9 7.3-6.5 15.4-7.4 24zM48 224H464l0 192c0 8.8-7.2 16-16 16L64 432c-8.8 0-16-7.2-16-16l0-192z'
-      "
+      path="M432 48H208c-17.7 0-32 14.3-32 32V96H128V80c0-44.2 35.8-80 80-80H432c44.2 0 80 35.8 80 80V304c0 44.2-35.8 80-80 80H416V336h16c17.7 0 32-14.3 32-32V80c0-17.7-14.3-32-32-32zM48 448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V256H48V448zM64 128H320c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V192c0-35.3 28.7-64 64-64z"
     ></app-icon>
   </span>
-  <span title="minimize" class="h-full px-3 flex items-center justify-center hover:bg-red-600">
+  <span *ngIf="!isMaximized" title="maximize" class="h-full px-3 flex items-center justify-center hover:bg-gray-700" (click)="onMaximizeControlClick()">    
+    <app-icon
+      fill="#FFF"
+      path="M.3 89.5C.1 91.6 0 93.8 0 96V224 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64V224 96c0-35.3-28.7-64-64-64H64c-2.2 0-4.4 .1-6.5 .3c-9.2 .9-17.8 3.8-25.5 8.2C21.8 46.5 13.4 55.1 7.7 65.5c-3.9 7.3-6.5 15.4-7.4 24zM48 224H464l0 192c0 8.8-7.2 16-16 16L64 432c-8.8 0-16-7.2-16-16l0-192z"
+    ></app-icon>
+  </span>
+  <span title="minimize" class="h-full px-3 flex items-center justify-center hover:bg-red-600" (click)="onCloseControlClick()">
     <app-icon
       fill="#FFF"
       path="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
