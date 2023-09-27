@@ -1,7 +1,10 @@
-import { Component, HostBinding, Input } from '@angular/core';
+import { Component, HostBinding, Input, OnInit,   OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { InterProcessCommunicator } from '@shared/services/IPC/inter-process-communicator.service';
 import { IconComponent } from '@shared/components/atoms/icon/icon.component';
+import { TitleService } from '@shared/services/title/title.service';
 import { CommonModule } from '@angular/common';
+import { Subject } from 'rxjs';
+import { Helper } from '@shared/helper.class';
 
 @Component({
   selector: 'app-bar-title',
@@ -10,13 +13,16 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, IconComponent],
 })
-export class BarTitleComponent {
+export class BarTitleComponent implements OnInit, OnDestroy {
+  private readonly _ngDestroy: Subject<void>;
   private _blurred: boolean;
   private _isMaximized: boolean;
+  private _title: string | undefined;
 
   @HostBinding('class')
   private get _classes(): string[] {
     return [
+      'relative',
       'flex',
       'justify-between',
       'items-center',
@@ -41,9 +47,32 @@ export class BarTitleComponent {
     return this._isMaximized;
   }
 
-  constructor(private readonly _IPC: InterProcessCommunicator) {
+  get title(): string | undefined {
+    return this._title;
+  }
+
+  constructor(
+    private readonly _IPC: InterProcessCommunicator,
+    private readonly _titleService: TitleService,
+    private readonly _CDR: ChangeDetectorRef
+  ) {
+    this._ngDestroy = new Subject();
     this._blurred = false;
     this._isMaximized = false;
+  }
+
+  ngOnInit(): void {
+    Helper.makeObservableRegistrar.call(this, this._ngDestroy)(
+      this._titleService.titleStore$,
+      (title) => {
+        this._title = title;
+        this._CDR.detectChanges();
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this._ngDestroy.next();
   }
 
   onMaximizeControlClick(): void {

@@ -4,6 +4,7 @@ import { Subject, firstValueFrom } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
 import { LoaderService } from '@services/loader/loader.service';
 import { ToastService } from '@shared/services/toast/toast.service';
+import { TitleService } from '@shared/services/title/title.service';
 import { MonadService } from '@services/monad/monad.service';
 import { IToastItem } from '@shared/components/molecules/display-toast/interfaces/toast-item.interface';
 import { Workspace } from '@models/workspace.model';
@@ -12,7 +13,6 @@ import { Package } from '@models/package.model';
 import { Either } from '@services/monad/models/either.monad';
 import { Helper } from '@shared/helper.class';
 import { Router } from '@angular/router';
-import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-project',
@@ -68,7 +68,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     private readonly _toastService: ToastService,
     private readonly _router: Router,
     private readonly _route: ActivatedRoute,
-    private readonly _title: Title,
+    private readonly _titleService: TitleService,
     // used with `_router.navigate` to mitigate the warning: "Navigation triggered outside Angular zone, did you forget to call 'ngZone.run()'?"
     private readonly _ngZone: NgZone,
     private readonly _IPC: InterProcessCommunicator,
@@ -86,6 +86,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._IPC.send('close-workspace');
+    this._titleService.removeTitle();
+    this._titleService.resetWindowTitle();
     this._ngDestroy$.next();
   }
 
@@ -193,7 +195,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
       (error: Error): void => void error,
       (workspace: Workspace): void => {
         this._workspace = workspace;
-        this._title.setTitle(`${workspace.name} - NPM Desktop`);
+        this._titleService.setTitle(workspace.name);
+        this._titleService.setWindowTitle(`${workspace.name} - NPM Desktop`);
         this._IPC.send('load-workspace', JSON.stringify(workspace));
       }
     );

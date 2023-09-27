@@ -5,6 +5,10 @@
   path="M288 288h-32v-64h32v64zm288-128v192H288v32H160v-32H0V160h576zm-416 32H32v128h64v-96h32v96h32V192zm160 0H192v160h64v-32h64V192zm224 0H352v128h64v-96h32v96h32v-96h32v96h32V192z"
 ></app-icon>
 
+<div *ngIf="title" class="text-white absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+  {{ title }}
+</div>
+
 <div class="h-full no-drag flex">
   <span title="Minimize" class="h-full px-4 flex items-center justify-center hover:bg-gray-700 transition-colors" (click)="onMinimizeControlClick()">
     <app-icon
