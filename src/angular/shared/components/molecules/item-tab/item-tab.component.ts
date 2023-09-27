@@ -73,6 +73,7 @@ export class ItemTabComponent implements AfterViewInit, OnChanges {
     }
   }
 
+  @HostListener('auxclick')
   onCloseBtnClick(event: MouseEvent): void {
     event.stopPropagation();
     this.onClose.emit(this._package);
@@ -81,5 +82,15 @@ export class ItemTabComponent implements AfterViewInit, OnChanges {
   @HostListener('click')
   private _onSelfClick(): void {
     this.onClick.emit(this._package);
+  }
+
+  @HostListener('mousedown', ['$event'])
+  private _onSelfMouseDown(event: MouseEvent): void {
+    if (event.button !== 1) {
+      return;
+    }
+    
+    event.preventDefault();
+    this.onClose.emit(this._package);
   }
 }
