@@ -1,0 +1,6 @@
+<app-display-tab
+  [selectedPackage]="selectedPackage"
+  (selectedPackageChange)="onTabSelectionChange($event)"
+></app-display-tab>
+
+<app-details-package [dataSource]="selectedPackage"></app-details-package>

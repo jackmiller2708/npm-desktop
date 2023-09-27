@@ -1,7 +1,7 @@
 import { ContainerResizableComponent } from '@shared/components/atoms/container-resizable/container-resizable.component';
 import { DisplayPackageComponent } from '@shared/components/molecules/display-package/display-package.component';
-import { DetailsPackageComponent } from '@shared/components/molecules/details-package/details-package.component';
 import { OverlayscrollbarsModule } from 'overlayscrollbars-ngx';
+import { PackageViewerComponent } from '@shared/components/organisms/package-viewer/package-viewer.component';
 import { ProjectRoutingModule } from './project-routing.module';
 import { ButtonComponent } from '@components/atoms/button/button.component';
 import { ProjectComponent } from './project.component';
@@ -16,7 +16,7 @@ import { NgModule } from '@angular/core';
     OverlayscrollbarsModule,
     ButtonComponent,
     DisplayPackageComponent,
-    DetailsPackageComponent,
+    PackageViewerComponent,
     ContainerResizableComponent,
   ],
 })

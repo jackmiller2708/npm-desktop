@@ -1,5 +1,5 @@
 <ng-container *ngIf="appDeps.size || devDeps.size">
-  <div class="flex gap-2 flex-1 min-h-0">
+  <div class="flex flex-1 min-h-0">
     <app-container-resizable className="flex flex-col border-r-2 min-w-max" [maxPercentage]="70">
       <div class="bg-slate-200 pl-2 py-1 select-none">EXPLORER</div>
       <div class="flex-1 min-h-0">
@@ -24,7 +24,7 @@
       </div>
     </app-container-resizable>
     <div class="flex-1">
-      <app-details-package [dataSource]="selectedPackage"></app-details-package>
+      <app-package-viewer [(selectedPackage)]="selectedPackage"></app-package-viewer>
     </div>
   </div>
 </ng-container>

@@ -1,0 +1,7 @@
+<app-item-tab
+  *ngFor="let tab of tabs"
+  [dataSource]="tab"
+  [isSelected]="tab === selectedPackage"
+  (onClick)="onTabClick($event)"
+  (onClose)="onTabClose($event)"
+></app-item-tab>
