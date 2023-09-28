@@ -26,6 +26,7 @@ export class ItemTabComponent implements AfterViewInit, OnChanges {
       'hover:bg-slate-400',
       'cursor-pointer',
       'group',
+      'select-none',
       'shrink-0',
       this._isSelected ? 'bg-slate-500' : 'bg-slate-600',
     ];
