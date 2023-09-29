@@ -31,6 +31,7 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
       'items-center',
       'justify-center',
       'z-10',
+      'select-none'
     ];
   }
 
