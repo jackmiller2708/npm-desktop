@@ -30,7 +30,7 @@ function getPackageWatcher(target) {
 
     watcher.on("ready", emit).on("change", emit);
 
-    return watcher.unwatch(packageFilePath);
+    return () => watcher.unwatch(packageFilePath);
   });
 }
 
