@@ -5,12 +5,9 @@ function loadWorkspace(workspace) {
   const buffer$ = new Subject();
 
   return getPackageWatcher(workspace.path).pipe(
-    switchMap(() =>
-      getPackageReader(workspace.path).pipe(
-        tap(() => buffer$.next()),
-        buffer(buffer$.pipe(debounceTime(100)))
-      )
-    )
+    switchMap(() => getPackageReader(workspace.path)),
+    tap(() => buffer$.next()),
+    buffer(buffer$.pipe(debounceTime(100)))
   );
 }
 
