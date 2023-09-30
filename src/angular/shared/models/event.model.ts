@@ -10,8 +10,6 @@ export enum EditorEventMessages {
   CLOSE = 'close-editor',
   OPEN = 'open-editor',
   EXIT = 'exit-editor',
-  TAB_OPEN = 'open-editor-tab',
-  TAB_CLOSE = 'close-editor-tab',
 }
 
 export enum WorkspaceEventMessages {
