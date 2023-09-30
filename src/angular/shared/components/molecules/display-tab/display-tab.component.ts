@@ -1,9 +1,9 @@
 import { Component, Input, EventEmitter, Output, OnChanges, SimpleChanges, HostBinding, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
-import { EditorEvent, EditorEventMessages } from '@shared/models/event.model';
+import { EditorEvent, EditorEventMessages, WorkspaceEvent, WorkspaceEventMessages } from '@shared/models/event.model';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { OverlayscrollbarsModule } from 'overlayscrollbars-ngx';
+import { List, Map, OrderedMap, OrderedSet } from 'immutable';
 import { ItemTabComponent } from '../item-tab/item-tab.component';
-import { List, OrderedSet } from 'immutable';
 import { EventBusService } from '@shared/services/event-bus/event-bus.service';
 import { CommonModule } from '@angular/common';
 import { IAppEvent } from '@shared/interfaces/event.interface';
@@ -30,6 +30,7 @@ export class DisplayTabComponent implements OnInit, OnChanges, OnDestroy {
   private _selectedPackage: Package | undefined;
   private _tabs: OrderedSet<Package>;
   private _tabSelectionOrder: List<Package>;
+  private _deletedPackages: List<Package>;
 
   @HostBinding('class')
   private get _classes(): string[] {
@@ -49,6 +50,10 @@ export class DisplayTabComponent implements OnInit, OnChanges, OnDestroy {
     return this._tabs;
   }
 
+  get deletedPackages(): List<Package> {
+    return this._deletedPackages;
+  }
+
   @Output()
   readonly selectedPackageChange: EventEmitter<Package>;
 
@@ -57,8 +62,8 @@ export class DisplayTabComponent implements OnInit, OnChanges, OnDestroy {
     private readonly _eventBusService: EventBusService
   ) {
     this.selectedPackageChange = new EventEmitter();
+    this._tabSelectionOrder = this._deletedPackages = List();
     this._ngDestroy = new Subject();
-    this._tabSelectionOrder = List();
     this._tabs = OrderedSet();
   }
 
@@ -68,6 +73,10 @@ export class DisplayTabComponent implements OnInit, OnChanges, OnDestroy {
       (event: IAppEvent) => {
         if (event instanceof EditorEvent && event.message === EditorEventMessages.CLOSE) {
           this.onTabClose(this._selectedPackage!);
+        }
+
+        if (event instanceof WorkspaceEvent && event.message === WorkspaceEventMessages.OPEN && this._tabs.size) {
+          this._onWorkspacePackagesLoaded(event.data);
         }
       }
     );
@@ -136,6 +145,35 @@ export class DisplayTabComponent implements OnInit, OnChanges, OnDestroy {
       this._eventBusService.emit(new EditorEvent({ message: EditorEventMessages.OPEN }));
     }
   }
+
+  private _onWorkspacePackagesLoaded(packages: Map<string, Package>): void {
+    const keys = packages.keySeq();
+
+    let pkgMap = this._getTabsMap();
+    let tabOrders = this._tabSelectionOrder;
+    let deletedPackages = List<Package>();
+    let selectedPackage = this._selectedPackage;
+
+    for (const pkg of this._tabs) {
+      if (keys.includes(pkg.name)) {
+        const orderIndex = tabOrders.indexOf(pkg);
+        const newPkgRef = packages.get(pkg.name)!;
+
+        selectedPackage = selectedPackage === pkg ? newPkgRef : selectedPackage;
+        pkgMap = pkgMap.set(pkg.name, newPkgRef);
+        tabOrders = tabOrders.splice(orderIndex, 1, newPkgRef);
+        continue;
+      }
+
+      deletedPackages = deletedPackages.push(pkg);
+    }
+
+    this._deletedPackages = deletedPackages;
+    this._tabs = pkgMap.toOrderedSet();
+    this._tabSelectionOrder = tabOrders;
+    this._selectTab(selectedPackage!);
+    this._CDR.detectChanges();
+  }
   //#endregion
 
   //#region Helper Methods
@@ -152,6 +190,16 @@ export class DisplayTabComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     return collection.push(pkg);
+  }
+
+  private _getTabsMap(): OrderedMap<string, Package> {
+    let _map = OrderedMap<string, Package>();
+
+    for (const pkg of this._tabs) {
+      _map = _map.set(pkg.name, pkg);
+    }
+
+    return _map;
   }
   //#endregion
 }

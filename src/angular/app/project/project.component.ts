@@ -1,7 +1,7 @@
-import { WorkspaceEvent, WorkspaceEventMessages } from '@shared/models/event.model';
 import { Component, OnDestroy, OnInit, ChangeDetectorRef, HostBinding } from '@angular/core';
+import { WorkspaceEvent, WorkspaceEventMessages } from '@shared/models/event.model';
 import { InterProcessCommunicator } from '@services/IPC/inter-process-communicator.service';
-import { Subject, firstValueFrom } from 'rxjs';
+import { Subject, firstValueFrom, tap } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
 import { NavigatorService } from '@shared/services/navigator/navigator.service';
 import { EventBusService } from '@shared/services/event-bus/event-bus.service';
@@ -106,6 +106,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   private _onWorkspaceLoaded(data: string): void {
+    console.log(data)
     const { dependencies, devDependencies, version } = JSON.parse(data);
     const depsEntries = Object.entries<Record<string, any>>(dependencies);
 
@@ -133,9 +134,15 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this._version = version;
     this._appDeps = appDeps.sortBy(pkg => pkg.name);
     this._devDeps = devDeps.sortBy(pkg => pkg.name);
+
+    this._eventBusService.emit(
+      new WorkspaceEvent({
+        message: WorkspaceEventMessages.OPEN,
+        data: appDeps.concat(devDeps),
+      })
+    );
     
     this._titleService.setTitle(`${this._workspace!.name} - ${version}`);
-    this._eventBusService.emit(new WorkspaceEvent({ message: WorkspaceEventMessages.OPEN }));
     this._loaderService.setLoading(false);
     
     if (missingPackageList.size > 0) {

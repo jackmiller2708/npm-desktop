@@ -13,10 +13,11 @@ import { Package } from '@shared/models/package.model';
 export class ItemTabComponent implements AfterViewInit, OnChanges {
   private _package: Package | undefined;
   private _isSelected: boolean;
+  private _isDeleted: boolean;
 
   @HostBinding('class')
   private get _classes(): string[] {
-    return [
+    const classes = [
       'flex',
       'items-center',
       'justify-between',
@@ -29,7 +30,13 @@ export class ItemTabComponent implements AfterViewInit, OnChanges {
       'select-none',
       'shrink-0',
       this._isSelected ? 'bg-slate-500' : 'bg-slate-600',
-    ];
+    ]
+
+    if (this._isDeleted) {
+      classes.push('line-through');
+    }
+
+    return classes;
   }
 
   @Input()
@@ -50,6 +57,11 @@ export class ItemTabComponent implements AfterViewInit, OnChanges {
     return this._isSelected;
   }
 
+  @Input()
+  set isDeleted(value: boolean) {
+    this._isDeleted = value;
+  }
+
   @Output()
   readonly onClick: EventEmitter<Package>;
 
@@ -57,7 +69,7 @@ export class ItemTabComponent implements AfterViewInit, OnChanges {
   readonly onClose: EventEmitter<Package>;
 
   constructor(private readonly _elRef: ElementRef<HTMLElement>) {
-    this._isSelected = false;
+    this._isSelected = this._isDeleted = false;
     this.onClick = new EventEmitter();
     this.onClose = new EventEmitter();
   }

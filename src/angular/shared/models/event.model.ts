@@ -20,9 +20,11 @@ export enum WorkspaceEventMessages {
 export class EditorEvent extends Record<IEvent>({
   type: EventTypes.EDITOR,
   message: '',
+  data: undefined,
 }) {}
 
 export class WorkspaceEvent extends Record<IEvent>({
   type: EventTypes.WORKSPACE,
   message: '',
+  data: undefined,
 }) {}

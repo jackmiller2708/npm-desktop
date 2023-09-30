@@ -1,6 +1,14 @@
 <overlay-scrollbars class="w-full" [options]="{ scrollbars: { autoHide: 'move' } }" >
   <div class="flex divide-x" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="tabs" (cdkDropListDropped)="onTabDrop($event)">
-    <app-item-tab *ngFor="let tab of tabs" [cdkDragData]="tab" [dataSource]="tab" [isSelected]="tab === selectedPackage" (onClick)="onTabClick($event)" (onClose)="onTabClose($event)" cdkDrag>
+    <app-item-tab 
+      *ngFor="let tab of tabs" 
+      [cdkDragData]="tab" 
+      [dataSource]="tab" 
+      [isSelected]="tab === selectedPackage" 
+      [isDeleted]="deletedPackages.includes(tab)"
+      (onClick)="onTabClick($event)" 
+      (onClose)="onTabClose($event)" cdkDrag
+    >
     </app-item-tab>
   </div>
 </overlay-scrollbars>
