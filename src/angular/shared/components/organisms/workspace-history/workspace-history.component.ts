@@ -9,7 +9,6 @@ import { WorkspaceHistoryItem } from '../../molecules/item-workspace-history/mod
 import { IWorkspaceHistoryDTO } from '@interfaces/dtos/workspace-history-dto.interface';
 import { NavigatorService } from '@shared/services/navigator/navigator.service';
 import { WorkspaceHistory } from '@models/workspace-history.model';
-import { EventBusService } from '@shared/services/event-bus/event-bus.service';
 import { ButtonComponent } from '../../atoms/button/button.component';
 import { TextComponent } from '../../atoms/text/text.component';
 import { LoaderService } from '@services/loader/loader.service';
@@ -62,7 +61,6 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
     private readonly _workspaceHistoryService: WorkspaceHistoryService,
     private readonly _loaderService: LoaderService,
     private readonly _navigator: NavigatorService,
-    private readonly _eventBusService: EventBusService,
     private readonly _IPC: InterProcessCommunicator,
     private readonly _CDR: ChangeDetectorRef,
   ) {
