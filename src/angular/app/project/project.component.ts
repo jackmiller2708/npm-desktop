@@ -106,7 +106,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   private _onWorkspaceLoaded(data: string): void {
-    console.log(data)
     const { dependencies, devDependencies, version } = JSON.parse(data);
     const depsEntries = Object.entries<Record<string, any>>(dependencies);
 
