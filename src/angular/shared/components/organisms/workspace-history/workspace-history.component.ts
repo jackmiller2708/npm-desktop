@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, NgZone, OnDestroy, OnInit, HostListener } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { Subject, filter, firstValueFrom, map, switchMap } from 'rxjs';
 import { WorkspaceHistoryItemStateChanges } from './../../molecules/item-workspace-history/models/workspace-history-item.state-changes.model';
 import { ItemWorkspaceHistoryComponent } from '../../molecules/item-workspace-history/item-workspace-history.component';
@@ -7,14 +7,15 @@ import { WorkspaceHistoryService } from './workspace-history.service';
 import { OverlayscrollbarsModule } from 'overlayscrollbars-ngx';
 import { WorkspaceHistoryItem } from '../../molecules/item-workspace-history/models/workspace-history-item.model';
 import { IWorkspaceHistoryDTO } from '@interfaces/dtos/workspace-history-dto.interface';
+import { NavigatorService } from '@shared/services/navigator/navigator.service';
 import { WorkspaceHistory } from '@models/workspace-history.model';
+import { EventBusService } from '@shared/services/event-bus/event-bus.service';
 import { ButtonComponent } from '../../atoms/button/button.component';
 import { TextComponent } from '../../atoms/text/text.component';
 import { LoaderService } from '@services/loader/loader.service';
 import { CommonModule } from '@angular/common';
 import { Workspace } from '@models/workspace.model';
 import { Helper } from '@shared/helper.class';
-import { Router } from '@angular/router';
 import { List } from 'immutable';
 
 const imports = [
@@ -60,9 +61,8 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
   constructor(
     private readonly _workspaceHistoryService: WorkspaceHistoryService,
     private readonly _loaderService: LoaderService,
-    private readonly _router: Router,
-    // used with `_router.navigate` to mitigate the warning: "Navigation triggered outside Angular zone, did you forget to call 'ngZone.run()'?"
-    private readonly _ngZone: NgZone,
+    private readonly _navigator: NavigatorService,
+    private readonly _eventBusService: EventBusService,
     private readonly _IPC: InterProcessCommunicator,
     private readonly _CDR: ChangeDetectorRef,
   ) {
@@ -114,22 +114,18 @@ export class WorkspaceHistoryComponent implements OnInit, OnDestroy {
 
   private async _processDataSource(data: WorkspaceHistory): Promise<void> {
     if (data.lastOpened) {
-      const loaderAnimationFinished = firstValueFrom(
+      this._loaderService.setLoading(true);
+
+      await firstValueFrom(
         this._loaderService.isLoading$.pipe(
           filter((value: boolean): boolean => value),
           switchMap(() => this._loaderService.loadAnimationFinish$)
         )
       );
 
-      this._loaderService.setLoading(true);
-
-      await loaderAnimationFinished;
-
-      return void this._ngZone.run(() =>
-        this._router.navigate(['/', 'project'], {
-          queryParams: { workspace: JSON.stringify(data.lastOpened) },
-        })
-      );
+      return void this._navigator.navigate(['/', 'project'], {
+        queryParams: { workspace: JSON.stringify(data.lastOpened) },
+      });
     }
 
     this._workspaceItems = List();

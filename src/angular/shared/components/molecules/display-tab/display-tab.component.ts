@@ -1,8 +1,10 @@
 import { Component, Input, EventEmitter, Output, OnChanges, SimpleChanges, HostBinding, ChangeDetectorRef } from '@angular/core';
+import { EditorEvent, EditorEventMessages } from '@shared/models/event.model';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { OverlayscrollbarsModule } from 'overlayscrollbars-ngx';
 import { ItemTabComponent } from '../item-tab/item-tab.component';
 import { List, OrderedSet } from 'immutable';
+import { EventBusService } from '@shared/services/event-bus/event-bus.service';
 import { CommonModule } from '@angular/common';
 import { Package } from '@shared/models/package.model';
 
@@ -46,7 +48,10 @@ export class DisplayTabComponent implements OnChanges {
   @Output()
   readonly selectedPackageChange: EventEmitter<Package>;
 
-  constructor(private readonly _CDR: ChangeDetectorRef) {
+  constructor(
+    private readonly _CDR: ChangeDetectorRef,
+    private readonly _eventBusService: EventBusService
+  ) {
     this.selectedPackageChange = new EventEmitter();
     this._tabSelectionOrder = List();
     this._tabs = OrderedSet();
@@ -68,6 +73,10 @@ export class DisplayTabComponent implements OnChanges {
     const index = this._tabSelectionOrder.indexOf(pkg);
 
     this._tabs = this._tabs.remove(pkg);
+
+    if (!this._tabs.size) {
+      this._eventBusService.emit(new EditorEvent({ message: EditorEventMessages.CLOSE }));
+    }
 
     if (this._tabSelectionOrder.size - 1 === index) {
       this._tabSelectionOrder = this._tabSelectionOrder.pop();
@@ -95,12 +104,17 @@ export class DisplayTabComponent implements OnChanges {
     if (!pkg) {
       this._tabs = this._tabs.clear();
       this._tabSelectionOrder = this._tabSelectionOrder.clear();
+      this._eventBusService.emit(new EditorEvent({ message: EditorEventMessages.CLOSE }));
 
       return;
     }
 
     this._tabs = this._tabs.add(pkg);
     this._tabSelectionOrder = this._setSelectionTabOrder(pkg, this._tabSelectionOrder);
+
+    if (this._tabs.size === 1) {
+      this._eventBusService.emit(new EditorEvent({ message: EditorEventMessages.OPEN }));
+    }
   }
   //#endregion
 

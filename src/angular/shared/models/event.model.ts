@@ -8,10 +8,14 @@ enum EventTypes {
 
 export enum EditorEventMessages {
   CLOSE = 'close-editor',
+  OPEN = 'open-editor',
+  TAB_OPEN = 'open-editor-tab',
+  TAB_CLOSE = 'close-editor-tab',
 }
 
 export enum WorkspaceEventMessages {
   CLOSE = 'close-workspace',
+  OPEN = 'open-workspace',
 }
 
 export class EditorEvent extends Record<IEvent>({

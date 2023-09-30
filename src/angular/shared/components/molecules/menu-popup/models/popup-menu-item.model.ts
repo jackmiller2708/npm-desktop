@@ -7,10 +7,17 @@ const defaultValues: IPopupMenuItem = {
   separator: false,
   className: undefined,
   iconPath: undefined,
+  disabled: false
 };
 
 export class PopupMenuItem extends Record<IPopupMenuItem>(defaultValues) {
   get classNames(): string[] {
-    return ([] as string[]).concat(this.className?.split(' ') ?? []);
+    const classes = ([] as string[]).concat(this.className?.split(' ') ?? []);
+
+    if (this.disabled) {
+      classes.push('pointer-events-none')
+    }
+
+    return classes;
   }
 }

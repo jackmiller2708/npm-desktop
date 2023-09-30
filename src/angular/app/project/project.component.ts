@@ -135,6 +135,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this._devDeps = devDeps.sortBy(pkg => pkg.name);
     
     this._titleService.setTitle(`${this._workspace!.name} - ${version}`);
+    this._eventBusService.emit(new WorkspaceEvent({ message: WorkspaceEventMessages.OPEN }));
     this._loaderService.setLoading(false);
     
     if (missingPackageList.size > 0) {

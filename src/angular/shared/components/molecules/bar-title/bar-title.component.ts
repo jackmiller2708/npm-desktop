@@ -1,5 +1,5 @@
 import { EditorEvent, EditorEventMessages, WorkspaceEvent, WorkspaceEventMessages } from '@shared/models/event.model';
-import { Component, HostBinding, Input, OnInit,   OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, HostBinding, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { InterProcessCommunicator } from '@shared/services/IPC/inter-process-communicator.service';
 import { MenuPopupComponent } from '../menu-popup/menu-popup.component';
 import { ConnectedPosition } from '@angular/cdk/overlay';
@@ -8,6 +8,7 @@ import { IconComponent } from '@shared/components/atoms/icon/icon.component';
 import { PopupMenuItem } from '../menu-popup/models/popup-menu-item.model';
 import { TitleService } from '@shared/services/title/title.service';
 import { CommonModule } from '@angular/common';
+import { IAppEvent } from '@shared/interfaces/event.interface';
 import { Subject } from 'rxjs';
 import { Helper } from '@shared/helper.class';
 import { List } from 'immutable';
@@ -21,8 +22,8 @@ import { List } from 'immutable';
 })
 export class BarTitleComponent implements OnInit, OnDestroy {
   private readonly _ngDestroy: Subject<void>;
-  private readonly _menuItems: List<PopupMenuItem>;
   private readonly _menuDropdownPositions: List<ConnectedPosition>;
+  private _menuItems: List<PopupMenuItem>;
   private _isMenuShown: boolean;
   private _blurred: boolean;
   private _isMaximized: boolean;
@@ -106,13 +107,7 @@ export class BarTitleComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    Helper.makeObservableRegistrar.call(this, this._ngDestroy)(
-      this._titleService.titleStore$,
-      (title) => {
-        this._title = title;
-        this._CDR.detectChanges();
-      }
-    );
+    this._initStores();
   }
 
   ngOnDestroy(): void {
@@ -151,14 +146,47 @@ export class BarTitleComponent implements OnInit, OnDestroy {
     );
   }
 
+  private _onTitleChanges(title: string | undefined) {
+    this._title = title;
+    this._CDR.detectChanges();
+  }
+
+  private _onAppEvents(event: IAppEvent): void {
+    if (event instanceof WorkspaceEvent && (event.message === WorkspaceEventMessages.OPEN || event.message === WorkspaceEventMessages.CLOSE)) {
+      this._menuItems = this._menuItems.setIn(
+        [1, 'disabled'],
+        event.message ===  WorkspaceEventMessages.CLOSE
+      );
+    }
+
+    if (event instanceof EditorEvent && (event.message === EditorEventMessages.OPEN || event.message === EditorEventMessages.CLOSE)) {
+      this._menuItems = this._menuItems.setIn(
+        [0, 'disabled'],
+        event.message === EditorEventMessages.CLOSE
+      );
+    }
+
+    this._CDR.detectChanges();
+  }
+
+  private _initStores(): void {
+    const _register = Helper.makeObservableRegistrar.call(this, this._ngDestroy);
+
+
+    _register(this._titleService.titleStore$, this._onTitleChanges);
+    _register(this._eventBusService.appEvents$, this._onAppEvents);
+  }
+
   private _initMenuItems(): List<PopupMenuItem> {
     return List([
       new PopupMenuItem({
         content: 'Close Editor',
+        disabled: true,
         onClick: this._onCloseEditorClick.bind(this),
       }),
       new PopupMenuItem({
         content: 'Close Workspace',
+        disabled: true,
         onClick: this._onCloseWorkspaceClick.bind(this),
       }),
       new PopupMenuItem({
