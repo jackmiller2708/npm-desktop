@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit, ChangeDetectorRef, HostBinding } from '@angular/core';
 import { EditorEvent, EditorEventMessages, WorkspaceEvent, WorkspaceEventMessages } from '@shared/models/event.model';
+import { Component, OnDestroy, OnInit, ChangeDetectorRef, HostBinding } from '@angular/core';
 import { InterProcessCommunicator } from '@services/IPC/inter-process-communicator.service';
 import { Subject, firstValueFrom } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
@@ -106,7 +106,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   private _onWorkspaceLoaded(data: string): void {
-    console.log(data)
     const { dependencies, devDependencies, version } = JSON.parse(data);
     const depsEntries = Object.entries<Record<string, any>>(dependencies);
 
