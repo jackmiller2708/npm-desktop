@@ -102,7 +102,7 @@ export class BarTitleComponent implements OnInit, OnDestroy {
     this._ngDestroy = new Subject();
     this._isVisible = true;
     this._menuDropdownPositions = List([
-      { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top' },
+      { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 5 },
     ]);
   }
 
