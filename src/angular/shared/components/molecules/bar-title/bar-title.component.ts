@@ -159,10 +159,10 @@ export class BarTitleComponent implements OnInit, OnDestroy {
       );
     }
 
-    if (event instanceof EditorEvent && (event.message === EditorEventMessages.OPEN || event.message === EditorEventMessages.CLOSE)) {
+    if (event instanceof EditorEvent && (event.message === EditorEventMessages.EXIT || event.message === EditorEventMessages.OPEN)) {
       this._menuItems = this._menuItems.setIn(
         [0, 'disabled'],
-        event.message === EditorEventMessages.CLOSE
+        event.message === EditorEventMessages.EXIT
       );
     }
 

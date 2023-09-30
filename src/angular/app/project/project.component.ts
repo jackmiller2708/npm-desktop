@@ -1,4 +1,4 @@
-import { EditorEvent, EditorEventMessages, WorkspaceEvent, WorkspaceEventMessages } from '@shared/models/event.model';
+import { WorkspaceEvent, WorkspaceEventMessages } from '@shared/models/event.model';
 import { Component, OnDestroy, OnInit, ChangeDetectorRef, HostBinding } from '@angular/core';
 import { InterProcessCommunicator } from '@services/IPC/inter-process-communicator.service';
 import { Subject, firstValueFrom } from 'rxjs';
@@ -208,11 +208,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
   private _onAppEvents(event: IAppEvent): void {
     if (event instanceof WorkspaceEvent && event.message === WorkspaceEventMessages.CLOSE) {
       this._navigator.navigate(['/', 'startup']);
-    }
-
-    if (event instanceof EditorEvent && event.message == EditorEventMessages.CLOSE) {
-      this._selectedPackage = undefined;
-      this._CDR.detectChanges();
     }
   }
 

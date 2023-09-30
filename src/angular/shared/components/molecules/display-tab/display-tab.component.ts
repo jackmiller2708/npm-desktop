@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, OnChanges, SimpleChanges, HostBinding, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnChanges, SimpleChanges, HostBinding, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
 import { EditorEvent, EditorEventMessages } from '@shared/models/event.model';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { OverlayscrollbarsModule } from 'overlayscrollbars-ngx';
@@ -7,6 +7,9 @@ import { List, OrderedSet } from 'immutable';
 import { EventBusService } from '@shared/services/event-bus/event-bus.service';
 import { CommonModule } from '@angular/common';
 import { Package } from '@shared/models/package.model';
+import { Subject } from 'rxjs';
+import { Helper } from '@shared/helper.class';
+import { IAppEvent } from '@shared/interfaces/event.interface';
 
 const imports = [
   CommonModule,
@@ -22,7 +25,8 @@ const imports = [
   standalone: true,
   imports,
 })
-export class DisplayTabComponent implements OnChanges {
+export class DisplayTabComponent implements OnInit, OnChanges, OnDestroy {
+  private readonly _ngDestroy: Subject<void>;
   private _selectedPackage: Package | undefined;
   private _tabs: OrderedSet<Package>;
   private _tabSelectionOrder: List<Package>;
@@ -53,8 +57,23 @@ export class DisplayTabComponent implements OnChanges {
     private readonly _eventBusService: EventBusService
   ) {
     this.selectedPackageChange = new EventEmitter();
+    this._ngDestroy = new Subject();
     this._tabSelectionOrder = List();
     this._tabs = OrderedSet();
+  }
+
+  ngOnInit(): void {
+    Helper.makeObservableRegistrar.call(this, this._ngDestroy)(
+      this._eventBusService.appEvents$,
+      (event: IAppEvent) => {
+        if (
+          event instanceof EditorEvent &&
+          event.message === EditorEventMessages.CLOSE
+        ) {
+          this.onTabClose(this._selectedPackage!);
+        }
+      }
+    );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -63,6 +82,10 @@ export class DisplayTabComponent implements OnChanges {
     if (selectedPackage) {
       this._onSelectedPackageChange(selectedPackage.currentValue);
     }
+  }
+
+  ngOnDestroy(): void {
+    this._ngDestroy.next();
   }
 
   onTabClick(pkg: Package): void {
@@ -75,7 +98,7 @@ export class DisplayTabComponent implements OnChanges {
     this._tabs = this._tabs.remove(pkg);
 
     if (!this._tabs.size) {
-      this._eventBusService.emit(new EditorEvent({ message: EditorEventMessages.CLOSE }));
+      this._eventBusService.emit(new EditorEvent({ message: EditorEventMessages.EXIT }));
     }
 
     if (this._tabSelectionOrder.size - 1 === index) {
@@ -104,7 +127,7 @@ export class DisplayTabComponent implements OnChanges {
     if (!pkg) {
       this._tabs = this._tabs.clear();
       this._tabSelectionOrder = this._tabSelectionOrder.clear();
-      this._eventBusService.emit(new EditorEvent({ message: EditorEventMessages.CLOSE }));
+      this._eventBusService.emit(new EditorEvent({ message: EditorEventMessages.EXIT }));
 
       return;
     }
