@@ -15,7 +15,7 @@ export class PopupMenuItem extends Record<IPopupMenuItem>(defaultValues) {
     const classes = ([] as string[]).concat(this.className?.split(' ') ?? []);
 
     if (this.disabled) {
-      classes.push('pointer-events-none')
+      classes.push('pointer-events-none', 'opacity-60')
     }
 
     return classes;
