@@ -1,8 +1,8 @@
 import { Component, Input, EventEmitter, Output, OnChanges, SimpleChanges, HostBinding, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
 import { EditorEvent, EditorEventMessages, WorkspaceEvent, WorkspaceEventMessages } from '@shared/models/event.model';
+import { List, Map, OrderedMap, OrderedSet } from 'immutable';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { OverlayscrollbarsModule } from 'overlayscrollbars-ngx';
-import { List, Map, OrderedMap, OrderedSet } from 'immutable';
 import { ItemTabComponent } from '../item-tab/item-tab.component';
 import { EventBusService } from '@shared/services/event-bus/event-bus.service';
 import { CommonModule } from '@angular/common';
@@ -149,7 +149,7 @@ export class DisplayTabComponent implements OnInit, OnChanges, OnDestroy {
   private _onWorkspacePackagesLoaded(packages: Map<string, Package>): void {
     const keys = packages.keySeq();
 
-    let pkgMap = this._getTabsMap();
+    let tabsMap = this._getTabsMap();
     let tabOrders = this._tabSelectionOrder;
     let deletedPackages = List<Package>();
     let selectedPackage = this._selectedPackage;
@@ -160,7 +160,7 @@ export class DisplayTabComponent implements OnInit, OnChanges, OnDestroy {
         const newPkgRef = packages.get(pkg.name)!;
 
         selectedPackage = selectedPackage === pkg ? newPkgRef : selectedPackage;
-        pkgMap = pkgMap.set(pkg.name, newPkgRef);
+        tabsMap = tabsMap.set(pkg.name, newPkgRef);
         tabOrders = tabOrders.splice(orderIndex, 1, newPkgRef);
         continue;
       }
@@ -169,7 +169,7 @@ export class DisplayTabComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     this._deletedPackages = deletedPackages;
-    this._tabs = pkgMap.toOrderedSet();
+    this._tabs = tabsMap.toOrderedSet();
     this._tabSelectionOrder = tabOrders;
     this._selectTab(selectedPackage!);
     this._CDR.detectChanges();
