@@ -1,6 +1,6 @@
 const { getHistory, addToHistory, setLastOpened, updateFromHistory, removeFromHistory, unsetLastOpened } = require("../workspace-history");
 const { validatePathThenAct, ipcReqParser } = require("./_service");
-const { ipcMain, dialog, BrowserWindow, app } = require("electron")
+const { ipcMain, dialog, BrowserWindow } = require("electron")
 const { Subject, takeUntil } = require("rxjs");
 const { loadWorkspace } = require("../workspace");
 const { Workspace } = require("../../shared/models/workspace.model");
@@ -59,6 +59,8 @@ function initIPCListeners(window) {
   })
 
   _IPC.on("load-workspace", (workspace) => {
+    _workspaceClose$.next();
+
     loadWorkspace(Workspace(workspace))
       .pipe(takeUntil(_workspaceClose$))
       .subscribe((data) => _emitEvent("workspace-loaded", data));
