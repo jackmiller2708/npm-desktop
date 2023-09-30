@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Subject, debounceTime, fromEvent, map, merge } from 'rxjs';
 import { InterProcessCommunicator } from '@services/IPC/inter-process-communicator.service';
 import { ToastService } from '@services/toast/toast.service';

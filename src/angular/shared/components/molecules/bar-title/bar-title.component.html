@@ -1,9 +1,18 @@
-<app-icon
-  size="2rem"
-  viewBox="0 0 576 512"
-  fill="#FFF"
-  path="M288 288h-32v-64h32v64zm288-128v192H288v32H160v-32H0V160h576zm-416 32H32v128h64v-96h32v96h32V192zm160 0H192v160h64v-32h64V192zm224 0H352v128h64v-96h32v96h32v-96h32v96h32V192z"
-></app-icon>
+<div class="flex gap-2 items-center">
+  <app-icon
+    size="2rem"
+    viewBox="0 0 576 512"
+    fill="#FFF"
+    path="M288 288h-32v-64h32v64zm288-128v192H288v32H160v-32H0V160h576zm-416 32H32v128h64v-96h32v96h32V192zm160 0H192v160h64v-32h64V192zm224 0H352v128h64v-96h32v96h32v-96h32v96h32V192z"
+  ></app-icon>
+  <span class="no-drag cursor-pointer opacity-80 hover:opacity-100" #menuTrigger (click)="onMenuTriggerClick()">
+    <app-icon 
+      viewBox="0 0 448 512"
+      fill="#FFF"
+      path="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"
+    ></app-icon>
+  </span>
+</div>
 
 <div *ngIf="title" class="text-white absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
   {{ title }}
@@ -37,3 +46,10 @@
     ></app-icon>
   </span>
 </div>
+
+<app-menu-popup 
+  [target]="menuTrigger" 
+  [dataSource]="menuItems" 
+  [(isShown)]="isMenuShown" 
+  [dropdownPositions]="menuDropdownPositions"
+></app-menu-popup>

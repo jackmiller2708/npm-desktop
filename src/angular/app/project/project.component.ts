@@ -1,7 +1,10 @@
-import { Component, NgZone, OnDestroy, OnInit, ChangeDetectorRef, HostBinding } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectorRef, HostBinding } from '@angular/core';
+import { EditorEvent, EditorEventMessages, WorkspaceEvent, WorkspaceEventMessages } from '@shared/models/event.model';
 import { InterProcessCommunicator } from '@services/IPC/inter-process-communicator.service';
 import { Subject, firstValueFrom } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
+import { NavigatorService } from '@shared/services/navigator/navigator.service';
+import { EventBusService } from '@shared/services/event-bus/event-bus.service';
 import { LoaderService } from '@services/loader/loader.service';
 import { ToastService } from '@shared/services/toast/toast.service';
 import { TitleService } from '@shared/services/title/title.service';
@@ -9,10 +12,10 @@ import { MonadService } from '@services/monad/monad.service';
 import { IToastItem } from '@shared/components/molecules/display-toast/interfaces/toast-item.interface';
 import { Workspace } from '@models/workspace.model';
 import { List, Map } from 'immutable';
+import { IAppEvent } from '@shared/interfaces/event.interface';
 import { Package } from '@models/package.model';
 import { Either } from '@services/monad/models/either.monad';
 import { Helper } from '@shared/helper.class';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-project',
@@ -20,7 +23,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./project.component.scss'],
 })
 export class ProjectComponent implements OnInit, OnDestroy {
-  private readonly _ngDestroy$: Subject<void>;
+  private readonly _ngDestroy: Subject<void>;
   private _workspace: Workspace | undefined;
   private _selectedPackage: Package | undefined;
   private _highlightedDeps: List<Package>;
@@ -63,20 +66,19 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    private readonly _eventBusService: EventBusService,
     private readonly _monadService: MonadService,
     private readonly _loaderService: LoaderService,
     private readonly _toastService: ToastService,
-    private readonly _router: Router,
-    private readonly _route: ActivatedRoute,
+    private readonly _navigator: NavigatorService,
     private readonly _titleService: TitleService,
-    // used with `_router.navigate` to mitigate the warning: "Navigation triggered outside Angular zone, did you forget to call 'ngZone.run()'?"
-    private readonly _ngZone: NgZone,
+    private readonly _route: ActivatedRoute,
     private readonly _IPC: InterProcessCommunicator,
-    private readonly _CDR: ChangeDetectorRef
+    private readonly _CDR: ChangeDetectorRef,
   ) {
     this._highlightedDeps = List();
     this._appDeps = this._devDeps = Map();
-    this._ngDestroy$ = new Subject();
+    this._ngDestroy = new Subject();
   }
 
   ngOnInit(): void {
@@ -89,11 +91,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this._titleService.removeTitle();
     this._titleService.resetWindowTitle();
     this._toastService.clearMessages();
-    this._ngDestroy$.next();
-  }
-
-  onClosePrjBtnClick(): void {
-    this._ngZone.run(() => this._router.navigate(['/', 'startup']));
+    this._ngDestroy.next();
   }
 
   onSelectedPackageChange(pkg: Package): void {
@@ -108,6 +106,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   private _onWorkspaceLoaded(data: string): void {
+    console.log(data)
     const { dependencies, devDependencies, version } = JSON.parse(data);
     const depsEntries = Object.entries<Record<string, any>>(dependencies);
 
@@ -135,6 +134,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this._version = version;
     this._appDeps = appDeps.sortBy(pkg => pkg.name);
     this._devDeps = devDeps.sortBy(pkg => pkg.name);
+    
     this._titleService.setTitle(`${this._workspace!.name} - ${version}`);
     this._loaderService.setLoading(false);
     
@@ -205,12 +205,24 @@ export class ProjectComponent implements OnInit, OnDestroy {
     );
   }
 
+  private _onAppEvents(event: IAppEvent): void {
+    if (event instanceof WorkspaceEvent && event.message === WorkspaceEventMessages.CLOSE) {
+      this._navigator.navigate(['/', 'startup']);
+    }
+
+    if (event instanceof EditorEvent && event.message == EditorEventMessages.CLOSE) {
+      this._selectedPackage = undefined;
+      this._CDR.detectChanges();
+    }
+  }
+
   private _initStores(): void {
-    const _register = Helper.makeObservableRegistrar.call(this, this._ngDestroy$);
+    const _register = Helper.makeObservableRegistrar.call(this, this._ngDestroy);
     const _workspaceLoaded$ = this._IPC.on<string>('workspace-loaded');
     const _params$ = this._route.queryParams;
 
     _register(_workspaceLoaded$, this._onWorkspaceLoaded);
     _register(_params$, this._onParamsLoaded);
+    _register(this._eventBusService.appEvents$, this._onAppEvents);
   }
 }

@@ -19,7 +19,7 @@ export class DetailsPackageComponent {
 
   @Input()
   set dataSource(value: Package | undefined) {
-    this._package = value ?? this._package;
+    this._package = value;
   }
 
   get dataSource(): Package | undefined {

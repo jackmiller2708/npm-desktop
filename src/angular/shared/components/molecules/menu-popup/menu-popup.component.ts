@@ -21,7 +21,7 @@ import { List } from 'immutable';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuPopupComponent implements AfterViewInit {
-  private readonly _dropdownPosition: List<ConnectedPosition>;
+  private _dropdownPosition: List<ConnectedPosition>;
   private _isReady: boolean;
   private _states: PopupMenuProps;
 
@@ -55,6 +55,11 @@ export class MenuPopupComponent implements AfterViewInit {
 
   get isShown(): boolean {
     return this._states.isShown;
+  }
+
+  @Input()
+  set dropdownPositions(value: List<ConnectedPosition>) {
+    this._dropdownPosition = value;
   }
 
   get dropdownPositions(): ConnectedPosition[] {

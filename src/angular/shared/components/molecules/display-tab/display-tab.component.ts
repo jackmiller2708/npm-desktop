@@ -55,7 +55,7 @@ export class DisplayTabComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     const { selectedPackage } = changes;
 
-    if (selectedPackage && selectedPackage.currentValue) {
+    if (selectedPackage) {
       this._onSelectedPackageChange(selectedPackage.currentValue);
     }
   }
@@ -91,12 +91,16 @@ export class DisplayTabComponent implements OnChanges {
   }
 
   //#region Private Handlers
-  private _onSelectedPackageChange(pkg: Package): void {
+  private _onSelectedPackageChange(pkg: Package | undefined): void {
+    if (!pkg) {
+      this._tabs = this._tabs.clear();
+      this._tabSelectionOrder = this._tabSelectionOrder.clear();
+
+      return;
+    }
+
     this._tabs = this._tabs.add(pkg);
-    this._tabSelectionOrder = this._setSelectionTabOrder(
-      pkg,
-      this._tabSelectionOrder
-    );
+    this._tabSelectionOrder = this._setSelectionTabOrder(pkg, this._tabSelectionOrder);
   }
   //#endregion
 
