@@ -6,10 +6,10 @@ import { ItemTabComponent } from '../item-tab/item-tab.component';
 import { List, OrderedSet } from 'immutable';
 import { EventBusService } from '@shared/services/event-bus/event-bus.service';
 import { CommonModule } from '@angular/common';
+import { IAppEvent } from '@shared/interfaces/event.interface';
 import { Package } from '@shared/models/package.model';
 import { Subject } from 'rxjs';
 import { Helper } from '@shared/helper.class';
-import { IAppEvent } from '@shared/interfaces/event.interface';
 
 const imports = [
   CommonModule,
@@ -66,10 +66,7 @@ export class DisplayTabComponent implements OnInit, OnChanges, OnDestroy {
     Helper.makeObservableRegistrar.call(this, this._ngDestroy)(
       this._eventBusService.appEvents$,
       (event: IAppEvent) => {
-        if (
-          event instanceof EditorEvent &&
-          event.message === EditorEventMessages.CLOSE
-        ) {
+        if (event instanceof EditorEvent && event.message === EditorEventMessages.CLOSE) {
           this.onTabClose(this._selectedPackage!);
         }
       }
