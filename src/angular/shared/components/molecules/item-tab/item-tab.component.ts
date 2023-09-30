@@ -24,16 +24,19 @@ export class ItemTabComponent implements AfterViewInit, OnChanges {
       'w-48',
       'py-1',
       'px-2',
-      'hover:bg-slate-400',
+      'hover:bg-slate-600',
       'cursor-pointer',
       'group',
       'select-none',
       'shrink-0',
-      this._isSelected ? 'bg-slate-500' : 'bg-slate-600',
     ]
 
+    if (this._isSelected) {
+      classes.push('selected');
+    }
+
     if (this._isDeleted) {
-      classes.push('line-through');
+      classes.push('line-through', 'deleted');
     }
 
     return classes;

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ChangeDetectorRef, HostBinding } from '@angular/core';
 import { WorkspaceEvent, WorkspaceEventMessages } from '@shared/models/event.model';
 import { InterProcessCommunicator } from '@services/IPC/inter-process-communicator.service';
-import { Subject, firstValueFrom, tap } from 'rxjs';
+import { Subject, firstValueFrom } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
 import { NavigatorService } from '@shared/services/navigator/navigator.service';
 import { EventBusService } from '@shared/services/event-bus/event-bus.service';

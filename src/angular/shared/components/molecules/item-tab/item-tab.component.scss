@@ -1,0 +1,17 @@
+:host {
+  background: gray;
+  color: #cecece;
+
+  &.selected {
+    background: rgb(85, 85, 85);
+    color: #fff;
+
+    &.deleted {
+      color: red;
+    }
+  }
+
+  &.deleted {
+    color: rgba(254, 86, 86, 0.872);
+  }
+}
