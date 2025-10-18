@@ -7,10 +7,13 @@ export function App() {
 	const npm = useNpm();
 
   function onInstallBtnClick() {
-    Effect.runPromise(Effect.Do.pipe(
-      Effect.bind('install', () => npm.install('Effect')),
-      Effect.andThen(({ install }) => console.log(install))
-    ))
+    Effect.runPromise(npm.install('Effect').pipe(
+      Effect.match({
+        onSuccess: (value) => value,
+        onFailure: (error) => error.message,
+      }),
+      Effect.tap(Effect.log)
+    ));
   }
 
 	return (

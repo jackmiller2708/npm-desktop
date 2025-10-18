@@ -13,7 +13,6 @@
 		"resolveJsonModule": true,
 		"jsx": "react-jsx",
 		"strict": true,
-    "exactOptionalPropertyTypes": true,
 		"paths": {
 			"@shared/*": ["src/shared/*"]
 		}

@@ -1,6 +1,6 @@
 import type { IPCRegistry } from "@shared/ipc/registry";
 
-import { ExtractCommand, ExtractInput, ExtractOutput } from "@shared/ipc/types";
+import { ExtractCommand, ExtractInput, ExtractOutput } from "@shared/types/registry";
 import { contextBridge, ipcRenderer } from "electron";
 
 const ipc = {

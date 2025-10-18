@@ -1,15 +1,15 @@
 import { Schema } from "effect";
 
-import type { ExtractCommand } from "./types";
+import type { ExtractCommand } from "../types/registry";
 
 export const IPCRegistry = Schema.Struct({
 	npm: Schema.Struct({
 		install: Schema.Struct({
-			input: Schema.Tuple(Schema.String),
+			input: Schema.Array(Schema.String),
 			output: Schema.Struct({ success: Schema.Boolean }),
 		}),
 	}),
 });
 
 export type IPCRegistry = Schema.Schema.Type<typeof IPCRegistry>;
-export type Command = ExtractCommand<typeof IPCRegistry>;
+export type Command = ExtractCommand<IPCRegistry>;
