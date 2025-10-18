@@ -8,11 +8,11 @@ export function App() {
 
   function onInstallBtnClick() {
     Effect.runPromise(npm.install('Effect').pipe(
-      Effect.match({
-        onSuccess: (value) => value,
-        onFailure: (error) => error.message,
-      }),
-      Effect.tap(Effect.log)
+      // Effect.match({
+      //   onSuccess: (value) => value,
+      //   onFailure: (error) => error.message,
+      // }),
+      // Effect.tap(Effect.log)
     ));
   }
 

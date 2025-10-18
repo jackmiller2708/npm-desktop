@@ -1,3 +1,5 @@
+import { Failure, Success } from "@shared/ipc/response";
+
 import type { HandlerRegistrar, IPCContractRegistry } from "@shared/types/registry";
 
 import { Array as Collection, Effect, Function as Fn, Layer, Record } from "effect";
@@ -14,8 +16,13 @@ export const IpcHandlerServiceLive = Layer.succeed(IpcHandlerService, IpcHandler
       handlerRuntime.runSync
     )),
     Collection.map(([channel, handlerFn]) => Effect.Do.pipe(
-      // biome-ignore lint/suspicious/noExplicitAny: for generic type inference.
-      Effect.andThen(() => Effect.sync(() => ipcMain.handle(channel, (_, ...args) => Effect.runPromise(handlerFn(...args as any))))),
+      Effect.andThen(() => Effect.sync(() => ipcMain.handle(channel, (_, ...args) => Effect.runPromise(
+        // biome-ignore lint/suspicious/noExplicitAny: for generic type inference.
+        handlerFn(...args as any).pipe(Effect.match({
+          onSuccess: (data) => Success({ data }),
+          onFailure: (error) => Failure({ reason: error.message })
+        }))
+      )))),
       Effect.tap(() => Effect.logInfo(`Registered handler for: ${channel}`))
     )),
     registerHandlerFNs => Effect.all(registerHandlerFNs, { concurrency: 'unbounded', discard: true })
