@@ -1,5 +1,5 @@
+import { NpmHandler } from "@application/ipc/handlers/npm";
 import { CommandExecutor } from "@core/execution";
-import { NpmHandler } from "@core/npm";
 import { Effect, Layer } from "effect";
 
 export const NpmHandlerLive = Layer.effect(NpmHandler, Effect.Do.pipe(
