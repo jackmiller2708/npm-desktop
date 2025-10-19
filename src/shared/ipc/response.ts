@@ -7,13 +7,13 @@ type ResponseDataEnum<Success, Failure> = {
 	Failure: { reason: Failure };
 };
 
-export type RemoteData<Success = any, Failure = any> = Data.TaggedEnum<ResponseDataEnum<Success, Failure>>;
+export type RemoteData<Success = any, Failure = any> = Data.TaggedEnum<
+	ResponseDataEnum<Success, Failure>
+>;
 
 // Extend TaggedEnum.WithGenerics to add generics
 interface RemoteDataDefinition extends Data.TaggedEnum.WithGenerics<2> {
 	readonly taggedEnum: RemoteData<this["A"], this["B"]>;
 }
 
-const { Failure, Success } = Data.taggedEnum<RemoteDataDefinition>();
-
-export { Failure, Success };
+export const Response = Data.taggedEnum<RemoteDataDefinition>();

@@ -14,7 +14,11 @@
 		"jsx": "react-jsx",
 		"strict": true,
 		"paths": {
-			"@shared/*": ["src/shared/*"]
+			"@shared/*": ["src/shared/*"],
+			"@types": ["src/types"],
+			"@types/*": ["src/types/*"],
+			"@application/*": ["src/application/*"],
+			"@core/*": ["src/core/*"]
 		}
 	}
 }
