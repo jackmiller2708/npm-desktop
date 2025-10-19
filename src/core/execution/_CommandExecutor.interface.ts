@@ -15,9 +15,8 @@ export const Output = Data.taggedEnum<ResultDataEnum>();
 export interface CommandContext {
   cwd: string;
   env?: Record<string, string>;
-  logger?: (msg: string) => void;
 }
 
 export class CommandExecutor extends Context.Tag("CommandExecutor")<CommandExecutor, {
-   execute(command: string, args: string[], context?: CommandContext): Effect.Effect<Output["Success"], Output['Failure']>;
+   execute(command: string, args?: string[], context?: CommandContext): Effect.Effect<Output["Success"], Output['Failure']>;
 }>() {}

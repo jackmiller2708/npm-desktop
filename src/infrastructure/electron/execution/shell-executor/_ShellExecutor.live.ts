@@ -15,12 +15,10 @@ export const ShellExecutorLive = Layer.succeed(CommandExecutor, CommandExecutor.
 
     child.stdout.on("data", (data) => {
       stdout += data.toString();
-      context.logger?.(data.toString());
     });
 
     child.stderr.on("data", (data) => {
       stderr += data.toString();
-      context.logger?.(data.toString());
     });
 
     child.on("close", (exitCode) => {

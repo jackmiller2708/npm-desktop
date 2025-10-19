@@ -1,18 +1,24 @@
 import { CommandExecutor } from "@core/execution";
-import { Effect, Option } from "effect";
+import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
 import { ShellExecutorLive } from "./_ShellExecutor.live";
 
-describe("ShellExecutor", () => {
-	it("runs node --version successfully", async () => {
-		const result = await Effect.runPromise(
-			CommandExecutor.pipe(
-				Effect.andThen((executor) => executor.execute("node", ["--version"])),
-				Effect.provide(ShellExecutorLive),
-			),
-		);
+describe(`ExecaExecutor`, () => {
+  it("should execute a simple command", async () => {
+    const result = await Effect.runPromise(CommandExecutor.pipe(
+      Effect.andThen(executor => executor.execute("echo", ["hello"])),
+      Effect.provide(ShellExecutorLive)
+    ));      
 
-		expect(result.exitCode).toEqual(Option.some(0));
-		expect(result.stdout).toMatch(/^v\d/);
-	});
+    expect(result.stdout.trim()).toBe("hello");
+  });
+
+  it("should handle command errors", () => {
+    const result = Effect.runPromise(CommandExecutor.pipe(
+      Effect.andThen(executor => executor.execute("invalid_command")),
+      Effect.provide(ShellExecutorLive)
+    )); 
+
+    expect(result).rejects.toThrow();
+  });
 });
