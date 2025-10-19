@@ -1,4 +1,4 @@
-import { NpmHandler } from "@application/ipc/handlers/npm";
+import { NpmHandler } from "@application/ipc/handlers";
 import { CommandExecutor } from "@core/execution";
 import { Effect, Layer } from "effect";
 
