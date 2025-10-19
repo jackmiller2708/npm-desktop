@@ -14,7 +14,7 @@ if (started) {
 
 app.on("ready", () => appRuntime.runPromise(Effect.Do.pipe(
   Effect.andThen(() => AppStarter),
-  Effect.andThen(appStarter => appStarter.startup()),
+  Effect.andThen((appStarter) => appStarter.startup()),
   Effect.catchAllCause((cause) => Effect.sync(() => {
     console.error("Fatal error", cause);
     app.quit();
