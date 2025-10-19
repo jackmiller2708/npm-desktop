@@ -8,17 +8,17 @@ describe(`ExecaExecutor`, () => {
     const result = await Effect.runPromise(CommandExecutor.pipe(
       Effect.andThen(executor => executor.execute("echo", ["hello"])),
       Effect.provide(ExecaExecutorLive)
-    ));      
+    ));
 
     expect(result.stdout.trim()).toBe('"hello"');
   });
 
-  it("should handle command errors", async () => {
+  it("should throw command errors", async () => {
     const result = Effect.runPromise(CommandExecutor.pipe(
       Effect.andThen(executor => executor.execute("invalid_command")),
       Effect.provide(ExecaExecutorLive)
-    )); 
+    ));
 
-    expect(result).rejects.toThrow();
+    await expect(result).rejects.toThrow();
   });
 });

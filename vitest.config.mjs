@@ -15,7 +15,11 @@ export default defineConfig({
 				"dist/**",
 				"node_modules/**",
 				"electron/**/preload.ts",
-				"**/index.ts"
+				"**/index.ts",
+				"**/*.{runtime,startup}.ts",
+				"**/preload.ts",
+				"**/main.ts",
+				"src/infrastructure/**/{ipc,windows}/*"
 			],
 		},
 	},
