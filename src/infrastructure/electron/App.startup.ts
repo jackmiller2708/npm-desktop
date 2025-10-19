@@ -1,6 +1,6 @@
 import { AppStarter } from "@application/app";
+import { NpmHandler } from "@application/ipc/handlers";
 import { IpcRegistrar } from "@core/ipc";
-import { NpmHandler } from "@core/npm";
 
 import type { IPCRegistry } from "@shared/ipc/registry";
 
