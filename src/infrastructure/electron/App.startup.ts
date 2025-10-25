@@ -9,9 +9,9 @@ import { MainWindow } from "./windows/main-window";
 
 export const AppStarterLive = Layer.effect(AppStarter, Effect.Do.pipe(
   Effect.andThen(() => Effect.all([IpcRegistrar, MainWindow], { concurrency: 'unbounded' })),
-  Effect.map(([ipcHandler, mainWindow]) => AppStarter.of({
+  Effect.map(([ipcRegistrar, mainWindow]) => AppStarter.of({
     startup: () => Effect.Do.pipe(
-      Effect.andThen(() => ipcHandler.register<IPCRegistry>({
+      Effect.andThen(() => ipcRegistrar.register<IPCRegistry>({
         npm: NpmHandler,
         window: WindowHandler
       })),

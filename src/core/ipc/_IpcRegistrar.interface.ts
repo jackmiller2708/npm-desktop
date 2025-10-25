@@ -1,9 +1,11 @@
-import type { HandlerRegistrar, IPCContractRegistry } from "@types";
+import type { HandlerRegistrar, HandlerRegistrarShape, IPCContractRegistry } from "@types";
 
-import { Context } from "effect";
-
-import type { Effect } from "effect/Effect";
+import { Context, Effect } from "effect";
 
 export class IpcRegistrar extends Context.Tag("IpcHandlerService")<IpcRegistrar, {
-	register: <Registry extends IPCContractRegistry>(registrar: HandlerRegistrar<Registry>) => Effect<void>;
+	register: <Registry extends IPCContractRegistry>(registrar: HandlerRegistrar<Registry>) => Effect.Effect<
+		void,
+		never,
+		HandlerRegistrarShape<Registry>[keyof HandlerRegistrarShape<Registry>]
+	>;
 }>() {}

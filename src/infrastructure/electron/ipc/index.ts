@@ -1,1 +1,1 @@
-export * from "./_Ipc.live";
+export * from "./registrar";

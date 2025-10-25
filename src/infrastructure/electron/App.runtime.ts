@@ -1,5 +1,10 @@
-import { Layer, ManagedRuntime } from "effect/index";
+import { Layer, ManagedRuntime } from "effect";
+import { ExecaExecutorLive } from "./execution";
 import { IpcRegistrarLive } from "./ipc";
+import { NpmHandlerLive, WindowHandlerLive } from "./ipc/handlers";
 import { MainWindowLive } from "./windows/main-window";
 
-export const appRuntime = ManagedRuntime.make(Layer.mergeAll(IpcRegistrarLive, MainWindowLive));
+export const appRuntime = ManagedRuntime.make(Layer.mergeAll(
+  Layer.mergeAll(IpcRegistrarLive, MainWindowLive),
+  Layer.mergeAll(Layer.provide(NpmHandlerLive, ExecaExecutorLive), WindowHandlerLive)
+));
