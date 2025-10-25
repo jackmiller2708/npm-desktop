@@ -19,7 +19,8 @@ export default defineConfig({
 				"**/*.{runtime,startup}.ts",
 				"**/preload.ts",
 				"**/main.ts",
-				"src/infrastructure/**/{ipc,windows}/*"
+				"**/*.mock.ts",
+				"src/infrastructure/**/windows/*"
 			],
 		},
 	},

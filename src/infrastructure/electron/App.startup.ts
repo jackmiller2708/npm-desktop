@@ -1,5 +1,5 @@
 import { AppStarter } from "@application/app";
-import { NpmHandler } from "@application/ipc/handlers";
+import { NpmHandler, WindowHandler } from "@application/ipc/handlers";
 import { IpcRegistrar } from "@core/ipc";
 
 import type { IPCRegistry } from "@shared/ipc/registry";
@@ -12,7 +12,8 @@ export const AppStarterLive = Layer.effect(AppStarter, Effect.Do.pipe(
   Effect.map(([ipcHandler, mainWindow]) => AppStarter.of({
     startup: () => Effect.Do.pipe(
       Effect.andThen(() => ipcHandler.register<IPCRegistry>({
-        npm: NpmHandler
+        npm: NpmHandler,
+        window: WindowHandler
       })),
       Effect.andThen(() => mainWindow.create())
     ),
