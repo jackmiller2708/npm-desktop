@@ -22,7 +22,7 @@ vi.mock("electron", () => ({
 	},
 }));
 
-describe("OpenDialogLive", async () => {
+describe("OpenDialogLive", () => {
 	it("returns file paths when dialog resolves successfully", async () => {
     const { dialog } = await import("electron");
 
