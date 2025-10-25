@@ -4,22 +4,15 @@ import { Array as Collection, Effect, Layer, Option, String as Str } from "effec
 import { describe, expect, it } from "vitest";
 import { NpmHandlerLive } from "./_NpmHandler.live";
 
-const CommandExecutorNpmSuccessMockLive = Layer.succeed(CommandExecutor, CommandExecutor.of({
-  execute: (command, args, _context) => Effect.succeed(Output.Success({
-    stdout: Str.trim(`Executed: ${command} ${Option.fromNullable(args).pipe(Option.map(Collection.join(" ")), Option.getOrElse(() => ""))}`),
-    exitCode: Option.none()
-  })),
-}));
-
-const CommandExecutorNpmErrorMockLive = Layer.succeed(CommandExecutor, CommandExecutor.of({
-  execute: (_command, _args, _context) => Effect.fail(Output.Failure({
-    stderr: 'Wrong command',
-    exitCode: Option.none()
-  })),
-}));
-
 describe("NpmHandler", () => {
   it("calls CommandExecutor with correct arguments", async () => {
+    const CommandExecutorNpmSuccessMockLive = Layer.succeed(CommandExecutor, CommandExecutor.of({
+      execute: (command, args, _context) => Effect.succeed(Output.Success({
+        stdout: Str.trim(`Executed: ${command} ${Option.fromNullable(args).pipe(Option.map(Collection.join(" ")), Option.getOrElse(() => ""))}`),
+        exitCode: Option.none()
+      })),
+    }));
+
     const output = await Effect.runPromise(NpmHandler.pipe(
       Effect.andThen((npm) => npm.install("lodash")),
       Effect.provide(Layer.provide(NpmHandlerLive, CommandExecutorNpmSuccessMockLive))
@@ -29,6 +22,13 @@ describe("NpmHandler", () => {
   });
 
   it("handles CommandExecutor Error gracefully", async () => {
+    const CommandExecutorNpmErrorMockLive = Layer.succeed(CommandExecutor, CommandExecutor.of({
+      execute: (_command, _args, _context) => Effect.fail(Output.Failure({
+        stderr: 'Wrong command',
+        exitCode: Option.none()
+      })),
+    }));
+
     const output = Effect.runPromise(NpmHandler.pipe(
       Effect.andThen((npm) => npm.install("lodash")),
       Effect.provide(Layer.provide(NpmHandlerLive, CommandExecutorNpmErrorMockLive))
