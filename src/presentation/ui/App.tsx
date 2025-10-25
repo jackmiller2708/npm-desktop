@@ -9,7 +9,7 @@ export function App() {
 	const win = useWindow();
 
 	function onInstallBtnClick() {
-		Effect.runPromise(npm.install("Effect"));
+		Effect.runPromise(npm.list());
 	}
 
 	function onOpenDialogClick() {
@@ -18,7 +18,7 @@ export function App() {
 
 	return (
 		<>
-			<button onClick={onInstallBtnClick}>Install Effect</button>
+			<button onClick={onInstallBtnClick}>List Packages</button>
 			<button onClick={onOpenDialogClick}>Open Dialog</button>
 		</>
 	);

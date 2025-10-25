@@ -7,7 +7,7 @@ import type { ReadonlyRecord } from "effect/Record";
  * Each command must define input/output types.
  */
 export type IPCCommandContract = {
-  readonly input: ReadonlyArray<unknown>;
+  readonly input: unknown;
   readonly output: unknown;
 }
 
@@ -49,7 +49,7 @@ export type ExtractInput<
   C extends string,
 > = Extract<FlattenRegistry<R>, { channel: C }> extends infer X
   ? X extends { input: infer I }
-    ? I
+    ? ReadonlyArray<I>
     : never
   : never;
 

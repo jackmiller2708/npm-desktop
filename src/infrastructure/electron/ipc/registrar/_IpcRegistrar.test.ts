@@ -12,7 +12,13 @@ import { IpcRegistrarLive } from "./_IpcRegistrar.live";
 const MockRegistry = Schema.Struct({
 	npm: Schema.Struct({
 		install: Schema.Struct({
-			input: Schema.Array(Schema.String),
+			input: Schema.String,
+			output: Schema.String,
+		}),
+		list: Schema.Struct({
+			input: Schema.Struct({
+				json: Schema.Boolean,
+			}),
 			output: Schema.String,
 		}),
 	}),
@@ -40,16 +46,17 @@ describe("IpcRegistrar", () => {
 		const ipcRuntimeSuccessMock = ManagedRuntime.make(Layer.merge(
       Layer.succeed(NpmHandler, NpmHandler.of({
         install: (...args: string[]) => Effect.succeed(`installed ${args.join(" ")}`),
+        list: () => Effect.succeed("")
       })),
       IpcRegistrarLive,
     ));
 
-		await ipcRuntimeSuccessMock.runPromise(IpcRegistrar.pipe(Effect.andThen((ipcRegistrar) =>
+		await ipcRuntimeSuccessMock.runPromise(IpcRegistrar.pipe(Effect.andThen((ipcRegistrar) => 
       ipcRegistrar.register<Schema.Schema.Type<typeof MockRegistry>>({ npm: NpmHandler }),
     )));
 
 		// Verify ipcMain.handle called
-		expect(ipcMain.handle).toHaveBeenCalledTimes(1);
+		expect(ipcMain.handle).toHaveBeenCalledTimes(2);
 		expect(ipcMain.handle).toHaveBeenCalledWith("npm:install", expect.any(Function));
 
 		// Test the registered function’s behavior
@@ -60,6 +67,7 @@ describe("IpcRegistrar", () => {
 		const ipcRuntimeFailMock = ManagedRuntime.make(Layer.merge(
       Layer.succeed(NpmHandler, NpmHandler.of({
         install: (..._args: string[]) => Effect.fail(new Error("Doesn't work")),
+        list: () => Effect.succeed("")
       })),
       IpcRegistrarLive,
     ));
@@ -69,7 +77,7 @@ describe("IpcRegistrar", () => {
     )));
 
 		// Verify ipcMain.handle called
-		expect(ipcMain.handle).toHaveBeenCalledTimes(1);
+		expect(ipcMain.handle).toHaveBeenCalledTimes(2);
 		expect(ipcMain.handle).toHaveBeenCalledWith("npm:install", expect.any(Function));
 
 		// Test the registered function’s behavior
