@@ -6,11 +6,11 @@ import { ExecaExecutorLive } from "./_ExecaExecutor.live";
 describe(`ExecaExecutor`, () => {
   it("should execute a simple command", async () => {
     const result = await Effect.runPromise(CommandExecutor.pipe(
-      Effect.andThen(executor => executor.execute("echo", ["hello"])),
+      Effect.andThen(executor => executor.execute("node", ["-e", "console.log('hello')"])),
       Effect.provide(ExecaExecutorLive)
     ));
 
-    expect(result.stdout.trim()).toBe('"hello"');
+    expect(result.stdout.trim()).toBe("hello");
   });
 
   it("should throw command errors", async () => {
