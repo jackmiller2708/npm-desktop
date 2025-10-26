@@ -31,9 +31,8 @@ jobs:
       - name: Run tests with coverage
         run: bunx vitest run --coverage --reporter=verbose
 
-      - name: Upload coverage to Codecov
+      - name: Upload results to Codecov
+        if: always()
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
-          verbose: true

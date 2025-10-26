@@ -6,7 +6,7 @@ import { ShellExecutorLive } from "./_ShellExecutor.live";
 describe(`ExecaExecutor`, () => {
   it("should execute a simple command", async () => {
     const result = await Effect.runPromise(CommandExecutor.pipe(
-      Effect.andThen(executor => executor.execute("node", ["-e", "console.log('hello')"])),
+      Effect.andThen(executor => executor.execute("echo", ["hello"])),
       Effect.provide(ShellExecutorLive)
     ));
 
