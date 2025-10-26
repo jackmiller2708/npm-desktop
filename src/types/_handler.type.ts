@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: any is used for generic type inference */
-import type { Context, Effect } from "effect";
-import type { ExtractInput, ExtractOutput, IPCContractRegistry } from "./_registry.type";
+import type { Context, Effect, Record } from "effect";
+import type { ExtractInput, ExtractOutput, IPCCommandContract, IPCContractRegistry } from "./_registry.type";
 
 export type Handler<
   Registry extends IPCContractRegistry,
@@ -29,4 +29,8 @@ export type HandlerRegistrarShape<Registry extends IPCContractRegistry = any> = 
   [NS in keyof Registry & string]: HandlerClassShape<any, Registry, NS>;
 };
 
-export type RuntimeDependencies<Registry extends IPCContractRegistry = any> = HandlerRegistrarShape<Registry>[keyof HandlerRegistrarShape<Registry>]
+export type RuntimeDependencies<Registry extends IPCContractRegistry = any> = HandlerRegistrarShape<Registry>[keyof HandlerRegistrarShape<Registry>];
+
+export type NamespaceHandler<Namespace extends Record.ReadonlyRecord<string, IPCCommandContract>> = {
+  [K in keyof Namespace & string]: (...args: ReadonlyArray<Namespace[K]["input"]>) => Effect.Effect<Namespace[K]["output"], Error>;
+}

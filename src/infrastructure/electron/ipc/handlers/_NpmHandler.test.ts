@@ -50,7 +50,7 @@ describe("NpmHandler", () => {
     expect(output).toContain("list");
   });
 
-  it("calls list with json argument", async () => {
+  it("calls list with json flag", async () => {
     const output = await Effect.runPromise(NpmHandler.pipe(
       Effect.andThen((npm) => npm.list({ json: true })),
       Effect.provide(NpmHandlerSuccessLive)
