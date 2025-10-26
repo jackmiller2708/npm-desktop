@@ -1,4 +1,4 @@
-import { WindowHandler } from "@application/ipc/handlers";
+import { WindowHandler } from "@application/ipc/window";
 import { Effect, Function as Fn, Layer, Option } from "effect";
 import { BrowserWindow, dialog, OpenDialogReturnValue } from "electron";
 

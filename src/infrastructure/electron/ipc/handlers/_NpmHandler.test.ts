@@ -1,4 +1,4 @@
-import { NpmHandler } from "@application/ipc/handlers";
+import { NpmHandler } from "@application/ipc/npm";
 import { CommandExecutor, Output } from "@core/execution";
 import { Array as Collection, Effect, Layer, Option, String as Str } from "effect";
 import { describe, expect, it } from "vitest";

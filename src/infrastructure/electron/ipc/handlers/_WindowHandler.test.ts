@@ -1,4 +1,4 @@
-import { WindowHandler } from "@application/ipc/handlers";
+import { WindowHandler } from "@application/ipc/window";
 import { Effect } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import { WindowHandlerLive } from "./_WindowHandler.live";

@@ -1,10 +1,8 @@
-import { NpmHandler } from "@application/ipc/handlers";
+import { NpmHandler } from "@application/ipc/npm";
 import { IpcRegistrar } from "@core/ipc";
 import { Response } from "@shared/ipc/response";
 import { Effect, Layer, ManagedRuntime, Record, Schema } from "effect";
-
 import type { IpcMainInvokeEvent } from "electron";
-
 import { ipcMain } from "electron";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { IpcRegistrarLive } from "./_IpcRegistrar.live";
