@@ -6,7 +6,7 @@
 	"main": ".vite/build/main.js",
 	"scripts": {
 		"test": "vitest",
-		"test:coverage": "vitest --coverage",
+		"test:coverage": "vitest --coverage --reporter=junit --outputFile=test-report.junit.xml",
 		"test:watch": "vitest --watch",
 		"start": "electron-forge start",
 		"package": "electron-forge package",
