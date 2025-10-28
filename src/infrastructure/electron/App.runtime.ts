@@ -1,7 +1,7 @@
 import { Layer, ManagedRuntime } from "effect";
 import { ExecaExecutorLive } from "./execution";
-import { IpcRegistrarLive } from "./ipc";
 import { NpmHandlerLive, WindowHandlerLive } from "./ipc/handlers";
+import { IpcRegistrarLive } from "./ipc/registrar";
 import { MainWindowLive } from "./windows/main-window";
 
 export const appRuntime = ManagedRuntime.make(Layer.mergeAll(
