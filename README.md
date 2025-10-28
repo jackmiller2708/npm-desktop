@@ -22,11 +22,12 @@
 The project is structured with a **clear separation of concerns**:
 
 ```
-/application/main → Electron main process (entrypoint)
-/application/preload → Secure IPC bridge between main and renderer
-/renderer → React + Vite user interface
-/core → Effect services, layers, and domain logic
-/shared → IPC contracts, schemas, and common types
+core/          → abstract interfaces and contracts (pure domain logic)
+application/   → use-case composition and handler definition
+infrastructure/→ concrete Effect + Electron runtime implementations
+presentation/  → React UI (renderer)
+shared/        → cross-layer schemas & IPC types
+types/         → foundational type utilities
 ```
 ### 💡 Principles
 
