@@ -41,6 +41,8 @@
 		"vitest": "^3.2.4"
 	},
 	"dependencies": {
+		"@effect/platform": "^0.92.1",
+		"@effect/platform-node": "^0.98.4",
 		"@tailwindcss/vite": "4.1.14",
 		"@vitejs/plugin-react": "5.0.4",
 		"effect": "3.18.4",
