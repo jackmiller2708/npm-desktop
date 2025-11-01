@@ -18,7 +18,8 @@
 			"@types": ["src/types"],
 			"@types/*": ["src/types/*"],
 			"@application/*": ["src/application/*"],
-			"@core/*": ["src/core/*"]
+			"@core/*": ["src/core/*"],
+			"@presentation/*": ["src/presentation/*"]
 		}
 	}
 }

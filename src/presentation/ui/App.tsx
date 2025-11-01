@@ -1,5 +1,6 @@
 import "./App.css";
 
+import { Button } from "@presentation/components/ui/button";
 import { Effect } from "effect/index";
 import { useNpm } from "../hooks/useNpm";
 import { useWindow } from "../hooks/useWindow";
@@ -18,8 +19,8 @@ export function App() {
 
 	return (
 		<>
-			<button onClick={onInstallBtnClick}>List Packages</button>
-			<button onClick={onOpenDialogClick}>Open Dialog</button>
+			<Button variant="outline" onClick={onInstallBtnClick}>List Packages</Button>
+			<Button variant="outline" onClick={onOpenDialogClick}>Open Dialog</Button>
 		</>
 	);
 }
