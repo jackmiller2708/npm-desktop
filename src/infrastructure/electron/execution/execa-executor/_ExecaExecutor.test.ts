@@ -13,6 +13,15 @@ describe(`ExecaExecutor`, () => {
     expect(result.stdout.trim()).toBe("hello");
   });
 
+  it("should execute a command with multiple arguments", async () => {
+    const result = await Effect.runPromise(CommandExecutor.pipe(
+      Effect.andThen(executor => executor.execute("node", ["-e", "console.log(process.argv.slice(2))", "arg1", "arg2", "arg3"])),
+      Effect.provide(ExecaExecutorLive)
+    ));
+
+    expect(result.stdout.trim()).toBe("[ 'arg2', 'arg3' ]");
+  })
+
   it("should throw command errors", async () => {
     const result = Effect.runPromise(CommandExecutor.pipe(
       Effect.andThen(executor => executor.execute("invalid_command")),

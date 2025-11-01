@@ -1,11 +1,11 @@
 import { CommandExecutor, Output } from "@core/execution";
 import { Effect, Layer, Option, String as Str } from "effect";
-import { $, ExecaError } from "execa";
+import { ExecaError, execaNode } from "execa";
 
 export const ExecaExecutorLive = Layer.succeed(CommandExecutor, CommandExecutor.of({
   execute: (command, args, context = { cwd: process.cwd() }) => Effect.Do.pipe(
     Effect.andThen(() => Effect.tryPromise({
-      try: (signal) => $({ cwd: context.cwd, all: true, cancelSignal: signal })`${command} ${args ?? []}`,
+      try: (signal) => execaNode({ cwd: context.cwd, all: true, cancelSignal: signal, gracefulCancel: true })`${command} ${args ?? []}`,
       catch: (error) => error as ExecaError
     })),
     Effect.mapBoth({
