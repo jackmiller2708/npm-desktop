@@ -1,5 +1,6 @@
 import { Button } from "@presentation/components/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@presentation/components/ui/empty";
+import { IconFolderCode } from "@tabler/icons-react";
 import { ArrowUpRightIcon } from "lucide-react";
 
 export function Startup() {
@@ -7,7 +8,7 @@ export function Startup() {
 		<Empty>
 			<EmptyHeader>
 				<EmptyMedia variant="icon">
-					<ArrowUpRightIcon />
+					<IconFolderCode />
 				</EmptyMedia>
 				<EmptyTitle>No Projects Yet</EmptyTitle>
 				<EmptyDescription>

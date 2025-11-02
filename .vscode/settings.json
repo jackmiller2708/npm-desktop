@@ -1,9 +1,11 @@
 {
   "cSpell.words": [
     "oklch",
+    "Segoe",
+    "tabler",
     "vitest"
   ],
   "files.associations": {
-    "*.css": "tailwindcss"
+    "app.css": "tailwindcss"
   }
 }

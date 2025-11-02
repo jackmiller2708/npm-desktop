@@ -7,14 +7,20 @@ import { MainWindow } from "./_MainWindow.interface";
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
 declare const MAIN_WINDOW_VITE_NAME: string;
 
+const WINDOW_FRAME_HEIGHT_PX = 32;
+const MIN_CONTENT_HEIGHT = 356; // Height of the startup window.
+
 export const MainWindowLive = Layer.succeed(MainWindow, MainWindow.of({
   create: () => Effect.Do.pipe(
     Effect.andThen(() => Effect.try({
       try: () => new BrowserWindow({
-        width: 1200,
-        height: 800,
+        minWidth: 832,
+        width: 823,
+        minHeight: MIN_CONTENT_HEIGHT + WINDOW_FRAME_HEIGHT_PX,
+        height: MIN_CONTENT_HEIGHT + WINDOW_FRAME_HEIGHT_PX,
         webPreferences: { preload: path.join(__dirname, "../build/preload.js") },
-        show: false
+        show: false,
+        frame: false,
       }),
       catch: (error) => error as Error,
     })),

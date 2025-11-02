@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@font-face {
+  font-family: "Segoe Fluent Icons";
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+  src: url("../assets/fonts/Segoe-Fluent-Icons.ttf") format("truetype");
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @layer base {
@@ -93,6 +101,7 @@
 }
 
 @theme inline {
+	--font-ui: "Segoe Fluent Icons", sans-serif;
 	--color-sidebar: var(--sidebar);
 	--color-sidebar-foreground: var(--sidebar-foreground);
 	--color-sidebar-primary: var(--sidebar-primary);
