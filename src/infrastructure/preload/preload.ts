@@ -10,10 +10,18 @@ const ipc = {
   ),
 };
 
+const windowState = {
+	onMaximize: (callback: () => void): void => void ipcRenderer.on("window:maximize", callback),
+	onUnmaximize: (callback: () => void): void => void ipcRenderer.on("window:unmaximize", callback),
+	onMinimize: (callback: () => void): void => void ipcRenderer.on("window:minimize", callback),
+}
+
 contextBridge.exposeInMainWorld("ipc", ipc);
+contextBridge.exposeInMainWorld('windowState', windowState);
 
 declare global {
 	interface Window {
 		ipc: typeof ipc;
+		windowState: typeof windowState;
 	}
 }

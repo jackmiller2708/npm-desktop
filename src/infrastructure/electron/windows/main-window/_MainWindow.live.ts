@@ -26,6 +26,9 @@ export const MainWindowLive = Layer.succeed(MainWindow, MainWindow.of({
     })),
     Effect.tap((win) => win.on('closed', () => Effect.runSync(Console.log('Main window closed')))),
     Effect.tap((win) => win.on('ready-to-show', () => win.show())),
+    Effect.tap((win) => win.on("maximize", () => win.webContents.send("window:maximize"))),
+    Effect.tap((win) => win.on("unmaximize", () => win.webContents.send("window:unmaximize"))),
+    Effect.tap((win) => win.on("minimize", () => win.webContents.send("window:minimize"))),
     Effect.andThen((win) => Effect.promise(() => Option.fromNullable(MAIN_WINDOW_VITE_DEV_SERVER_URL).pipe(Option.match({
       onSome: (url) => win.loadURL(url),
       onNone: () => win.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`))

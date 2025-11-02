@@ -15,11 +15,10 @@ export class IPCService extends Effect.Service<IPCService>()("app/Cache", {
   }) as IIPCService),
 }) {
 	static Interceptors = {
-		transformResponseInterceptor: () => <T>(res: RemoteData<T, string>) =>
-      Match.value(res).pipe(
-        Match.tag("Success", ({ data }) => Effect.succeed(data)),
-        Match.tag("Failure", ({ reason }) => Effect.fail(new Error(reason))),
-        Match.exhaustive,
-      ),
+		transformResponseInterceptor: () => <T>(res: RemoteData<T, string>) => Match.value(res).pipe(
+      Match.tag("Success", ({ data }) => Effect.succeed(data)),
+      Match.tag("Failure", ({ reason }) => Effect.fail(new Error(reason))),
+      Match.exhaustive,
+    ),
 	};
 }
