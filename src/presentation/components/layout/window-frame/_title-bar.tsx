@@ -22,22 +22,38 @@ export function TitleBar({ title = "NPM Desktop", focusState, displayState, onMi
         <span className="flex px-4 items-center">{title}</span>
       </div>
       <div className={clsx("flex", styles['no-drag'])}>
-        <button className="px-4 flex items-center" title="Minimize" onClick={onMinimize}>
+        <button
+          className="px-4 flex items-center text-muted-foreground hover:bg-muted-foreground hover:text-foreground"
+          title="Minimize"
+          onClick={onMinimize}
+        >
           <SystemIcon name="ChromeMinimize" />
         </button>
-        {isMaximized 
+        {isMaximized
           ? (
-            <button className="px-4 flex items-center" title="Restore Down" onClick={onMaximizeToggle}>
+            <button
+              className="px-4 flex items-center text-muted-foreground hover:bg-muted-foreground hover:text-foreground"
+              title="Restore Down"
+              onClick={onMaximizeToggle}
+            >
               <SystemIcon name="ChromeRestore" />
             </button>
           )
           : (
-            <button className="px-4 flex items-center" title="Maximize" onClick={onMaximizeToggle}>
+            <button
+              className="px-4 flex items-center text-muted-foreground hover:bg-muted-foreground hover:text-foreground"
+              title="Maximize"
+              onClick={onMaximizeToggle}
+            >
               <SystemIcon name="ChromeMaximize" />
             </button>
           )
         }
-        <button className="px-4 flex items-center" title="Close" onClick={onClose}>
+        <button
+          className="px-4 flex items-center text-muted-foreground hover:bg-destructive hover:text-foreground"
+          title="Close"
+          onClick={onClose}
+        >
           <SystemIcon name="ChromeClose" />
         </button>
       </div>

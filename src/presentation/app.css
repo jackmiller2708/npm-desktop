@@ -127,7 +127,6 @@
 	--bg-accent: var(--accent);
 	--bg-accent-foreground: var(--accent-foreground);
 	--bg-destructive: var(--destructive);
-	--bg-destructive-foreground: var(--destructive-foreground);
 	--bg-ring: var(--ring);
 	--text-background: var(--background);
 	--text-foreground: var(--foreground);
@@ -146,7 +145,6 @@
 	--text-accent: var(--accent);
 	--text-accent-foreground: var(--accent-foreground);
 	--text-destructive: var(--destructive);
-	--text-destructive-foreground: var(--destructive-foreground);
 	--text-ring: var(--ring);
 }
 

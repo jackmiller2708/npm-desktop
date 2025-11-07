@@ -24,7 +24,7 @@ export function WindowFrame({ children }: PropsWithChildren) {
     }));
   }
 
-  function onClose() {
+  function onClose() {  
     Effect.runPromise(close());
   }
 
@@ -32,7 +32,7 @@ export function WindowFrame({ children }: PropsWithChildren) {
     window.windowState.onMinimize(() => setDisplayState(WindowDisplayState.Minimized));
     window.windowState.onUnmaximize(() => setDisplayState(WindowDisplayState.Normal));
     window.windowState.onMaximize(() => setDisplayState(WindowDisplayState.Maximized));
-  }, [])
+  }, []);
 
 	return (
 		<div className="flex flex-col">
