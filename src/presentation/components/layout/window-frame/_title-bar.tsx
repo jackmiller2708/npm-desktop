@@ -23,7 +23,7 @@ export function TitleBar({ title = "NPM Desktop", focusState, displayState, onMi
       </div>
       <div className={clsx("flex", styles['no-drag'])}>
         <button
-          className="px-4 flex items-center text-muted-foreground hover:bg-muted-foreground hover:text-foreground"
+          className="px-4 flex items-center text-muted-foreground hover:bg-accent hover:text-accent-foreground"
           title="Minimize"
           onClick={onMinimize}
         >
@@ -32,7 +32,7 @@ export function TitleBar({ title = "NPM Desktop", focusState, displayState, onMi
         {isMaximized
           ? (
             <button
-              className="px-4 flex items-center text-muted-foreground hover:bg-muted-foreground hover:text-foreground"
+              className="px-4 flex items-center text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               title="Restore Down"
               onClick={onMaximizeToggle}
             >
@@ -41,7 +41,7 @@ export function TitleBar({ title = "NPM Desktop", focusState, displayState, onMi
           )
           : (
             <button
-              className="px-4 flex items-center text-muted-foreground hover:bg-muted-foreground hover:text-foreground"
+              className="px-4 flex items-center text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               title="Maximize"
               onClick={onMaximizeToggle}
             >
@@ -50,7 +50,7 @@ export function TitleBar({ title = "NPM Desktop", focusState, displayState, onMi
           )
         }
         <button
-          className="px-4 flex items-center text-muted-foreground hover:bg-destructive hover:text-foreground"
+          className="px-4 flex items-center text-muted-foreground hover:bg-destructive hover:text-accent-foreground"
           title="Close"
           onClick={onClose}
         >

@@ -1,32 +1,43 @@
-import { Button } from "@presentation/components/ui/button";
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@presentation/components/ui/empty";
-import { IconFolderCode } from "@tabler/icons-react";
-import { ArrowUpRightIcon } from "lucide-react";
+import { useWorkspace } from "@presentation/hooks/use-workspace";
+import { useRootStore } from "@presentation/stores/root";
+import { Effect, Either, Option } from "effect";
+import { useEffect } from "react";
+import { EmptyStartup } from "./_empty-startup";
+import { HasProjectStartup } from "./_has-project-startup";
+import { ProjectList } from "./components/_project-list";
 
 export function Startup() {
-	return (
-		<Empty>
-			<EmptyHeader>
-				<EmptyMedia variant="icon">
-					<IconFolderCode />
-				</EmptyMedia>
-				<EmptyTitle>No Projects Yet</EmptyTitle>
-				<EmptyDescription>
-					You haven&apos;t created any projects yet. Get started by creating
-					your first project.
-				</EmptyDescription>
-			</EmptyHeader>
-			<EmptyContent>
-				<div className="flex gap-2">
-					<Button>Create Project</Button>
-					<Button variant="outline">Open Project</Button>
-				</div>
-			</EmptyContent>
-			<Button variant="link" asChild className="text-muted-foreground" size="sm">
-				<a href="#">
-					Learn More <ArrowUpRightIcon />
-				</a>
-			</Button>
-		</Empty>
+	const mbSetProjects = useRootStore((state) => state.setProjects);
+	const mbProjects = useRootStore((state) => state.projects);
+
+	const wp = useWorkspace();
+
+	useEffect(() => {
+		Effect.runPromise(Either.all([mbSetProjects, mbProjects]).pipe(
+			Either.map(([setProject, projects]) => Effect.Do.pipe(
+				Effect.andThen(() => projects.pipe(Option.match({
+					onSome: (projectList) => Effect.succeed(Either.right(projectList)),
+					onNone: () => wp.getRecents()
+				}))),
+				Effect.tap(Either.match({
+					onRight: (loadedProjects) => setProject(Option.some(loadedProjects)),
+					onLeft: () => void 0
+				}))
+			)),
+			Either.getOrThrow
+		));
+	}, []);
+
+	return mbProjects.pipe(
+		Either.map(Option.andThen((projects) => projects.length ? Option.some(projects) : Option.none())),
+		Either.map(Option.match({
+			onSome: (projects) => (
+				<HasProjectStartup>
+					<ProjectList projects={projects} />
+				</HasProjectStartup>
+			),
+			onNone: () => <EmptyStartup />
+		})),
+		Either.getOrThrow
 	);
 }

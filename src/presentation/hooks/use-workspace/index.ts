@@ -17,6 +17,18 @@ export function useWorkspace() {
       Effect.andThen(IPCService.Interceptors.transformResponseInterceptor()),
       Effect.either,
       Effect.provide(WorkspaceService.Default)
+    ),
+    getRecents: () => WorkspaceService.pipe(
+      Effect.andThen(workspace => workspace.getRecents()),
+      Effect.andThen(IPCService.Interceptors.transformResponseInterceptor()),
+      Effect.either,
+      Effect.provide(WorkspaceService.Default)
+    ),
+    close: () => WorkspaceService.pipe(
+      Effect.andThen(workspace => workspace.close()),
+      Effect.andThen(IPCService.Interceptors.transformResponseInterceptor()),
+      Effect.either,
+      Effect.provide(WorkspaceService.Default)
     )
   }
 }
