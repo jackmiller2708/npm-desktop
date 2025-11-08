@@ -1,11 +1,13 @@
+import { WindowNamespace } from "@application/ipc/window";
 import { IPCService } from "@presentation/services/ipc";
+import { Params } from "@types";
 import { Effect } from "effect";
 import { WindowService } from "./_window.service";
 
 export function useWindow() {
 	return {
-		showOpenDialog: () => WindowService.pipe(
-      Effect.andThen((win) => win.showOpenDialog()),
+		showOpenDialog: (options?: Params<WindowNamespace['showOpenDialog']>) => WindowService.pipe(
+      Effect.andThen((win) => win.showOpenDialog(options)),
       Effect.andThen(IPCService.Interceptors.transformResponseInterceptor()),
       Effect.either,
       Effect.provide(WindowService.Default)

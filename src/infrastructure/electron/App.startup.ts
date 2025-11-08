@@ -1,6 +1,7 @@
 import { AppStarter } from "@application/app";
 import { NpmHandler } from "@application/ipc/npm";
 import { WindowHandler } from "@application/ipc/window";
+import { WorkspaceHandler } from "@application/ipc/workspace";
 import { IpcRegistrar } from "@core/ipc";
 import type { IPCRegistry } from "@shared/ipc/registry";
 import { Effect, Layer } from "effect";
@@ -12,7 +13,8 @@ export const AppStarterLive = Layer.effect(AppStarter, Effect.Do.pipe(
     startup: () => Effect.zipRight(
       ipcRegistrar.register<IPCRegistry>({
         npm: NpmHandler,
-        window: WindowHandler
+        window: WindowHandler,
+        workspace: WorkspaceHandler
       }),
       mainWindow.create()
     ),

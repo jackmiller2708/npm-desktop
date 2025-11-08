@@ -5,7 +5,6 @@ import { ProjectInfo } from "@shared/project";
 import { Effect, Layer, Option } from "effect/index";
 import { describe, expect, it } from "vitest";
 import { ProjectManagerLive } from "./_ProjectManager.live";
-import { ProjectManagerCoreLive } from "./_ProjectManagerCore.live";
 
 //#region Test Env Setup
 interface MockFileSystemState {
