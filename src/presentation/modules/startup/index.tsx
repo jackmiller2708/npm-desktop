@@ -3,7 +3,6 @@ import { useWorkspace } from "@presentation/hooks/use-workspace";
 import { useRootStore } from "@presentation/stores/root";
 import { Effect, Either, Option } from "effect";
 import { useEffect } from "react";
-import { useNavigate, useNavigation } from "react-router";
 import { toast } from "sonner";
 import { EmptyStartup } from "./_empty-startup";
 import { HasProjectStartup } from "./_has-project-startup";
@@ -13,8 +12,6 @@ export function Startup() {
 	const mbSetProjects = useRootStore((state) => state.setProjects);
 	const mbLoadedProjects = useRootStore((state) => state.projects);
 	const wp = useWorkspace();
-	const navigate = useNavigate();
-	const navigation = useNavigation();
 
 	useEffect(() => {
 		Effect.runPromise(Either.Do.pipe(
@@ -34,18 +31,6 @@ export function Startup() {
 			Either.getOrThrow
 		));
 	}, []);
-
-	useEffect(() => {
-		Effect.runPromise(Effect.Do.pipe(
-			Effect.andThen(() => wp.getCurrent()),
-			Effect.tap(Either.match({
-				onRight: () => navigation.state === 'idle' && navigate('current-project'),
-				onLeft: (error): void => error.message === 'No project is currently open' 
-					? void 0 
-					: void toast("Unable to load last open project", { description: error.message })
-			}))
-		));
-	}, [mbLoadedProjects])
 
 	return mbLoadedProjects.pipe(
 		Either.map(Option.match({
