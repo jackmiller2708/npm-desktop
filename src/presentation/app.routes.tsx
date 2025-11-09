@@ -6,7 +6,7 @@ import { Project } from "./modules/project";
 import { Root } from "./modules/root";
 import { Startup } from "./modules/startup";
 
-function defineRoutes<const R extends readonly RouteObject[]>(r: R) {
+function defineRoutes<const R extends RouteObject[]>(r: R) {
 	return r;
 }
 
