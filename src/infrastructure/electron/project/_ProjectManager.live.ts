@@ -9,7 +9,7 @@ import os from "os";
 
 export const ProjectManagerLive = Layer.effect(ProjectManager, Effect.Do.pipe(
   Effect.andThen(() => Effect.all([ProjectManagerCore, FileSystem, Path])),
-  Effect.map(([{ loadRecents, saveRecents }, fs, path]) => {
+  Effect.map(([{ loadRecents, saveRecents, loadLastOpen, saveLastOpen }, fs, path]) => {
     const MUT_CURRENT_REF = Effect.runSync(Ref.make<Option.Option<ProjectInfo>>(Option.none()));
     const RECENT_PROJECT_PATH = path.join(os.homedir(), import.meta.env.VITE_APP_DATA_DIR, import.meta.env.VITE_APP_RECENT_OPENS);
 
@@ -28,14 +28,17 @@ export const ProjectManagerLive = Layer.effect(ProjectManager, Effect.Do.pipe(
             lastOpened: Date.now(),
           })),
           Effect.tap((project) => Effect.Do.pipe(
-            Effect.andThen(() => Effect.zipRight(Ref.set(MUT_CURRENT_REF, Option.some(project)), loadRecents(RECENT_PROJECT_PATH))),
+            Effect.andThen(() => Effect.zipRight(Effect.all([Ref.set(MUT_CURRENT_REF, Option.some(project)), saveLastOpen(RECENT_PROJECT_PATH, Option.some(project))], { concurrency: 'unbounded' }), loadRecents(RECENT_PROJECT_PATH))),
             Effect.andThen((recents) => saveRecents(RECENT_PROJECT_PATH, [project, ...recents.filter((p) => p.path !== project.path)].slice(0, 10))),
           ))
         ))
       ),
-      close: () => Ref.set(MUT_CURRENT_REF, Option.none()),
+      close: () => Effect.zipRight(saveLastOpen(RECENT_PROJECT_PATH, Option.none()), Ref.set(MUT_CURRENT_REF, Option.none())),
       listRecents: () => loadRecents(RECENT_PROJECT_PATH),
-      getCurrent: () => Ref.get(MUT_CURRENT_REF),
+      getCurrent: () => Ref.get(MUT_CURRENT_REF).pipe(Effect.andThen(Option.match({
+        onSome: (current) => Effect.succeed(Option.some(current)),
+        onNone: () => loadLastOpen(RECENT_PROJECT_PATH)
+      }))),
     })
   }),
 ));

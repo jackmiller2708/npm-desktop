@@ -44,16 +44,21 @@ function fileSystemMock(state = MockFileSystemState()) {
 }
 
 function makeProjectManagerCoreMock(recents: ReadonlyArray<ProjectInfo> = []) {
-	let store = [...recents];
+  let store = [...recents];
+  let lastOpen: Option.Option<ProjectInfo> = Option.none();
 
-	const mock = ProjectManagerCore.of({
-		loadRecents: () => Effect.succeed(store),
-		saveRecents: (_path, newRecents) => Effect.sync(() => {
+  const mock = ProjectManagerCore.of({
+    loadRecents: () => Effect.succeed(store),
+    saveRecents: (_path, newRecents) => Effect.sync(() => {
       store = [...newRecents];
     }),
-	});
+    loadLastOpen: () => Effect.succeed(lastOpen),
+    saveLastOpen: (_path, project) => Effect.sync(() => {
+      lastOpen = project;
+    }),
+  });
 
-	return { mock, getStore: () => store };
+  return { mock, getStore: () => store, getLastOpen: () => lastOpen };
 }
 
 function ProjectManagerCoreMock(recents: ReadonlyArray<ProjectInfo> = []) {
@@ -73,71 +78,104 @@ describe("ProjectManagerLive", () => {
 		devDependencies: { vite: "^5.0.0" },
 	});
 
-	it("should open a project and update recents", async () => {
-    // Should instantiate first to use one singular instance.
-    const projectManagerImpl = await Effect.runPromise(ProjectManager.pipe(
+	it("should open a project, update recents and set lastOpen", async () => {
+    const fsState = MockFileSystemState();
+    fsState.files.set(pkgPath, pkgContent);
+
+    const manager = await Effect.runPromise(ProjectManager.pipe(
       Effect.provide(ProjectManagerLive),
-      Effect.provide(ProjectManagerCoreLayer({ ...MockFileSystemState(), files: new Map<string, string>([[pkgPath, pkgContent]]) }))
+      Effect.provide(ProjectManagerCoreLayer(fsState))
     ));
 
-    // Test open function.
-    const opened = await Effect.runPromise(projectManagerImpl.open("/projects/demo"));
-
+    // Open a project
+    const opened = await Effect.runPromise(manager.open("/projects/demo"));
     expect(opened.name).toBe("demo-project");
     expect(opened.path).toBe("/projects/demo");
 
-    // Test current function.
-    const current = await Effect.runPromise(projectManagerImpl.getCurrent());
-
+    // getCurrent should return the same project
+    const current = await Effect.runPromise(manager.getCurrent());
     expect(Option.isSome(current)).toBe(true);
+    expect(Option.getOrUndefined(current)?.name).toBe("demo-project");
 
-    // Test recent function.
-    const recents = await Effect.runPromise(projectManagerImpl.listRecents());
-
+    // recents should include the opened project
+    const recents = await Effect.runPromise(manager.listRecents());
     expect(recents[0].name).toBe("demo-project");
 
-    // Rest close function.
-    const currentAfterClose = await Effect.runPromise(Effect.zipRight(
-      projectManagerImpl.close(), 
-      projectManagerImpl.getCurrent()
-    ));
+    // close should clear the current ref
+    const currentAfterClose = await Effect.runPromise(
+      Effect.zipRight(manager.close(), manager.getCurrent())
+    );
 
     expect(Option.isNone(currentAfterClose)).toBe(true);
+  });
+
+  it("should retrieve last open project when current is none", async () => {
+    const fsState = MockFileSystemState();
+    const coreMock = makeProjectManagerCoreMock();
+
+    fsState.files.set(pkgPath, pkgContent);
+
+    const manager = await Effect.runPromise(ProjectManager.pipe(
+      Effect.provide(ProjectManagerLive),
+      Effect.provide(Layer.mergeAll(Layer.succeed(ProjectManagerCore, coreMock.mock), fileSystemMock(fsState), Path.layer))
+    ));
+
+    await Effect.runPromise(coreMock.mock.saveLastOpen("/recents.json", Option.some({
+      path: "/projects/last",
+      name: "last-project",
+      packageJsonPath: "/projects/last/package.json",
+      dependencies: {},
+      devDependencies: {},
+      lastOpened: Date.now(),
+    })));
+
+    const current = await Effect.runPromise(manager.getCurrent());
+
+    expect(Option.isSome(current)).toBe(true);
+    expect(Option.getOrUndefined(current)?.name).toBe("last-project");
   });
 
   it("should fail when package.json is missing", async () => {
     const result = Effect.runPromise(ProjectManager.pipe(
       Effect.provide(ProjectManagerLive),
-      Effect.provide(ProjectManagerCoreLayer({ ...MockFileSystemState(), files: new Map<string, string>([[pkgPath, pkgContent]]) })),
-      Effect.andThen(manager => manager.open("/invalid/path"))
+      Effect.provide(ProjectManagerCoreLayer(MockFileSystemState())),
+      Effect.andThen((manager) => manager.open("/invalid/path"))
     ));
 
     await expect(result).rejects.toThrow(Error);
   });
 
-  it("should open a project with all fields in package.json", async () => {
+  it("should open a project with all fields from package.json", async () => {
+    const fsState = MockFileSystemState();
     const pkgJson = JSON.stringify({
       name: "complete-project",
       dependencies: { react: "18.0.0" },
       devDependencies: { vitest: "1.0.0" },
     });
 
+    fsState.files.set(pkgPath, pkgJson);
+
     const project = await Effect.runPromise(ProjectManager.pipe(
       Effect.provide(ProjectManagerLive),
-      Effect.provide(ProjectManagerCoreLayer({ ...MockFileSystemState(), files: new Map<string, string>([[pkgPath, pkgJson]]) })),
-      Effect.andThen(manager => manager.open('/projects/demo'))
+      Effect.provide(ProjectManagerCoreLayer(fsState)),
+      Effect.andThen((manager) => manager.open("/projects/demo"))
     ));
 
     expect(project.name).toBe("complete-project");
     expect(project.dependencies).toHaveProperty("react");
+    expect(project.devDependencies).toHaveProperty("vitest");
   });
 
   it("should fall back to basename when name is missing", async () => {
     const pkgJson = JSON.stringify({});
+    const fsState = MockFileSystemState();
+
+    fsState.files.set(pkgPath, pkgJson);
+
     const project = await Effect.runPromise(ProjectManager.pipe(
       Effect.provide(ProjectManagerLive),
-      Effect.provide(ProjectManagerCoreLayer({ ...MockFileSystemState(), files: new Map<string, string>([[pkgPath, pkgJson]]) })),
-      Effect.andThen(manager => manager.open('/projects/demo'))
+      Effect.provide(ProjectManagerCoreLayer(fsState)),
+      Effect.andThen((manager) => manager.open("/projects/demo"))
     ));
 
     expect(project.name).toBe("demo");
@@ -145,10 +183,14 @@ describe("ProjectManagerLive", () => {
 
   it("should default dependencies and devDependencies to empty objects", async () => {
     const pkgJson = JSON.stringify({ name: "no-deps" });
+    const fsState = MockFileSystemState();
+
+    fsState.files.set(pkgPath, pkgJson);
+
     const project = await Effect.runPromise(ProjectManager.pipe(
       Effect.provide(ProjectManagerLive),
-      Effect.provide(ProjectManagerCoreLayer({ ...MockFileSystemState(), files: new Map<string, string>([[pkgPath, pkgJson]]) })),
-      Effect.andThen(manager => manager.open('/projects/demo'))
+      Effect.provide(ProjectManagerCoreLayer(fsState)),
+      Effect.andThen((manager) => manager.open("/projects/demo"))
     ));
 
     expect(project.dependencies).toEqual({});

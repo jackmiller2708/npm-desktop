@@ -103,4 +103,69 @@ describe("ProjectManagerCore", () => {
 
     expect(result[0].name).toBe("proj1");
   });
+
+  it("should save lastOpen without overwriting recents", async () => {
+    const state = MockFileSystemState();
+
+    const result = await Effect.runPromise(
+      ProjectManagerCore.pipe(
+        Effect.andThen((core) => Effect.Do.pipe(
+          // Step 1: Save recents
+          Effect.andThen(() =>  core.saveRecents("/recents.json", [
+            {
+              path: "/p1",
+              name: "proj1",
+              packageJsonPath: "/p1/package.json",
+              dependencies: {},
+              devDependencies: {},
+              lastOpened: Date.now(),
+            },
+          ])),
+          // Step 2: Save last open separately
+          Effect.andThen(() => core.saveLastOpen("/recents.json", Option.some({
+            path: "/p2",
+            name: "proj2",
+            packageJsonPath: "/p2/package.json",
+            dependencies: {},
+            devDependencies: {},
+            lastOpened: Date.now(),
+          }))),
+          // Step 3: Verify both fields exist
+          Effect.andThen(() => core.loadRecents("/recents.json").pipe(
+            Effect.zip(core.loadLastOpen("/recents.json"))
+          ))
+        )),
+        Effect.provide(TestProjectManagerCore(state))
+      )
+    );
+
+    const [recents, lastOpenOpt] = result;
+    const lastOpen = Option.getOrUndefined(lastOpenOpt);
+
+    expect(recents.length).toBe(1);
+    expect(recents[0].name).toBe("proj1");
+    expect(lastOpen?.name).toBe("proj2");
+
+
+    const json = Option.fromNullable(state.files.get("/recents.json")).pipe(Option.match({
+      onSome: str => JSON.parse(str),
+      onNone: () => ({})
+    }));
+
+    expect(json.recents.length).toBe(1);
+    expect(json.lastOpen.name).toBe("proj2");``
+  });
+
+  it("should return none if lastOpen is null", async () => {
+    const state = MockFileSystemState();
+
+    state.files.set("/recents.json", JSON.stringify({ recents: [], lastOpen: null }));
+
+    const result = await Effect.runPromise(ProjectManagerCore.pipe(
+      Effect.andThen((core) => core.loadLastOpen("/recents.json")),
+      Effect.provide(TestProjectManagerCore(state))
+    ));
+
+    expect(Option.isNone(result)).toBe(true);
+  });
 });

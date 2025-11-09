@@ -5,7 +5,7 @@ import { ParseError } from "effect/ParseResult";
 
 export class ProjectManager extends Context.Tag("ProjectManager")<ProjectManager, {
   open: (path: string) => Effect.Effect<ProjectInfo, Error | PlatformError | ParseError>;
-  getCurrent: () => Effect.Effect<Option.Option<ProjectInfo>>;
+  getCurrent: () => Effect.Effect<Option.Option<ProjectInfo>, Error | PlatformError>;
   listRecents: () => Effect.Effect<ReadonlyArray<ProjectInfo>, Error | PlatformError | ParseError>;
-  close: () => Effect.Effect<void>;
+  close: () => Effect.Effect<void, Error | PlatformError>;
 }>() {}
