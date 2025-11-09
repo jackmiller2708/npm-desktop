@@ -12,8 +12,10 @@ export function createRootStore() {
 		addProject: (project) => set(state =>  ({ 
 			...state, 
 			projects: state.projects.pipe(
+				Option.flatten,
 				Option.map(Collection.append(project)),
-				Option.map(Collection.dedupe)
+				Option.map(Collection.dedupe),
+				Option.map(Option.some)
 			)
 		}))
 	}));

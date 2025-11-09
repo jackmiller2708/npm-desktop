@@ -3,7 +3,7 @@ import type { Option } from "effect/index";
 import type { createRootStore } from "./_root.store";
 
 export type RootStoreState = {
-	projects: Option.Option<ReadonlyArray<ProjectInfo>>;
+	projects: Option.Option<Option.Option<ReadonlyArray<ProjectInfo>>>;
 };
 
 export type RootStoreActions = {
