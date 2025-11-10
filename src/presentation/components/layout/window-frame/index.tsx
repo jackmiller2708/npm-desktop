@@ -43,7 +43,7 @@ export function WindowFrame({ children }: PropsWithChildren) {
         onMaximizeToggle={onMaximizeToggle}
         onClose={onClose}
       />
-			<div className="flex-1">{children}</div>
+			<div className="flex-1 isolate bg-background text-foreground">{children}</div>
 		</div>
 	);
 }

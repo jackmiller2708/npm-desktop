@@ -1,14 +1,12 @@
 import { RoutePaths } from "@types";
 import { Effect, Either } from "effect/index";
-import { RouteObject, redirect } from "react-router";
+import { redirect } from "react-router";
 import { useWorkspace } from "./hooks/use-workspace";
 import { Project } from "./modules/project";
+import { projectRoutes } from "./modules/project/_project.routes";
 import { Root } from "./modules/root";
 import { Startup } from "./modules/startup";
-
-function defineRoutes<const R extends RouteObject[]>(r: R) {
-	return r;
-}
+import { defineRoutes } from "./utilities";
 
 export const routes = defineRoutes([
 	{
@@ -25,7 +23,8 @@ export const routes = defineRoutes([
 			{
 				path: "current-project",
 				element: <Project />,
-				loader: async () => Effect.runPromise(useWorkspace().getCurrent().pipe(Effect.map(Either.getOrThrow)))
+				loader: async () => Effect.runPromise(useWorkspace().getCurrent().pipe(Effect.map(Either.getOrThrow))),
+				children: projectRoutes
 			},
 		],
 	},

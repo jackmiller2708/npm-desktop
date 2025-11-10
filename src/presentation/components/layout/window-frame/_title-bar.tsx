@@ -17,13 +17,13 @@ export function TitleBar({ title = "NPM Desktop", focusState, displayState, onMi
   const inactive = focusState === WindowFocusState.Inactive;
 
   return (
-    <div className={clsx("h-[32px] text-[12px] flex justify-between leading-none", styles['title-bar'], { inactive })}>
+    <div className={clsx("h-[32px] text-[12px] flex justify-between leading-none bg-background", styles['title-bar'], { inactive })}>
       <div className="flex leading-none">
-        <span className="flex px-4 items-center">{title}</span>
+        <span className="flex px-4 items-center text-foreground">{title}</span>
       </div>
       <div className={clsx("flex", styles['no-drag'])}>
         <button
-          className="px-4 flex items-center text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+          className="px-4 flex items-center text-muted-foreground hover:bg-accent hover:text-foreground"
           title="Minimize"
           onClick={onMinimize}
         >
@@ -32,7 +32,7 @@ export function TitleBar({ title = "NPM Desktop", focusState, displayState, onMi
         {isMaximized
           ? (
             <button
-              className="px-4 flex items-center text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+              className="px-4 flex items-center text-muted-foreground hover:bg-accent hover:text-foreground"
               title="Restore Down"
               onClick={onMaximizeToggle}
             >
@@ -41,7 +41,7 @@ export function TitleBar({ title = "NPM Desktop", focusState, displayState, onMi
           )
           : (
             <button
-              className="px-4 flex items-center text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+              className="px-4 flex items-center text-muted-foreground hover:bg-accent hover:text-foreground"
               title="Maximize"
               onClick={onMaximizeToggle}
             >
@@ -50,7 +50,7 @@ export function TitleBar({ title = "NPM Desktop", focusState, displayState, onMi
           )
         }
         <button
-          className="px-4 flex items-center text-muted-foreground hover:bg-destructive hover:text-accent-foreground"
+          className="px-4 flex items-center text-muted-foreground hover:bg-destructive hover:text-foreground"
           title="Close"
           onClick={onClose}
         >
