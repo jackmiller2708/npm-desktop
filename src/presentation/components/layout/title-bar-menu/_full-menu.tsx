@@ -29,7 +29,7 @@ function renderMenuNode(node: MenuNode, key: Key) {
   );
 }
 
-export function FullMenu({ data, className }: { data: MenuCategory[] } & ComponentPropsWithoutRef<typeof Primitive.div>) {
+export function FullMenu({ data, className }: { data: ReadonlyArray<MenuCategory> } & ComponentPropsWithoutRef<typeof Primitive.div>) {
 	return (
     <Menubar className={clsx("p-0 border-0 h-fit hidden lg:flex", className)}>
       {data.map(({ label, children }) => (

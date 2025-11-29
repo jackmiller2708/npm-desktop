@@ -7,12 +7,12 @@ import { Outlet } from "react-router";
 export function Root() {
 	return (
 		<ThemeProvider defaultTheme="system" storageKey="ui-theme">
-			<WindowFrame>
-				<RootStoreProvider>
+			<RootStoreProvider>
+				<WindowFrame>
 					<Outlet />
 					<Toaster />
-				</RootStoreProvider>
-			</WindowFrame>
+				</WindowFrame>
+			</RootStoreProvider>
 		</ThemeProvider>
 	);
 }

@@ -28,10 +28,10 @@ function renderMenuNode(node: MenuNode, key: Key) {
 	);
 }
 
-export function BurgerMenu({ data, className }: { data: MenuCategory[] } & ComponentPropsWithoutRef<typeof Primitive.div>) {
+export function BurgerMenu({ data, className }: { data: ReadonlyArray<MenuCategory> } & ComponentPropsWithoutRef<typeof Primitive.div>) {
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger className={clsx("text-muted-foreground py-1 px-2 rounded-sm hover:bg-accent lg:hidden", className)}>
+			<DropdownMenuTrigger className={clsx("text-muted-foreground py-1 px-2 rounded-sm hover:bg-accent lg:hidden outline-0", className)}>
 				<Menu size={18} />
 			</DropdownMenuTrigger>
 

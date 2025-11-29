@@ -1,0 +1,30 @@
+import type { MenuCategory } from "@presentation/components/layout/title-bar-menu/_menu.interface";
+
+export const INIT_MENU_BAR_ITEMS: ReadonlyArray<MenuCategory> = [
+	{
+		label: "File",
+		children: [
+			{ type: "item", label: "New Window", accelerator: "Ctrl+Shift+N" },
+			{ type: "separator" },
+			{ type: "item", label: "Open Folder", accelerator: "Ctrl+K Ctrl+O" },
+			{
+				type: "submenu",
+				label: "Open Recents",
+				children: [
+					{ type: "item", label: "Email link" },
+					{ type: "item", label: "Messages" },
+					{ type: "item", label: "Notes" },
+				],
+			},
+		],
+	},
+	{
+		label: "View",
+		children: [
+			{ type: "item", label: "Command Palette", accelerator: "Ctrl+Shift+P" },
+			{ type: "item", label: "Open View..." },
+			{ type: "separator" },
+			{ type: "item", label: "Appearance..." },
+		],
+	},
+];
