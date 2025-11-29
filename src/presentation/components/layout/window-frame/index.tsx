@@ -2,7 +2,7 @@ import { useWindow } from "@presentation/hooks/use-window";
 import { Effect, Either } from "effect/index";
 import { PropsWithChildren, useEffect, useState } from "react";
 import { TitleBar } from "./_title-bar";
-import { WindowDisplayState, WindowFocusState } from "./_title-bar.interface";
+import { WindowDisplayState, WindowFocusState } from "./_title-bar.constants";
 
 export function WindowFrame({ children }: PropsWithChildren) {
   const { close, maximize, minimize, unmaximize } = useWindow();
