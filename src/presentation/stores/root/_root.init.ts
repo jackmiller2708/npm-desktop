@@ -1,4 +1,6 @@
 import type { MenuCategory } from "@presentation/components/layout/title-bar-menu/_menu.interface";
+import type { ProjectInfo } from "@shared/project";
+import { Option } from "effect";
 
 export const INIT_MENU_BAR_ITEMS: ReadonlyArray<MenuCategory> = [
 	{
@@ -28,3 +30,5 @@ export const INIT_MENU_BAR_ITEMS: ReadonlyArray<MenuCategory> = [
 		],
 	},
 ];
+
+export const INIT_PROJECTS: Option.Option<Option.Option<ReadonlyArray<ProjectInfo>>> = Option.none();
