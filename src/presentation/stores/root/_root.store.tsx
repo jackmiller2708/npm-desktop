@@ -1,7 +1,7 @@
 import { Array as Collection, Either, Option } from "effect/index";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { createStore, useStore } from "zustand";
-import { INIT_MENU_BAR_ITEMS, INIT_PROJECTS } from "./_root.init";
+import { INIT_CURRENT_PROJECT, INIT_MENU_BAR_ITEMS, INIT_PROJECTS } from "./_root.init";
 import { RootStore, RootStoreContextType } from "./_root.state";
 
 const RootStoreContext = createContext<RootStoreContextType>(Option.none());
@@ -9,7 +9,9 @@ const RootStoreContext = createContext<RootStoreContextType>(Option.none());
 export function createRootStore() {
 	return createStore<RootStore>()((set) => ({
 		projects: INIT_PROJECTS,
+		currentProject: INIT_CURRENT_PROJECT,
 		titleBarMenuItems: INIT_MENU_BAR_ITEMS,
+		setCurrentProject: (project) => set({ currentProject: project }),
 		setProjects: (projects) => set({ projects }),
 		addProject: (project) => set(state =>  ({ 
 			...state, 

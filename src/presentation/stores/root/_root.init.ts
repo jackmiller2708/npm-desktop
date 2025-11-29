@@ -32,3 +32,4 @@ export const INIT_MENU_BAR_ITEMS: ReadonlyArray<MenuCategory> = [
 ];
 
 export const INIT_PROJECTS: Option.Option<Option.Option<ReadonlyArray<ProjectInfo>>> = Option.none();
+export const INIT_CURRENT_PROJECT: Option.Option<ProjectInfo> = Option.none();

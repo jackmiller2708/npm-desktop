@@ -5,10 +5,12 @@ import type { createRootStore } from "./_root.store";
 
 export type RootStoreState = {
 	projects: Option.Option<Option.Option<ReadonlyArray<ProjectInfo>>>;
+	currentProject: Option.Option<ProjectInfo>;
 	titleBarMenuItems: ReadonlyArray<MenuCategory>
 };
 
 export type RootStoreActions = {
+	setCurrentProject: (project: RootStore["currentProject"]) => void;
 	setProjects: (projects: RootStoreState["projects"]) => void;
   addProject: (project: ProjectInfo) => void;
 };
