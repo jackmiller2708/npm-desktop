@@ -1,19 +1,18 @@
 import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger } from "@presentation/components/ui/menubar";
 import type { Primitive } from '@radix-ui/react-primitive';
 import clsx from "clsx";
-import { Match } from "effect";
+import { Match, Option } from "effect";
 import type { ComponentPropsWithoutRef, Key } from "react";
 import type { MenuCategory, MenuNode } from "./_menu.interface";
 
 function renderMenuNode(node: MenuNode, key: Key) {
   return Match.value(node).pipe(
-    Match.when({ type: 'item' }, ({ label, accelerator, onSelect }) => (
+    Match.when({ type: 'item' }, ({ label, accelerator: mbAccelerator, onSelect }) => (
       <MenubarItem key={key} className="text-xs" onSelect={onSelect}>
         {label}
-        {accelerator && (
-          <MenubarShortcut className="text-xs">
-            {accelerator}
-          </MenubarShortcut>
+        {Option.fromNullable(mbAccelerator).pipe(
+          Option.map((accelerator) => <MenubarShortcut className="text-xs">{accelerator}</MenubarShortcut>),
+          Option.getOrNull
         )}
       </MenubarItem>
     )),

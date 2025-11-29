@@ -16,9 +16,7 @@ function renderMenuNode(node: MenuNode, key: Key) {
 		Match.when({ type: 'separator' }, () => <DropdownMenuSeparator key={key} />),
 		Match.when({ type: 'submenu' }, ({ label, children }) => (
 			<DropdownMenuSub key={key}>
-				<DropdownMenuSubTrigger className="text-xs">
-					{label}
-				</DropdownMenuSubTrigger>
+				<DropdownMenuSubTrigger className="text-xs">{label}</DropdownMenuSubTrigger>
 				<DropdownMenuPortal>
 					<DropdownMenuSubContent>
 						{children.map((child, j) => renderMenuNode(child, `${key}-${j}`))}
@@ -40,9 +38,7 @@ export function BurgerMenu({ data, className }: { data: MenuCategory[] } & Compo
 			<DropdownMenuContent align="start">
 				{data.map(({ label, children }, i) => (
 					<DropdownMenuSub key={i}>
-						<DropdownMenuSubTrigger className="text-xs">
-							{label}
-						</DropdownMenuSubTrigger>
+						<DropdownMenuSubTrigger className="text-xs">{label}</DropdownMenuSubTrigger>
 						<DropdownMenuPortal>
 							<DropdownMenuSubContent>
 								{children.map((node, j) => renderMenuNode(node, `${i}-${j}`))}
