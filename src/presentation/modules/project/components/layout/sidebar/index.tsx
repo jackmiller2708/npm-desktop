@@ -1,7 +1,6 @@
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from "@presentation/components/ui/sidebar";
-import { ProjectInfo } from "@shared/project";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from "@presentation/components/ui/sidebar";
 import { BookText, Box, LayoutDashboard, ScrollText, Settings } from "lucide-react";
-import { NavLink, useLoaderData } from "react-router";
+import { NavLink } from "react-router";
 
 // Menu items.
 const items = [
@@ -33,8 +32,6 @@ const items = [
 ];
 
 export function AppSidebar() {
-	const project: ProjectInfo = useLoaderData();
-
 	return (
 		<Sidebar collapsible="icon">
 			<SidebarContent>
@@ -47,7 +44,7 @@ export function AppSidebar() {
 								</SidebarMenuButton>
 							</SidebarMenuItem>
 							{items.map((item, index) => (
-								<SidebarMenuItem key={item.title}>
+								<SidebarMenuItem key={item.title} title={item.title}>
 									<SidebarMenuButton asChild>
 										<NavLink to={item.url} className="[&.active]:bg-accent [&.active]:pointer-events-none" end={index === 0}>
 											<item.icon />

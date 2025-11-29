@@ -35,7 +35,7 @@ export function WindowFrame({ children }: PropsWithChildren) {
   }, []);
 
 	return (
-		<div className="flex flex-col">
+		<div className="flex flex-col h-full">
 			<TitleBar 
         focusState={focusState}
         displayState={displayState}

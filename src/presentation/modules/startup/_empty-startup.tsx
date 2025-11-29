@@ -6,6 +6,7 @@ import { useRootStore } from "@presentation/stores/root";
 import { IconFolderCode } from "@tabler/icons-react";
 import { Array as Collection, Effect, Either, Option } from "effect";
 import { ArrowUpRightIcon } from "lucide-react";
+import { useNavigate } from "react-router";
 
 
 export function EmptyStartup() {
@@ -13,6 +14,7 @@ export function EmptyStartup() {
   
   const win = useWindow();
   const wp = useWorkspace();
+  const navigate = useNavigate();
 
   function onOpenProjectBtnClick() {
     Effect.runPromise(mbAddProject.pipe(Either.match({
@@ -31,9 +33,14 @@ export function EmptyStartup() {
           onLeft: (error) => Effect.succeed(Either.left(error))
         })),
         Effect.tap(Either.match({
+          onRight: () => navigate('current-project'),
+          onLeft: (): void => void 0
+        })),
+        Effect.tap(() => Effect.sleep('100 millis')),
+        Effect.tap(Either.match({
           onRight: addProject,
           onLeft: (): void => void 0
-        }))
+        })),
       ),
       onLeft: () => Effect.void
     })));

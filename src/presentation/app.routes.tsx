@@ -23,7 +23,9 @@ export const routes = defineRoutes([
 			{
 				path: "current-project",
 				element: <Project />,
-				loader: async () => Effect.runPromise(useWorkspace().getCurrent().pipe(Effect.map(Either.getOrThrow))),
+				loader: async () => Effect.runPromise(useWorkspace().getCurrent().pipe(
+					Effect.map(Either.getOrElse(() => redirect('/')))
+				)),
 				children: projectRoutes
 			},
 		],
