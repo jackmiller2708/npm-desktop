@@ -1,36 +1,12 @@
 import { Spinner } from "@presentation/components/ui/spinner";
-import { useWorkspace } from "@presentation/hooks/use-workspace";
 import { useRootStore } from "@presentation/stores/root";
-import { Effect, Either, Option } from "effect";
-import { useEffect } from "react";
-import { toast } from "sonner";
+import { Either, Option } from "effect";
 import { EmptyStartup } from "./_empty-startup";
 import { HasProjectStartup } from "./_has-project-startup";
 import { ProjectList } from "./components/_project-list";
 
 export function Startup() {
-	const mbSetProjects = useRootStore((state) => state.setProjects);
 	const mbLoadedProjects = useRootStore((state) => state.projects);
-	const wp = useWorkspace();
-
-	useEffect(() => {
-		Effect.runPromise(Either.Do.pipe(
-			Either.andThen(() => Either.all([mbSetProjects, mbLoadedProjects])),
-			Either.map(([setProject, projects]) => Effect.Do.pipe(
-				Effect.andThen(() => Option.flatten(projects).pipe(Option.match({
-					onSome: (projectList) => Effect.succeed(Either.right(projectList)),
-					onNone: wp.getRecents
-				}))),
-				Effect.map(Either.map(Option.some)),
-				Effect.map(Either.map(Option.some)),
-				Effect.tap(Either.match({
-					onRight: setProject,
-					onLeft: (error) => toast("Unable to load projects", { description: error.message })
-				})),
-			)),
-			Either.getOrThrow
-		));
-	}, []);
 
 	return mbLoadedProjects.pipe(
 		Either.map(Option.match({

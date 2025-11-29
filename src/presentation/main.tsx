@@ -4,6 +4,7 @@ import { Effect } from "effect";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { routes } from "./app.routes";
+import { Toaster } from "./components/ui/sonner";
 import { RootStoreProvider } from "./stores/root";
 
 const createAppRoot = Effect.sync(() => createRoot(document.body));
@@ -14,6 +15,7 @@ Effect.runPromise(Effect.Do.pipe(
   Effect.andThen(([root, router]) => Effect.sync(() => root.render((
     <RootStoreProvider>
       <RouterProvider router={router} />
+      <Toaster />
     </RootStoreProvider>
   ))))),
 );
