@@ -30,9 +30,9 @@ export class TitleMenuService extends Effect.Service<ITitleMenuService>()('app/T
           )
         }))
       )),
-      updateMenuNodeById: F.dual(3, (categories: ReadonlyArray<MenuCategory>, id: string, updater: (node: MenuNode | MenuCategory) => MenuNode | MenuCategory): Effect.Effect<ReadonlyArray<MenuCategory>> => {
-        return Effect.sync(() => {
-          const stack: Frame[] = [{ kind: "categories", source: categories, rebuilt: [], idx: 0, changed: false }];
+      updateMenuNodeById: F.dual(3, (categories: ReadonlyArray<MenuCategory>, id: string, updater: (node: MenuNode | MenuCategory) => MenuNode | MenuCategory) => 
+        Effect.sync(() => {
+          const stack: Frame[] = [{ source: categories, rebuilt: [], idx: 0, changed: false }];
 
           while (stack.length > 0) {
             const currentFrame = stack[stack.length - 1];
@@ -50,7 +50,7 @@ export class TitleMenuService extends Effect.Service<ITitleMenuService>()('app/T
               }
 
               const parentFrame = stack[stack.length - 1];
-              const parentNode = { ...parentFrame.source[parentFrame.idx - 1], children: result as ReadonlyArray<MenuNode> } as MenuNode & MenuCategory;
+              const parentNode = { ...parentFrame.source[parentFrame.idx - 1], children: result } as MenuNode & MenuCategory;
 
               parentFrame.rebuilt.push(parentNode);
               parentFrame.changed ||= currentFrame.changed;
@@ -70,7 +70,7 @@ export class TitleMenuService extends Effect.Service<ITitleMenuService>()('app/T
               }
 
               // Add new frame to process child nodes
-              stack.push({ kind: "nodes", source: node.children, rebuilt: [], idx: 0, changed: false });
+              stack.push({ source: node.children, rebuilt: [], idx: 0, changed: false });
               continue;
             }
 
@@ -83,7 +83,7 @@ export class TitleMenuService extends Effect.Service<ITitleMenuService>()('app/T
 
             if (hasProperty(node, 'type') && node.type === "submenu") {
               // Add new frame to process child nodes
-              stack.push({ kind: "nodes", source: node.children, rebuilt: [], idx: 0, changed: false });
+              stack.push({ source: node.children, rebuilt: [], idx: 0, changed: false });
               continue;
             }
 
@@ -92,8 +92,8 @@ export class TitleMenuService extends Effect.Service<ITitleMenuService>()('app/T
           }
 
           return categories;
-        });
-      })
+        })
+      ),
     })))
   ),
   dependencies: [TitleMenuUtilityService.Default]

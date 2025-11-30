@@ -27,18 +27,9 @@ export interface MenuCategory {
 }
 
 // Explicit Recursion Stack
-export type Frame =
-	| {
-			kind: "categories";
-			source: ReadonlyArray<MenuCategory>;
-			rebuilt: MenuCategory[];
-			idx: number;
-			changed: boolean;
-	  }
-	| {
-			kind: "nodes";
-			source: ReadonlyArray<MenuNode>;
-			rebuilt: MenuNode[];
-			idx: number;
-			changed: boolean;
-	  };
+export type Frame = {
+	source: ReadonlyArray<MenuCategory> | ReadonlyArray<MenuNode>;
+	rebuilt: MenuCategory[];
+	idx: number;
+	changed: boolean;
+};
