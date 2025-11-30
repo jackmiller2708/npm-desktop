@@ -62,7 +62,7 @@ export class TitleMenuService extends Effect.Service<ITitleMenuService>()('app/T
             const node = currentFrame.source[currentFrame.idx++];
 
             // Category root-level
-            if (hasProperty(node, 'id') && hasProperty(node, 'type') && currentFrame.kind === "categories") {
+            if (hasProperty(node, 'type') && node.type === "category") {
               if (node.id === id) {
                 currentFrame.rebuilt.push(updater(node) as MenuNode & MenuCategory);
                 currentFrame.changed = true;
@@ -75,13 +75,13 @@ export class TitleMenuService extends Effect.Service<ITitleMenuService>()('app/T
             }
 
             // Node frame
-            if (hasProperty(node, 'id') && hasProperty(node, 'type') && node.id === id) {
+            if (hasProperty(node, 'id') && node.id === id) {
               currentFrame.rebuilt.push(updater(node) as MenuNode & MenuCategory);
               currentFrame.changed = true;
               continue;
             }
 
-            if (hasProperty(node, 'id') && hasProperty(node, 'type') && node.type === "submenu") {
+            if (hasProperty(node, 'type') && node.type === "submenu") {
               // Add new frame to process child nodes
               stack.push({ kind: "nodes", source: node.children, rebuilt: [], idx: 0, changed: false });
               continue;
