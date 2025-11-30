@@ -46,9 +46,9 @@ export function HasProjectStartup({ children }: PropsWithChildren) {
 					<SearchIcon />
 				</InputGroupAddon>
 				<InputGroupAddon align="inline-end">
-          <Button className="!text-sm" disabled>New</Button>
-          <Button className="!text-sm" onClick={onOpenProjectBtnClick}>Open</Button>
-          <Button className="!text-sm" disabled>Get from VCS</Button>
+          <Button className="!text-xs" disabled>New</Button>
+          <Button className="!text-xs cursor-pointer" onClick={onOpenProjectBtnClick}>Open</Button>
+          <Button className="!text-xs" disabled>Get from VCS</Button>
 				</InputGroupAddon>
 			</InputGroup>
 			<hr />

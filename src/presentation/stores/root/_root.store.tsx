@@ -1,4 +1,5 @@
 import { MenuItem, MenuSubmenu } from "@presentation/components/layout/title-bar-menu/_menu.interface";
+import { appRuntime } from "@presentation/services/_app.runtime";
 import { TitleMenuService } from "@presentation/services/title-menu";
 import { Array as Collection, Effect, Either, Function as F, Option, Record } from "effect/index";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
@@ -14,11 +15,10 @@ export function createRootStore() {
 		currentProject: INIT_CURRENT_PROJECT,
 		titleBarMenuItems: INIT_MENU_BAR_ITEMS,
 		setCurrentProject: (project) => set({ currentProject: project }),
-		setProjects: (projects) => set((state) => Effect.runSync(Effect.Do.pipe(
+		setProjects: (projects) => set((state) => appRuntime.runSync(Effect.Do.pipe(
 			Effect.andThen(() => projects.pipe(Option.flatten, Option.match({
 				onSome: (recents) => TitleMenuService.pipe(
-					Effect.provide(TitleMenuService.Default),
-					Effect.andThen((service) => service.updateMenuNodeById(state.titleBarMenuItems, 'open-recents', (node) => 
+					Effect.andThen((service) => service.updateMenuNodeById(state.titleBarMenuItems, 'open-recents', (node) =>
 						Record.set(node as MenuSubmenu, 'children', F.pipe(
 							recents,
 							Collection.map((project): MenuItem => ({ id: project.path, label: project.path, type: 'item' })),
@@ -30,8 +30,8 @@ export function createRootStore() {
 			}))),
 			Effect.map((titleBarMenuItems) => ({ ...state, projects, titleBarMenuItems }))
 		))),
-		addProject: (project) => set((state) =>  ({ 
-			...state, 
+		addProject: (project) => set((state) =>  ({
+			...state,
 			projects: state.projects.pipe(
 				Option.flatten,
 				Option.map(Collection.append(project)),
