@@ -1,4 +1,6 @@
-import { Array as Collection, Either, Option } from "effect/index";
+import { MenuItem, MenuSubmenu } from "@presentation/components/layout/title-bar-menu/_menu.interface";
+import { TitleMenuService } from "@presentation/services/title-menu";
+import { Array as Collection, Effect, Either, Option, Record } from "effect/index";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { createStore, useStore } from "zustand";
 import { INIT_CURRENT_PROJECT, INIT_MENU_BAR_ITEMS, INIT_PROJECTS } from "./_root.init";
@@ -12,8 +14,28 @@ export function createRootStore() {
 		currentProject: INIT_CURRENT_PROJECT,
 		titleBarMenuItems: INIT_MENU_BAR_ITEMS,
 		setCurrentProject: (project) => set({ currentProject: project }),
-		setProjects: (projects) => set({ projects }),
-		addProject: (project) => set(state =>  ({ 
+		setProjects: (projects) => set((state) => ({ 
+			...state, 
+			projects,
+			titleBarMenuItems: Effect.runSync(projects.pipe(Option.flatten, Option.match({
+				onSome: recents => TitleMenuService.pipe(
+					Effect.andThen((service) => service.updateMenuNodeById(state.titleBarMenuItems, 'open-recents', (node) => {
+						const openRecentsNode = node as MenuSubmenu;
+						const lastOptions = openRecentsNode.children.slice(-2);
+						const recentItems = recents.map((project): MenuItem => ({
+							id: project.path,
+							label: project.path,
+							type: 'item'
+						}));
+
+						return Record.set(openRecentsNode, 'children', Collection.appendAll(recentItems, lastOptions)) as MenuSubmenu
+					})),
+					Effect.provide(TitleMenuService.Default)
+				),
+				onNone: () => Effect.succeed(state.titleBarMenuItems)
+			})))
+		})),
+		addProject: (project) => set((state) =>  ({ 
 			...state, 
 			projects: state.projects.pipe(
 				Option.flatten,

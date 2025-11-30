@@ -4,29 +4,48 @@ import { Option } from "effect";
 
 export const INIT_MENU_BAR_ITEMS: ReadonlyArray<MenuCategory> = [
 	{
+		id: "file",
 		label: "File",
+	  type: "category",
 		children: [
-			{ type: "item", label: "New Window", accelerator: "Ctrl+Shift+N" },
-			{ type: "separator" },
-			{ type: "item", label: "Open Folder", accelerator: "Ctrl+K Ctrl+O" },
 			{
+				id: "new-window",
+				type: "item",
+				label: "New Window",
+				accelerator: "Ctrl+Shift+N",
+			},
+			{ type: "separator" },
+			{
+				id: "open-folder",
+				type: "item",
+				label: "Open Folder",
+				accelerator: "Ctrl+K Ctrl+O",
+			},
+			{
+				id: "open-recents",
 				type: "submenu",
 				label: "Open Recents",
 				children: [
-					{ type: "item", label: "Email link" },
-					{ type: "item", label: "Messages" },
-					{ type: "item", label: "Notes" },
+					{ id: "more", type: "item", label: "More" },
+					{ id: "clear-recents", type: "item", label: "Clear Recents" },
 				],
 			},
 		],
 	},
 	{
+		id: "view",
 		label: "View",
+	  type: "category",
 		children: [
-			{ type: "item", label: "Command Palette", accelerator: "Ctrl+Shift+P" },
-			{ type: "item", label: "Open View..." },
+			{
+				id: "command-palettes",
+				type: "item",
+				label: "Command Palette",
+				accelerator: "Ctrl+Shift+P",
+			},
+			{ id: "open-view", type: "item", label: "Open View..." },
 			{ type: "separator" },
-			{ type: "item", label: "Appearance..." },
+			{ id: "appearance", type: "item", label: "Appearance..." },
 		],
 	},
 ];

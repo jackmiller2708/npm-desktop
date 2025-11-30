@@ -7,7 +7,7 @@ interface IIPCService {
 	invoke: <Cmd extends ExtractCommand<IPCRegistry>>(channel: Cmd, ...args: ExtractInput<IPCRegistry, Cmd>) => Effect.Effect<RemoteData<ExtractOutput<IPCRegistry, Cmd>, string>>;
 }
 
-export class IPCService extends Effect.Service<IPCService>()("app/Cache", {
+export class IPCService extends Effect.Service<IPCService>()("app/IPCService", {
 	effect: Effect.sync(() => ({
     invoke: <Cmd extends ExtractCommand<IPCRegistry>>(channel: Cmd, ...args: ExtractInput<IPCRegistry, Cmd>) => (
       Effect.promise(() => window.ipc.invoke(channel, ...args))

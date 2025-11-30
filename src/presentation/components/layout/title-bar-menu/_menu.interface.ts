@@ -1,10 +1,8 @@
-export interface MenuItemBase {
+export interface MenuItem {
+	id: string;
 	label: string;
 	accelerator?: string;
 	onSelect?: () => void;
-}
-
-export interface MenuItem extends MenuItemBase {
 	type?: "item";
 }
 
@@ -13,6 +11,7 @@ export interface MenuSeparator {
 }
 
 export interface MenuSubmenu {
+	id: string;
 	type: "submenu";
 	label: string;
 	children: MenuNode[];
@@ -21,6 +20,25 @@ export interface MenuSubmenu {
 export type MenuNode = MenuItem | MenuSeparator | MenuSubmenu;
 
 export interface MenuCategory {
+	id: string;
+	type: "category";
 	label: string;
-	children: MenuNode[];
+	children: ReadonlyArray<MenuNode>;
 }
+
+// Explicit Recursion Stack
+export type Frame =
+	| {
+			kind: "categories";
+			source: ReadonlyArray<MenuCategory>;
+			rebuilt: MenuCategory[];
+			idx: number;
+			changed: boolean;
+	  }
+	| {
+			kind: "nodes";
+			source: ReadonlyArray<MenuNode>;
+			rebuilt: MenuNode[];
+			idx: number;
+			changed: boolean;
+	  };

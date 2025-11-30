@@ -7,8 +7,8 @@ import type { MenuCategory, MenuNode } from "./_menu.interface";
 
 function renderMenuNode(node: MenuNode, key: Key) {
   return Match.value(node).pipe(
-    Match.when({ type: 'item' }, ({ label, accelerator: mbAccelerator, onSelect }) => (
-      <MenubarItem key={key} className="text-xs" onSelect={onSelect}>
+    Match.when({ type: 'item' }, ({ label, accelerator: mbAccelerator, onSelect, id }) => (
+      <MenubarItem key={id} className="text-xs" onSelect={onSelect}>
         {label}
         {Option.fromNullable(mbAccelerator).pipe(
           Option.map((accelerator) => <MenubarShortcut className="text-xs">{accelerator}</MenubarShortcut>),
@@ -17,8 +17,8 @@ function renderMenuNode(node: MenuNode, key: Key) {
       </MenubarItem>
     )),
     Match.when({ type: 'separator' }, () => <MenubarSeparator key={key} />),
-    Match.when({ type: 'submenu' }, ({ label, children }) => (
-      <MenubarSub key={key}>
+    Match.when({ type: 'submenu' }, ({ label, children, id }) => (
+      <MenubarSub key={id}>
         <MenubarSubTrigger className="text-xs">{label}</MenubarSubTrigger>
         <MenubarSubContent>
           {children.map((child, j) => renderMenuNode(child, `${key}-${j}`))}
@@ -32,8 +32,8 @@ function renderMenuNode(node: MenuNode, key: Key) {
 export function FullMenu({ data, className }: { data: ReadonlyArray<MenuCategory> } & ComponentPropsWithoutRef<typeof Primitive.div>) {
 	return (
     <Menubar className={clsx("p-0 border-0 h-fit hidden lg:flex", className)}>
-      {data.map(({ label, children }) => (
-        <MenubarMenu key={label}>
+      {data.map(({ label, children, id }) => (
+        <MenubarMenu key={id}>
           <MenubarTrigger className="text-xs text-muted-foreground hover:bg-accent">
             {label}
           </MenubarTrigger>

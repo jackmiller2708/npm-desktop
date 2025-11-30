@@ -8,14 +8,14 @@ import type { MenuCategory, MenuNode } from "./_menu.interface";
 
 function renderMenuNode(node: MenuNode, key: Key) {
 	return Match.value(node).pipe(
-		Match.when({ type: 'item' }, ({ onSelect, label }) => (
-			<DropdownMenuItem key={key} className="text-xs" onSelect={onSelect}>
+		Match.when({ type: 'item' }, ({ onSelect, label, id }) => (
+			<DropdownMenuItem key={id} className="text-xs" onSelect={onSelect}>
 				{label}
 			</DropdownMenuItem>
 		)),
 		Match.when({ type: 'separator' }, () => <DropdownMenuSeparator key={key} />),
-		Match.when({ type: 'submenu' }, ({ label, children }) => (
-			<DropdownMenuSub key={key}>
+		Match.when({ type: 'submenu' }, ({ label, children, id }) => (
+			<DropdownMenuSub key={id}>
 				<DropdownMenuSubTrigger className="text-xs">{label}</DropdownMenuSubTrigger>
 				<DropdownMenuPortal>
 					<DropdownMenuSubContent>
@@ -36,8 +36,8 @@ export function BurgerMenu({ data, className }: { data: ReadonlyArray<MenuCatego
 			</DropdownMenuTrigger>
 
 			<DropdownMenuContent align="start">
-				{data.map(({ label, children }, i) => (
-					<DropdownMenuSub key={i}>
+				{data.map(({ label, children, id }, i) => (
+					<DropdownMenuSub key={id}>
 						<DropdownMenuSubTrigger className="text-xs">{label}</DropdownMenuSubTrigger>
 						<DropdownMenuPortal>
 							<DropdownMenuSubContent>

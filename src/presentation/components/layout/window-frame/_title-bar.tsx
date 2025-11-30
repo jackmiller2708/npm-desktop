@@ -42,7 +42,13 @@ export function TitleBar({ title = "NPM Desktop", focusState, displayState, onMi
       <div className={clsx("text-accent-foreground opacity-60 hover:opacity-80 flex items-center cursor-pointer absolute top-1/2 left-1/2 -translate-1/2", styles['no-drag'])}>
         <div className="border border-muted bg-background rounded-sm w-[30vw] text-center py-1.5 min-w-96 relative">
           <Search size={15} className="absolute left-2 top-1/2 -translate-y-1/2" />
-          {title}
+          {mbCurrentProject.pipe(Either.match({
+            onRight: Option.match({
+              onSome: ({ name }) => name,
+              onNone: () => title
+            }),
+            onLeft: () => null
+          }))}
           <KbdGroup className="absolute right-2 top-1/2 -translate-y-1/2">
             <Kbd>Ctrl</Kbd>
             <span>+</span>
