@@ -10,6 +10,7 @@ export class WorkspaceService extends Effect.Service<WorkspaceService>()("app/Wo
       open: (workspacePath: Params<WorkspaceNamespace['open']>) => ipc.invoke("workspace:open", workspacePath),
       getCurrent: () => ipc.invoke("workspace:getCurrent"),
       getRecents: () => ipc.invoke("workspace:getRecents"),
+      clearRecents: () => ipc.invoke("workspace:clearRecents"),
       close: () => ipc.invoke("workspace:close")
     }) as const),
   ),

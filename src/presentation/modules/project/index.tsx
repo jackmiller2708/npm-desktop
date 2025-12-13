@@ -12,6 +12,7 @@ import { AppSidebar } from "./components/layout/sidebar";
 export function Project() {
 	const mbSetCurrentProject = useRootStore((state) => state.setCurrentProject);
 	const mbSetProjects = useRootStore((state) => state.setProjects);
+	const mbSetRecents = useRootStore((state) => state.setMenuRecentItemsByProjects);
 	const project: ProjectInfo = useLoaderData();
 	const wp = useWorkspace();
 
@@ -23,12 +24,15 @@ export function Project() {
 	}, [project]);
 
 	useEffect(() => {
-		appRuntime.runPromise(mbSetProjects.pipe(
-			Either.map((set) => wp.getRecents().pipe(
+		appRuntime.runPromise(Either.all([mbSetRecents, mbSetProjects]).pipe(
+			Either.map(([setRecents, setProjects]) => wp.getRecents().pipe(
 				Effect.map(Either.map(Option.some)),
 				Effect.map(Either.map(Option.some)),
 				Effect.tap(Either.match({
-					onRight: set,
+					onRight: (projects) => {
+						setProjects(projects)
+						setRecents(projects)
+					},
 					onLeft: (error) => toast("Unable to load projects", { description: error.message })
 				})),
 			)),

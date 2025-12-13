@@ -10,6 +10,7 @@ export const WorkspaceHandlerLive = Layer.effect(WorkspaceHandler, Effect.Do.pip
       onSome: Effect.succeed,
       onNone: () => Effect.fail(new Error('No project is currently open'))
     }))),
+    clearRecents: () => projectManager.clearRecents(),
     getRecents: () => projectManager.listRecents(),
     close: () => projectManager.close(),
   })),

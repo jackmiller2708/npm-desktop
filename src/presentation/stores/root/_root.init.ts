@@ -34,6 +34,7 @@ export const INIT_MENU_BAR_ITEMS = [
 				type: "submenu",
 				label: "Open Recents",
 				children: [
+					{ type: "separator" },
 					{
 						id: "more",
 						type: "item",

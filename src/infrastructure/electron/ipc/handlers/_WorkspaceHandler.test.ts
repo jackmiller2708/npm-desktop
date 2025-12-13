@@ -34,14 +34,16 @@ function makeProjectManagerMock() {
       packageJsonPath: "",
     }),
   ]));
+  const clearRecents = vi.fn(() => Effect.void);
 	const close = vi.fn(() => Effect.void);
 
 	return {
-		mock: ProjectManager.of({ open, getCurrent, listRecents, close, }),
+		mock: ProjectManager.of({ open, getCurrent, listRecents, close, clearRecents }),
 		open,
 		getCurrent,
 		getCurrentNone,
 		listRecents,
+    clearRecents,
 		close,
 	};
 }
@@ -117,4 +119,18 @@ describe("WorkspaceHandlerLive", () => {
 
 		expect(close).toHaveBeenCalledTimes(1);
 	});
+
+  it("should delegate clearRecents() to ProjectManager", async () => {
+    const { mock, clearRecents } = makeProjectManagerMock();
+
+    await Effect.runPromise(
+      WorkspaceHandler.pipe(
+        Effect.andThen(wp => wp.clearRecents()),
+        Effect.provide(WorkspaceHandlerLive),
+        Effect.provide(ProjectManagerMockLayer(mock)),
+      )
+    );
+
+    expect(clearRecents).toHaveBeenCalledTimes(1);
+  });
 });

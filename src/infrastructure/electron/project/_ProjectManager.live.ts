@@ -35,6 +35,7 @@ export const ProjectManagerLive = Layer.effect(ProjectManager, Effect.Do.pipe(
       ),
       close: () => Effect.zipRight(saveLastOpen(RECENT_PROJECT_PATH, Option.none()), Ref.set(MUT_CURRENT_REF, Option.none())),
       listRecents: () => loadRecents(RECENT_PROJECT_PATH),
+      clearRecents: () => saveRecents(RECENT_PROJECT_PATH, []),
       getCurrent: () => Ref.get(MUT_CURRENT_REF).pipe(Effect.andThen(Option.match({
         onSome: (current) => Effect.succeed(Option.some(current)),
         onNone: () => loadLastOpen(RECENT_PROJECT_PATH)

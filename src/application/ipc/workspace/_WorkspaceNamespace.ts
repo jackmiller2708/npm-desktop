@@ -15,6 +15,10 @@ export const WorkspaceNamespace = Schema.Struct({
 		input: Schema.Void,
 		output: Schema.Array(ProjectInfo),
 	}),
+	clearRecents: Schema.Struct({
+		input: Schema.Void,
+		output: Schema.Void,
+	}),
 	close: Schema.Struct({
 		input: Schema.Void,
 		output: Schema.Void,

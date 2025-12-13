@@ -16,10 +16,13 @@ export function createRootStore() {
 		currentProject: INIT_CURRENT_PROJECT,
 		titleBarMenuItems: INIT_MENU_BAR_ITEMS,
 
+		//
 		setProjects: (projects) => set({ projects }),
 
+		//
 		setCurrentProject: (project) => set({ currentProject: project }),
 
+		//
 		addProject: (project) => set((state) =>  ({
 			...state,
 			projects: state.projects.pipe(
@@ -30,27 +33,26 @@ export function createRootStore() {
 			),
 		})),
 
-		setMenuRecentItemsByProjects: (projects) => set(state => ({ 
-			...state, 
+		//
+		setMenuRecentItemsByProjects: (projects) => set(state => ({
+			...state,
 			titleBarMenuItems: appRuntime.runSync(projects.pipe(Option.flatten, Option.match({
-				onSome: (availableProjects) => 
-					TitleMenuService.pipe(Effect.andThen((menuService) => 
-						menuService.updateMenuNodeById(state.titleBarMenuItems, 'open-recents', (node) => 
-							Record.set(node as MenuSubmenu, 'children', F.pipe(
-								availableProjects,
-								Collection.map((project): MenuItem => ({
-									id: project.path,
-									label: project.path,
-									type: 'item',
-									onSelect: () => appRuntime.runPromise(CommandRegistryService.pipe(
-										Effect.andThen((service) => service.execute("open-recent-project", project.path)),
-									))
-								})),
-								Collection.appendAll((node as MenuSubmenu).children.slice(-2))
-							)) as MenuSubmenu
-						)
+				onSome: (availableProjects) =>  TitleMenuService.pipe(Effect.andThen((menuService) =>
+					menuService.updateMenuNodeById(state.titleBarMenuItems, 'open-recents', (node) =>
+						Record.set(node as MenuSubmenu, 'children', F.pipe(
+							availableProjects,
+							Collection.map((project): MenuItem => ({
+								id: project.path,
+								label: project.path,
+								type: 'item',
+								onSelect: () => appRuntime.runPromise(CommandRegistryService.pipe(
+									Effect.andThen((service) => service.execute("open-recent-project", project.path)),
+								))
+							})),
+							Collection.appendAll((node as MenuSubmenu).children.slice(-3))
+						)) as MenuSubmenu
 					)
-				),
+				)),
 				onNone: () => Effect.succeed(state.titleBarMenuItems)
 			})))
 		}))

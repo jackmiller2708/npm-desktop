@@ -46,13 +46,19 @@ export function initCommandRegistry([mbSetCurrent, mbSetRecents, wp, navigate]: 
     }))),
 
     //
+    service.register("clear-recents", () => wp.clearRecents().pipe(
+      Effect.map((result) => Either.all([mbSetRecents, result])),
+      Effect.map(Either.match({
+        onRight: ([setRecents]) => setRecents(Option.some(Option.some([]))),
+        onLeft: (): void => void 0,
+      }))
+    )),
+
+    //
     service.register("new-window", () => Effect.void),
 
     //
     service.register("open-folder", () => Effect.void),
-
-    //
-    service.register("clear-recents", () => Effect.void),
   ], { concurrency: 'unbounded' })));
 }
 

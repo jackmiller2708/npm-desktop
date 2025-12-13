@@ -196,4 +196,52 @@ describe("ProjectManagerLive", () => {
     expect(project.dependencies).toEqual({});
     expect(project.devDependencies).toEqual({});
   });
+
+  it("should clear recent projects", async () => {
+    const fsState = MockFileSystemState();
+
+    const initialRecents: ReadonlyArray<ProjectInfo> = [
+      {
+        path: "/projects/a",
+        name: "project-a",
+        packageJsonPath: "/projects/a/package.json",
+        dependencies: {},
+        devDependencies: {},
+        lastOpened: Date.now(),
+      },
+      {
+        path: "/projects/b",
+        name: "project-b",
+        packageJsonPath: "/projects/b/package.json",
+        dependencies: {},
+        devDependencies: {},
+        lastOpened: Date.now(),
+      },
+    ];
+
+    const coreMock = makeProjectManagerCoreMock(initialRecents);
+
+    const manager = await Effect.runPromise(
+      ProjectManager.pipe(
+        Effect.provide(ProjectManagerLive),
+        Effect.provide(
+          Layer.mergeAll(
+            Layer.succeed(ProjectManagerCore, coreMock.mock),
+            fileSystemMock(fsState),
+            Path.layer
+          )
+        )
+      )
+    );
+
+    // sanity check
+    const before = await Effect.runPromise(manager.listRecents());
+    expect(before.length).toBe(2);
+
+    // clear recents
+    await Effect.runPromise(manager.clearRecents());
+
+    const after = await Effect.runPromise(manager.listRecents());
+    expect(after).toEqual([]);
+  });
 });
