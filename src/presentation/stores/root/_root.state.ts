@@ -10,9 +10,10 @@ export type RootStoreState = {
 };
 
 export type RootStoreActions = {
-	setCurrentProject: (project: RootStore["currentProject"]) => void;
+	setCurrentProject: (project: RootStoreState["currentProject"]) => void;
 	setProjects: (projects: RootStoreState["projects"]) => void;
   addProject: (project: ProjectInfo) => void;
+	setMenuRecentItemsByProjects: (projects: RootStoreState["projects"]) => void;
 };
 
 export type RootStore = RootStoreState & RootStoreActions;

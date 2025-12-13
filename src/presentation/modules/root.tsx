@@ -10,16 +10,16 @@ import { initCommandRegistry, initRecentProjects } from "./root.init";
 
 export function Root() {
 	const mbSetCurrentProject = useRootStore((state) => state.setCurrentProject);
+	const mbSetRecents = useRootStore((state) => state.setMenuRecentItemsByProjects);
 	const mbSetProjects = useRootStore((state) => state.setProjects);
 	const mbLoadedProjects = useRootStore((state) => state.projects);
-	const mbAddProject = useRootStore((state) => state.addProject);
 	const wp = useWorkspace();
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		appRuntime.runPromise(Effect.all([
-			initRecentProjects([wp, mbSetProjects, mbLoadedProjects]),
-			initCommandRegistry([mbSetCurrentProject, mbAddProject, wp, navigate])
+			initRecentProjects([wp, mbSetProjects, mbSetRecents, mbLoadedProjects]),
+			initCommandRegistry([mbSetCurrentProject, mbSetRecents, wp, navigate])
 		], { concurrency: 'unbounded' }));
 	}, []);
 

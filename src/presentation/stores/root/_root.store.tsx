@@ -1,7 +1,7 @@
 import { MenuItem, MenuSubmenu } from "@presentation/components/layout/title-bar-menu/_menu.interface";
 import { appRuntime } from "@presentation/services/_app.runtime";
 import { CommandRegistryService } from "@presentation/services/command-registry";
-import { TitleMenuBusinessService, TitleMenuService } from "@presentation/services/title-menu";
+import { TitleMenuService } from "@presentation/services/title-menu";
 import { Array as Collection, Effect, Either, Function as F, Option, Record } from "effect/index";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { createStore, useStore } from "zustand";
@@ -16,50 +16,44 @@ export function createRootStore() {
 		currentProject: INIT_CURRENT_PROJECT,
 		titleBarMenuItems: INIT_MENU_BAR_ITEMS,
 
-		/**
-		 *
-		 * @param project
-		 * @returns
-		 */
+		setProjects: (projects) => set({ projects }),
+
 		setCurrentProject: (project) => set({ currentProject: project }),
 
-		/**
-		 *
-		 * @param projects
-		 * @returns
-		 */
-		setProjects: (projects) => set((state) => appRuntime.runSync(Effect.Do.pipe(
-			Effect.andThen(() => projects.pipe(Option.flatten, Option.match({
-				onSome: (recents) => TitleMenuBusinessService.pipe(Effect.andThen((service) =>
-					service.setRecents(recents, state.titleBarMenuItems)
-				)),
-				onNone: () => Effect.succeed(state.titleBarMenuItems)
-			}))),
-			Effect.map((titleBarMenuItems) => ({ ...state, projects, titleBarMenuItems }))
-		))),
-
-		/**
-		 *
-		 * @param project
-		 * @returns
-		 */
-		addProject: (project) => set((state) =>  {
-			const projects = state.projects.pipe(
+		addProject: (project) => set((state) =>  ({
+			...state,
+			projects: state.projects.pipe(
 				Option.flatten,
 				Option.map(Collection.append(project)),
 				Option.map(Collection.dedupe),
-			);
+				Option.some,
+			),
+		})),
 
-			return appRuntime.runSync(Effect.Do.pipe(
-				Effect.andThen(() => projects.pipe(Option.match({
-					onSome: (recents) => TitleMenuBusinessService.pipe(Effect.andThen((service) =>
-						service.setRecents(recents, state.titleBarMenuItems)
-					)),
-					onNone: () => Effect.succeed(state.titleBarMenuItems)
-				}))),
-				Effect.map((titleBarMenuItems) => ({ ...state, projects: Option.some(projects), titleBarMenuItems }))
-			))
-		})
+		setMenuRecentItemsByProjects: (projects) => set(state => ({ 
+			...state, 
+			titleBarMenuItems: appRuntime.runSync(projects.pipe(Option.flatten, Option.match({
+				onSome: (availableProjects) => 
+					TitleMenuService.pipe(Effect.andThen((menuService) => 
+						menuService.updateMenuNodeById(state.titleBarMenuItems, 'open-recents', (node) => 
+							Record.set(node as MenuSubmenu, 'children', F.pipe(
+								availableProjects,
+								Collection.map((project): MenuItem => ({
+									id: project.path,
+									label: project.path,
+									type: 'item',
+									onSelect: () => appRuntime.runPromise(CommandRegistryService.pipe(
+										Effect.andThen((service) => service.execute("open-recent-project", project.path)),
+									))
+								})),
+								Collection.appendAll((node as MenuSubmenu).children.slice(-2))
+							)) as MenuSubmenu
+						)
+					)
+				),
+				onNone: () => Effect.succeed(state.titleBarMenuItems)
+			})))
+		}))
 	}));
 }
 
