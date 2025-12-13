@@ -26,6 +26,21 @@ export interface MenuCategory {
 	children: ReadonlyArray<MenuNode>;
 }
 
+type ActionableMenuItem = {
+  type: "item";
+  id: string;
+  onSelect: (...args: any[]) => any;
+};
+
+export type ExtractActionIds<T> =
+  T extends readonly (infer U)[]
+    ? ExtractActionIds<U>
+    : T extends { children: infer C }
+      ? ExtractActionIds<C>
+      : T extends ActionableMenuItem
+        ? T["id"]
+        : never;
+
 // Explicit Recursion Stack
 export type Frame = {
 	source: ReadonlyArray<MenuCategory> | ReadonlyArray<MenuNode>;

@@ -4,7 +4,7 @@ import { CommandRegistryService } from "@presentation/services/command-registry"
 import type { ProjectInfo } from "@shared/project";
 import { Effect, Option } from "effect";
 
-export const INIT_MENU_BAR_ITEMS: ReadonlyArray<MenuCategory> = [
+export const INIT_MENU_BAR_ITEMS = [
 	{
 		id: "file",
 		label: "File",
@@ -81,7 +81,7 @@ export const INIT_MENU_BAR_ITEMS: ReadonlyArray<MenuCategory> = [
 			{ id: "appearance", type: "item", label: "Appearance..." },
 		],
 	},
-];
+] as const satisfies ReadonlyArray<MenuCategory>;
 
 export const INIT_PROJECTS: Option.Option<Option.Option<ReadonlyArray<ProjectInfo>>> = Option.none();
 export const INIT_CURRENT_PROJECT: Option.Option<ProjectInfo> = Option.none();
